@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ConfigService } from './services/config.service';
-import { environment } from 'src/env/environment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +10,6 @@ export class AppComponent {
   title = 'myfinance-ui';
   public envValue: boolean = environment.production;
 
-  constructor(public configService: ConfigService) {
+  constructor() {
   }
 }
