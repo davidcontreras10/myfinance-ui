@@ -5,7 +5,11 @@
   "projects": {
     "myfinance-ui": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:service": {
+          "path": "src/app/services"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
