@@ -11,10 +11,13 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) { }
 
-  public getToken(credentials: ApiCredentials): Observable<any> {
-    return this.http.post(`${environment.baseApi}/api/Authentication`, credentials).pipe(
-      tap((res) => {
-        console.log('API Res:', res);
+  public getToken(credentials: ApiCredentials): Observable<TokenResponse> {
+    return this.http.post<any>(`${environment.baseApi}/api/Authentication`, credentials).pipe(
+      map(response => {
+        return {
+          accessToken: response.accessToken,
+          expiresIn: response.expiresIn
+        }
       })
     )
   }

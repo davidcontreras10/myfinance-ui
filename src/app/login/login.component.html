@@ -13,6 +13,7 @@
                 Password:
                 <input type="password" name="password" [(ngModel)]="password" required />
             </label>
+            <label style="color: red;" *ngIf="errorMessage">{{errorMessage}}</label>
         </div>
         <div class="row">
             <div class="col"><button class="btn btn-primary" type="submit">Login</button></div>
