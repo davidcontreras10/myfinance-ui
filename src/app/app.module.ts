@@ -7,10 +7,14 @@ import { NgbDropdownModule, NgbModule, NgbNavModule } from '@ng-bootstrap/ng-boo
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
 import { NavBarMenuComponent } from './main-nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { MainSpinnerComponent } from './main-spinner/main-spinner.component';
+import { CoreSpinnerComponent } from './core-spinner/core-spinner.component';
+import { MainSpinnerService } from './services/main-spinner.service';
+import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
 
 @NgModule({
   declarations: [
@@ -20,6 +24,8 @@ import { AccountsComponent } from './accounts/accounts.component';
     MainNavBarComponent,
     NavBarMenuComponent,
     AccountsComponent,
+    MainSpinnerComponent,
+    CoreSpinnerComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +36,7 @@ import { AccountsComponent } from './accounts/accounts.component';
     NgbDropdownModule,
     NgbNavModule
   ],
-  providers: [],
+  providers: [MainSpinnerService, { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
