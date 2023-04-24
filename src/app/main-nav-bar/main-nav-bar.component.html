@@ -1,6 +1,6 @@
 <nav *ngIf="!isLoginPage" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">My Website</a>
+        <a class="navbar-brand">My Finance</a>
         <div class="collapse navbar-collapse" [ngClass]="{'show': !isMainCollapsed}" id="navbarNav">
             <ul class="navbar-nav" id="main-ul">
                 <app-nav-bar-menu *ngFor="let item of items" [menuItem]="item">
