@@ -14,11 +14,12 @@ export class MainNavBarComponent implements OnInit {
     this.items = [
       {
         isActive: true, name: 'Home', subMenus: [
-          "Bank Summary",
+          { id: 'banks', name: 'Bank Summary' },
+          { id: 'toggle-summary', name: 'Toggle Summary'}
         ],
         routingLink: '/'
       },
-      { isActive: false, name: 'Accounts', routingLink: "/accounts" }
+      { isActive: false, name: 'Accounts', routingLink: '/accounts' }
     ];
 
     router.events.subscribe(value => {
@@ -31,9 +32,8 @@ export class MainNavBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private onNavigationChanged(event: NavigationStart){
-    console.log('Router', event);
-    this.items.forEach(item=>{
+  private onNavigationChanged(event: NavigationStart) {
+    this.items.forEach(item => {
       item.isActive = event.url === item.routingLink
     })
   }
