@@ -1,3 +1,7 @@
-<div *ngFor="let acc of accountGroup?.accounts">
-    <p>{{acc}}</p>
+<div *ngIf="accountGroup?.accounts">
+    <div *ngFor="let row of accountRows" class="row">
+        <div *ngFor="let acc of row.accounts" class="col-md">
+            {{acc}}
+        </div>
+    </div>
 </div>

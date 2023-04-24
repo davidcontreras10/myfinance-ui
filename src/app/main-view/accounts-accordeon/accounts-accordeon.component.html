@@ -1,9 +1,7 @@
-<div class="content">
-    <ngb-accordion #acc="ngbAccordion" [activeIds]="activeIds">
-        <ngb-panel *ngFor="let acc of groups" [title]="acc.name" [id]="getIdPattern(acc.id)">
-            <ng-template ngbPanelContent>
-                <app-acc-group [accountGroup]="acc"></app-acc-group>
-            </ng-template>
-        </ngb-panel>
-    </ngb-accordion>
-</div>
+<ngb-accordion #acc="ngbAccordion" [activeIds]="activeIds">
+    <ngb-panel *ngFor="let acc of groups" [title]="acc.name" [id]="getIdPattern(acc.id)">
+        <ng-template ngbPanelContent>
+            <app-acc-group [accountGroup]="acc"></app-acc-group>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
