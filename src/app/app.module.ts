@@ -9,6 +9,8 @@ import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
+import { NavBarMenuComponent } from './main-nav-bar/nav-bar-menu/nav-bar-menu.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,8 @@ import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
     LoginComponent,
     MainViewComponent,
     MainNavBarComponent,
+    NavBarMenuComponent,
+    AccountsComponent,
   ],
   imports: [
     BrowserModule,
