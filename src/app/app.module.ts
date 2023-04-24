@@ -15,6 +15,8 @@ import { MainSpinnerComponent } from './main-spinner/main-spinner.component';
 import { CoreSpinnerComponent } from './core-spinner/core-spinner.component';
 import { MainSpinnerService } from './services/main-spinner.service';
 import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
+import { AccountsAccordeonComponent } from './main-view/accounts-accordeon/accounts-accordeon.component';
+import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
     NavBarMenuComponent,
     AccountsComponent,
     MainSpinnerComponent,
-    CoreSpinnerComponent
+    CoreSpinnerComponent,
+    AccountsAccordeonComponent,
+    AccGroupComponent
   ],
   imports: [
     BrowserModule,
