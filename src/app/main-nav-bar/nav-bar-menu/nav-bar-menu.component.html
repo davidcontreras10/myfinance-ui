@@ -3,9 +3,9 @@
 </li>
 
 <li *ngIf="menuItem?.isActive" (click)="$event.stopPropagation()">
-    <a [ngClass]="menuItem?.subMenus ? 'nav-link active dropdown-toggle' : 'nav-link active'" (click)="subMenuClick()">{{menuItem?.name}}</a>
+    <a [ngClass]="menuItem?.subMenus ? 'nav-link active current dropdown-toggle' : 'nav-link active current'" (click)="subMenuClick()">{{menuItem?.name}}</a>
     <div *ngIf="menuItem?.subMenus" [ngClass]="{'show': showSubmenus}" class="dropdown-menu"
         aria-labelledby="navbarDropdown">
-        <a *ngFor="let subMenu of menuItem?.subMenus" class="dropdown-item" routerLink="#">{{subMenu}}</a>
+        <a *ngFor="let subMenu of menuItem?.subMenus" class="dropdown-item">{{subMenu}}</a>
     </div>
 </li>

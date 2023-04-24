@@ -1,0 +1,11 @@
+.active{
+    font-weight: bold;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.nav-link{
+    cursor: pointer;
+}

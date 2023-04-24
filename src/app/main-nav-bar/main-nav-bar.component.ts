@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { NavMenuItem } from './models';
 
 @Component({
@@ -14,14 +14,28 @@ export class MainNavBarComponent implements OnInit {
     this.items = [
       {
         isActive: true, name: 'Home', subMenus: [
-          "Bank Summary"
-        ]
+          "Bank Summary",
+        ],
+        routingLink: '/'
       },
-      { isActive: false, name: 'Accounts', routingLink: "accounts" }
-    ]
+      { isActive: false, name: 'Accounts', routingLink: "/accounts" }
+    ];
+
+    router.events.subscribe(value => {
+      if (value instanceof NavigationStart) {
+        this.onNavigationChanged(value);
+      }
+    })
   }
 
   ngOnInit(): void {
+  }
+
+  private onNavigationChanged(event: NavigationStart){
+    console.log('Router', event);
+    this.items.forEach(item=>{
+      item.isActive = event.url === item.routingLink
+    })
   }
 
   get isLoginPage(): boolean {
