@@ -1,0 +1,13 @@
+<li *ngIf="!menuItem?.isActive">
+    <a class="nav-link" [routerLink]="[menuItem?.routingLink]">{{menuItem?.name}}</a>
+</li>
+
+<li *ngIf="menuItem?.isActive" (click)="$event.stopPropagation()">
+    <a [ngClass]="menuItem?.subMenus ? 'nav-link active current dropdown-toggle' : 'nav-link active current'"
+        (click)="subMenuHeaderClick()">{{menuItem?.name}}</a>
+    <div *ngIf="menuItem?.subMenus" [ngClass]="{'show': showSubmenus}" class="dropdown-menu"
+        aria-labelledby="navbarDropdown">
+        <a *ngFor="let subMenu of menuItem?.subMenus" (click)="subMenuItemClicked(subMenu.id)"
+            class="dropdown-item">{{subMenu.name}}</a>
+    </div>
+</li>

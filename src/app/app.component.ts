@@ -10,7 +10,6 @@ import { AuthGuard } from './auth.guard';
 })
 export class AppComponent {
   title = 'myfinance-ui';
-  public envValue: boolean = environment.production;
 
   constructor() {
   }
