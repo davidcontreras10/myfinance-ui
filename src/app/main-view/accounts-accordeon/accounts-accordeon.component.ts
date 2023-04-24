@@ -15,10 +15,14 @@ export class AccountsAccordeonComponent implements OnInit {
 
   ngOnInit(): void {
     for (let i = 0; i < 5; i++) {
+      let accounts = [];
+      for (let j = 0; j < 3; j++) {
+        accounts.push(`Acc_${j + 1}_gr_${i + 1}`)
+      }
       this.groups.push({
-        accounts: [],
+        accounts: accounts,
         id: i + 1,
-        name: `Acc_${i + 1}`,
+        name: `Group_${i + 1}`,
         isActive: i % 2 === 0
       });
     }

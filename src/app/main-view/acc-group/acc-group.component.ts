@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, Input, OnInit } from '@angular/core';
+import { AccountGroup } from '../models';
 
 @Component({
   selector: 'app-acc-group',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./acc-group.component.css']
 })
 export class AccGroupComponent implements OnInit {
+
+  @Input()
+  accountGroup?: AccountGroup
 
   constructor() { }
 
