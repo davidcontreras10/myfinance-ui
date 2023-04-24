@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-view',
@@ -17,7 +19,6 @@ export class MainViewComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private handleIncomingNavBarAction(action: string){
+  private handleIncomingNavBarAction(action: string) {
   }
-
 }

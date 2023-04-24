@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { NavMenuItem } from './models';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-main-nav-bar',
@@ -10,7 +11,7 @@ import { NavMenuItem } from './models';
 export class MainNavBarComponent implements OnInit {
   public items: NavMenuItem[] = [];
   isMainCollapsed = true;
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.items = [
       {
         isActive: true, name: 'Home', subMenus: [
@@ -28,6 +29,13 @@ export class MainNavBarComponent implements OnInit {
       }
     })
   }
+
+
+  public logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
 
   ngOnInit(): void {
   }
