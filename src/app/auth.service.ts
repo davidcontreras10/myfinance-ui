@@ -37,6 +37,10 @@ export class AuthService {
     }
   }
 
+  public logout(){
+    localStorage.removeItem(TOKEN_KEY);
+  }
+
   private addSeconds(date: Date, seconds: number): void {
     date.setSeconds(date.getSeconds() + seconds);
   }

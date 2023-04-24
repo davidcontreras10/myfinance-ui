@@ -1,0 +1,19 @@
+<nav *ngIf="!isLoginPage" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand">My Finance</a>
+        <div class="collapse navbar-collapse" [ngClass]="{'show': !isMainCollapsed}" id="navbarNav">
+            <ul class="navbar-nav" id="main-ul">
+                <app-nav-bar-menu *ngFor="let item of items" [menuItem]="item">
+                </app-nav-bar-menu>
+            </ul>
+        </div>
+        <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-link px-3 me-2" (click)="logout()">
+                Logout
+            </button>
+        </div>
+        <button class="navbar-toggler" type="button" (click)="toggleCollapse()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>

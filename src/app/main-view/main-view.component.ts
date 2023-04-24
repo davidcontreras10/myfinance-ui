@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
+import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-view',
@@ -9,9 +12,13 @@ import { AuthGuard } from '../auth.guard';
 })
 export class MainViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(navBarService: NavBarServiceService) {
+    navBarService.getSubMenuEvents('banks').subscribe(this.handleIncomingNavBarAction);
+  }
 
   ngOnInit(): void {
   }
 
+  private handleIncomingNavBarAction(action: string) {
+  }
 }
