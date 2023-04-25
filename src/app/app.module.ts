@@ -17,6 +17,7 @@ import { MainSpinnerService } from './services/main-spinner.service';
 import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
 import { AccountsAccordeonComponent } from './main-view/accounts-accordeon/accounts-accordeon.component';
 import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
+import { HttpTokenInterceptor } from './interceptors/HttpTokenInterceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,11 @@ import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
     NgbDropdownModule,
     NgbNavModule
   ],
-  providers: [MainSpinnerService, { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true }],
+  providers: [
+    MainSpinnerService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

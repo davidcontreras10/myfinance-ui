@@ -10,17 +10,18 @@ export class AuthService {
   constructor() { }
 
   public isAuthenticated(): boolean {
-    const strObject = localStorage.getItem(TOKEN_KEY);
-    if (strObject) {
-      const tokenObject = this.getSafeJson(strObject);
-      if (tokenObject && tokenObject.accessToken && tokenObject.expireDate) {
-        const expireDate = new Date(tokenObject.expireDate);
-        return new Date() < expireDate;
-      }
+    const tokenObject = this.readStoredToken();
+    if (tokenObject && tokenObject.accessToken && tokenObject.expireDate) {
+      const expireDate = new Date(tokenObject.expireDate);
+      return new Date() < expireDate;
     }
 
     localStorage.removeItem(TOKEN_KEY);
     return false;
+  }
+
+  public getToken(): string | null {
+    return this.readStoredToken()?.accessToken;
   }
 
   public authenticate(token: TokenResponse) {
@@ -37,8 +38,17 @@ export class AuthService {
     }
   }
 
-  public logout(){
+  public logout() {
     localStorage.removeItem(TOKEN_KEY);
+  }
+
+  private readStoredToken(): any | null {
+    const strObject = localStorage.getItem(TOKEN_KEY);
+    if (strObject) {
+      return this.getSafeJson(strObject);
+    }
+
+    return null;
   }
 
   private addSeconds(date: Date, seconds: number): void {

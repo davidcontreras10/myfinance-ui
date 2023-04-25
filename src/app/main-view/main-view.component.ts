@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { AccountGroup } from './models';
 
 @Component({
   selector: 'app-main-view',
@@ -9,6 +10,8 @@ import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.s
   providers: [AuthGuard]
 })
 export class MainViewComponent implements OnInit {
+  public groups: AccountGroup[] = [];
+
   constructor(navBarService: NavBarServiceService) {
     navBarService.getSubMenuEvents('banks').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
@@ -16,9 +19,10 @@ export class MainViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
   }
 
   private handleIncomingNavBarAction(action: string) {
-    
+
   }
 }
