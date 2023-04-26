@@ -2,29 +2,7 @@
     <div *ngFor="let row of accountRows" class="row">
         <div *ngFor="let acc of row.accounts" [ngClass]="columnClass"
             [style.border]="'solid ' + acc.frontStyle.borderColor + ' 5px'">
-            <div class="row" [style]="{'background': acc.frontStyle.headerColor}">
-                <div class="col-md-4">
-                    <span class="main-box-title">{{acc.accountName}}</span>
-                </div>
-                <div class="col-md-7">
-                    <span class="main-box-title">No Period</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <label>Period Summary</label>
-                </div>
-                <div class="col-md-3">
-                </div>
-                <div class="col-md-6">
-                    <select>
-                        <option value="0">No Period</option>
-                        <option value="1">Period 1</option>
-                        <option value="2">Period 2</option>
-                        <option value="3">Period 3</option>
-                    </select>
-                </div>
-            </div>
+            <app-account-view [acc]="acc"></app-account-view>
         </div>
     </div>
 </div>

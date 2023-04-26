@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MainViewServiceService } from './main-view-service.service';
+import { MainViewApiService } from './main-view-api.service';
 
 describe('MainViewServiceService', () => {
-  let service: MainViewServiceService;
+  let service: MainViewApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MainViewServiceService);
+    service = TestBed.inject(MainViewApiService);
   });
 
   it('should be created', () => {

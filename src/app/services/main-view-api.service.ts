@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class MainViewServiceService {
+export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
 

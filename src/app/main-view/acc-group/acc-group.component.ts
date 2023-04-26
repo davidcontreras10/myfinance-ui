@@ -11,22 +11,23 @@ const ACCOUNTS_PER_ROW = 2;
 export class AccGroupComponent implements OnInit {
 
   @Input()
-  accountGroup?: AccountGroup
+  accountGroup: AccountGroup
+  accountRows: AccRow[];
   columnClass = `col-md-${12 / ACCOUNTS_PER_ROW}`
-
-
+  selectedPeriod: any;
   constructor() { }
 
   ngOnInit(): void {
+    this.accountRows = this.getaccountRows();
   }
 
-  get accountRows(): AccRow[] {
+  getaccountRows(): AccRow[] {
     const rows: AccRow[] = [];
     if (this.accountGroup?.accounts) {
       for (let i = 0; i < this.accountGroup.accounts.length; i++) {
         let account = this.accountGroup.accounts[i];
         let currentRow: AccRow;
-        if (rows.length === 0) {
+        if (rows.length === 0) {  
           currentRow = this.getEmptyAccountGroupArray();
           rows.push(currentRow);
         }

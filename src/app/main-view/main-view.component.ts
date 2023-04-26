@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountGroup } from './models';
+import { MainViewApiService } from '../services/main-view-api.service';
+import { MainViewModel } from './main-view-model';
 
 @Component({
   selector: 'app-main-view',
@@ -12,14 +14,19 @@ import { AccountGroup } from './models';
 export class MainViewComponent implements OnInit {
   public groups: AccountGroup[] = [];
 
-  constructor(navBarService: NavBarServiceService) {
+  constructor(navBarService: NavBarServiceService, private mainViewApiService: MainViewApiService, public mainViewModel: MainViewModel) {
     navBarService.getSubMenuEvents('banks').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
     });
   }
 
   ngOnInit(): void {
-
+    this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
+      console.log(response);
+      this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
+      this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
+      this.mainViewModel.updateData(this.groups);
+    }))
   }
 
   private handleIncomingNavBarAction(action: string) {

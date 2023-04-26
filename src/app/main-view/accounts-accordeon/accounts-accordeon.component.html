@@ -1,5 +1,5 @@
-<ngb-accordion #acc="ngbAccordion" [activeIds]="activeIds">
-    <ngb-panel *ngFor="let acc of groups" [title]="acc.name" [id]="getIdPattern(acc.id)">
+<ngb-accordion #acc="ngbAccordion" [activeIds]="mainViewModel.activeIds" id="main-view-acc">
+    <ngb-panel *ngFor="let acc of groups" [title]="acc.name" [id]="getAccountGroupIdPattern(acc.id)">
         <ng-template ngbPanelContent>
             <app-acc-group [accountGroup]="acc"></app-acc-group>
         </ng-template>

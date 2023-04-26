@@ -32,9 +32,9 @@ export class AccountGroupAccount {
 export interface AccountPeriod {
     accountPeriodId: number;
     accountId: number;
-    initialDate: Date;
-    endDate: Date;
-    name: string;
+    initialDate: string;
+    endDate: string;
+    name?: string;
 }
 
 export interface AccRow {

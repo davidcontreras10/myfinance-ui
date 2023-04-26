@@ -1,0 +1,22 @@
+<div class="row" [style]="{'background': acc.frontStyle.headerColor}">
+    <div class="col-md-4">
+        <span class="main-box-title">{{acc.accountName}}</span>
+    </div>
+    <div class="col-md-7">
+        <span class="main-box-title">{{selectedAccountPeriod?.name}}</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <label>Period Summary</label>
+    </div>
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-6">
+        <select class="form-select" [(ngModel)]="mainViewModel.periodIds[acc.accountId]"
+            (ngModelChange)="onPeriodChanged($event)">
+            <option *ngFor="let accPeriod of orderedPeriods()" [ngValue]="accPeriod.accountPeriodId"
+                [selected]="accPeriod.accountPeriodId == acc.currentPeriodId">{{accPeriod.name}}</option>
+        </select>
+    </div>
+</div>

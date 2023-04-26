@@ -18,6 +18,8 @@ import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
 import { AccountsAccordeonComponent } from './main-view/accounts-accordeon/accounts-accordeon.component';
 import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
 import { HttpTokenInterceptor } from './interceptors/HttpTokenInterceptor';
+import { ClickOutsideDirective } from './clickOutside.directive';
+import { AccountViewComponent } from './main-view/account-view/account-view.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { HttpTokenInterceptor } from './interceptors/HttpTokenInterceptor';
     MainSpinnerComponent,
     CoreSpinnerComponent,
     AccountsAccordeonComponent,
-    AccGroupComponent
+    AccGroupComponent,
+    ClickOutsideDirective,
+    AccountViewComponent
   ],
   imports: [
     BrowserModule,

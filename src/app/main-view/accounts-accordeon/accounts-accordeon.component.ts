@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroup } from '../models';
-import { MainViewServiceService } from 'src/app/services/main-view-service.service';
+import { MainViewModel } from '../main-view-model';
 
 @Component({
   selector: 'app-accounts-accordeon',
@@ -11,20 +11,14 @@ export class AccountsAccordeonComponent implements OnInit {
 
   @Input()
   public groups: AccountGroup[] = [];
-  public activeIds: string[] = [];
 
-  constructor(private mainviewService: MainViewServiceService) { }
+  constructor(public mainViewModel: MainViewModel) { }
 
   ngOnInit(): void {
-    this.mainviewService.loadMainAccountGroups().subscribe((response => {
-      console.log(response);
-      this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
-      this.activeIds = this.groups.filter(x => x.isSelected).map(x => this.getIdPattern(x.id));
-    }))
   }
 
-  public getIdPattern(id: number) {
-    return `acc_toggle_${id}`;
+  public getAccountGroupIdPattern(value: number) {
+    return MainViewModel.getAccountGroupIdPattern(value);
   }
 
 }
