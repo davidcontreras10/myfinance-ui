@@ -18,7 +18,6 @@ export class AccountViewComponent implements OnInit {
   ngOnInit(): void {
     this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === this.acc.currentPeriodId);
     this.mainViewModel.listenOnPeriodChange(this.acc.accountId).subscribe((accountPeriod) => {
-      console.log('Received change: ', accountPeriod);
       this.selectedAccountPeriod = accountPeriod;
     })
   }
