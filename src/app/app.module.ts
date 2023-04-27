@@ -15,6 +15,11 @@ import { MainSpinnerComponent } from './main-spinner/main-spinner.component';
 import { CoreSpinnerComponent } from './core-spinner/core-spinner.component';
 import { MainSpinnerService } from './services/main-spinner.service';
 import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
+import { AccountsAccordeonComponent } from './main-view/accounts-accordeon/accounts-accordeon.component';
+import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
+import { HttpTokenInterceptor } from './interceptors/HttpTokenInterceptor';
+import { ClickOutsideDirective } from './clickOutside.directive';
+import { AccountViewComponent } from './main-view/account-view/account-view.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +30,11 @@ import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
     NavBarMenuComponent,
     AccountsComponent,
     MainSpinnerComponent,
-    CoreSpinnerComponent
+    CoreSpinnerComponent,
+    AccountsAccordeonComponent,
+    AccGroupComponent,
+    ClickOutsideDirective,
+    AccountViewComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +45,11 @@ import { HttpSpinnerInterceptor } from './interceptors/HttpSpinnerInterceptor';
     NgbDropdownModule,
     NgbNavModule
   ],
-  providers: [MainSpinnerService, { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true }],
+  providers: [
+    MainSpinnerService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
