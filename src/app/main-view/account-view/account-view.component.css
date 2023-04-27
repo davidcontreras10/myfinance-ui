@@ -12,3 +12,7 @@
 .box-title:hover {
     text-decoration: underline;
 }
+
+.table-low-margin > tbody > tr > td {
+    padding: 4px;
+}

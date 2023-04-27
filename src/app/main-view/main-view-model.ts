@@ -1,18 +1,37 @@
 import { Injectable } from "@angular/core";
 import { AccountGroup, AccountGroupAccount, AccountPeriod } from "./models";
 import { Observable, Subject, filter, takeLast } from "rxjs";
+import { FinanceAccountResponse } from "../services/models";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MainViewModel {
     public accountGroups: AccountGroup[] = [];
-    public periodIds: { [key: number]: any } = {};
+    public periodIds: { [key: number]: number } = {};
     public activeIds: string[] = [];
     private periodChangeEvent$ = new Subject<AccountPeriod>();
 
     public static getAccountGroupIdPattern(id: number): string {
         return `acc_toggle_${id}`;
+    }
+
+    public updateFinanceInfo(financeAccounts: FinanceAccountResponse[]) {
+        this.forEachAccount(acc => {
+            const financeAccount = financeAccounts.find(f => f.accountId === acc.accountId);
+            if (financeAccount) {
+                acc.financeData = financeAccount;
+            }
+        })
+    }
+
+    public getAllSelectedPeriodIds() {
+        const ids: number[] = [];
+        for (const prop in this.periodIds) {
+            ids.push(this.periodIds[prop]);
+        }
+
+        return ids;
     }
 
     public updateData(accountGroups: AccountGroup[]) {

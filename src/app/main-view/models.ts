@@ -1,3 +1,5 @@
+import { FinanceAccountResponse } from "../services/models";
+
 export interface AccountGroup {
     id: number;
     name: string;
@@ -19,7 +21,7 @@ export class AccountGroupAccount {
     type: number;
     simpleTable: boolean;
     accountPeriods: AccountPeriod[];
-
+    financeData?: FinanceAccountResponse;
     get headerColor(): string {
         if(this.frontStyle.headerColor){
             return `background: ${this.frontStyle.headerColor};`;

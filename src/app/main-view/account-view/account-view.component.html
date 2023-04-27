@@ -20,3 +20,28 @@
         </select>
     </div>
 </div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-low-margin">
+            <thead>
+                <tr>
+                    <th data-field="Budget">Budget</th>
+                    <th data-field="Spent">Spending</th>
+                    <th data-field="Balance">Balance</th>
+                    <th data-field="OverallBalance">Overall Balance</th>
+                    <th data-field="OverallBalanceToday">Balance As Of Today</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{acc.financeData?.budget}}</td>
+                    <td>{{acc.financeData?.spent}}</td>
+                    <td>{{acc.financeData?.periodBalance}}</td>
+                    <td>{{acc.financeData?.generalBalance}}</td>
+                    <td>{{acc.financeData?.generalBalanceToday}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { AccountGroup } from '../main-view/models';
 import { environment } from 'src/environments/environment';
+import { FinanceAccountRequest, FinanceAccountResponse } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -17,4 +18,17 @@ export class MainViewApiService {
     );
   }
 
+  public loadAccountFinanance(accountPerioIds: number[], isPending: boolean): Observable<FinanceAccountResponse[]> {
+    const requests: FinanceAccountRequest[] = [];
+    accountPerioIds.forEach(accpId => {
+      requests.push({
+        accountPeriodId: accpId,
+        amountTypeId: 0,
+        loanSpends: false,
+        pendingSpends: isPending
+      })
+    });
+
+    return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests);
+  }
 }

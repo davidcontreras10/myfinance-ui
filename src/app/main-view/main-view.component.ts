@@ -22,10 +22,13 @@ export class MainViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
-      console.log(response);
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateData(this.groups);
+      const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
+      this.mainViewApiService.loadAccountFinanance(perioIds, true).subscribe(res => {
+        this.mainViewModel.updateFinanceInfo(res);
+      })
     }))
   }
 
