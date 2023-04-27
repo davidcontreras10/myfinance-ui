@@ -27,7 +27,9 @@ export class MainViewComponent implements OnInit {
       this.mainViewModel.updateData(this.groups);
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.mainViewApiService.loadAccountFinanance(perioIds, true).subscribe(res => {
+        console.log('Updating finance info');
         this.mainViewModel.updateFinanceInfo(res);
+        console.log('finance info updated');
       })
     }))
   }

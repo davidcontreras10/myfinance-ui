@@ -6,6 +6,8 @@
         <span class="main-box-title">{{selectedAccountPeriod?.name}}</span>
     </div>
 </div>
+<br />
+<br />
 <div class="row">
     <div class="col-md-3">
         <label class="box-title">Period Summary</label>
@@ -23,7 +25,11 @@
 <br />
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-bordered table-low-margin">
+        <table class="table table-bordered table-low-margin"
+            [class.table-checking] = "acc.type === 1"
+            [class.table-savings] = "acc.type === 2"
+            [class.table-bank] = "acc.type === 3"
+            >
             <thead>
                 <tr>
                     <th data-field="Budget">Budget</th>
@@ -35,11 +41,11 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{acc.financeData?.budget}}</td>
-                    <td>{{acc.financeData?.spent}}</td>
-                    <td>{{acc.financeData?.periodBalance}}</td>
-                    <td>{{acc.financeData?.generalBalance}}</td>
-                    <td>{{acc.financeData?.generalBalanceToday}}</td>
+                    <td>{{acc.financeData?.numBudget}}</td>
+                    <td>{{acc.financeData?.numSpent}}</td>
+                    <td>{{acc.financeData?.numPeriodBalance}}</td>
+                    <td>{{acc.financeData?.numGeneralBalance}}</td>
+                    <td>{{acc.financeData?.numGeneralBalanceToday}}</td>
                 </tr>
             </tbody>
         </table>

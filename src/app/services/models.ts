@@ -58,5 +58,10 @@ export interface FinanceAccountResponse{
     accountId: number;
     accountName: string;
     spendViewModels: SpendViewModel[];
+    numBudget: string;
+    numSpent: string;
+    numPeriodBalance: string;
+    numGeneralBalance: string;
+    numGeneralBalanceToday: string;
 }
 

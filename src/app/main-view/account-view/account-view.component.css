@@ -16,3 +16,42 @@
 .table-low-margin > tbody > tr > td {
     padding: 4px;
 }
+
+/*saving*/
+.table-savings tr > th:nth-of-type(1), .table-savings tr > td:nth-of-type(1) {
+    display: none;
+}
+
+.table-savings tr > th:nth-of-type(2), .table-savings tr > td:nth-of-type(2) {
+    display: none;
+}
+
+/*saving*/
+.table-checking tr > th:nth-of-type(5), .table-checking tr > td:nth-of-type(5) {
+    display: none;
+}
+
+/*Bank*/
+.table-bank tr > th:nth-of-type(1), .table-bank tr > td:nth-of-type(1) {
+    display: none;
+}
+
+.table-bank tr > th:nth-of-type(2), .table-bank tr > td:nth-of-type(2) {
+    display: none;
+}
+
+.table-bank tr > th:nth-of-type(4), .table-bank tr > td:nth-of-type(4) {
+    display: none;
+}
+
+.spend-amount {
+    color: red;
+}
+
+.saving-amount {
+    color: green;
+}
+
+.outer-column {
+    border: solid cadetblue 5px;
+}
