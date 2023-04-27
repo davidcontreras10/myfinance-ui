@@ -1,0 +1,14 @@
+.main-box-title {
+    font-size: 20px;
+    float: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.box-title {
+    font-size: 20px;
+}
+
+.box-title:hover {
+    text-decoration: underline;
+}

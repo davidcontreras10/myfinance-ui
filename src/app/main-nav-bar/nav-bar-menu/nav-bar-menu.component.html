@@ -2,7 +2,7 @@
     <a class="nav-link" [routerLink]="[menuItem?.routingLink]">{{menuItem?.name}}</a>
 </li>
 
-<li *ngIf="menuItem?.isActive" (click)="$event.stopPropagation()">
+<li *ngIf="menuItem?.isActive" clickOutside (clickOutside)="clickedOutside()">
     <a [ngClass]="menuItem?.subMenus ? 'nav-link active current dropdown-toggle' : 'nav-link active current'"
         (click)="subMenuHeaderClick()">{{menuItem?.name}}</a>
     <div *ngIf="menuItem?.subMenus" [ngClass]="{'show': showSubmenus}" class="dropdown-menu"

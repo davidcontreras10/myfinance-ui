@@ -1,0 +1,8 @@
+<div *ngIf="accountGroup?.accounts">
+    <div *ngFor="let row of accountRows" class="row">
+        <div *ngFor="let acc of row.accounts" [ngClass]="columnClass"
+            [style.border]="'solid ' + acc.frontStyle.borderColor + ' 5px'">
+            <app-account-view [acc]="acc"></app-account-view>
+        </div>
+    </div>
+</div>

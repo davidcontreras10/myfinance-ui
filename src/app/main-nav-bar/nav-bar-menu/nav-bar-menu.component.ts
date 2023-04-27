@@ -34,9 +34,7 @@ export class NavBarMenuComponent implements OnInit {
     this.navBarService.emitSubMenuEvent(subMenu);
   }
 
-  @HostListener('document:click', ['$event'])
-  clickout() {
+  public clickedOutside(){
     this.showSubmenus = false;
   }
-
 }
