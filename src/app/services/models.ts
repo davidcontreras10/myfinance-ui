@@ -13,14 +13,14 @@ export interface StoredToken {
     expireDate: Date
 }
 
-export interface FinanceAccountRequest{
+export interface FinanceAccountRequest {
     accountPeriodId: number;
     pendingSpends: boolean;
     loanSpends: boolean;
     amountTypeId: number;
 }
 
-export interface SpendViewModel{
+export class SpendViewModel {
     accountId: number;
     spendId: number;
     spendDate: string;
@@ -37,9 +37,13 @@ export interface SpendViewModel{
     amountTypeId: number;
     isPending: boolean;
     convertedAmount: number;
+
+    get isOriginal(): boolean {
+        return this.numerator === 1 && this.denominator === 1;
+    }
 }
 
-export interface FinanceAccountResponse{
+export interface FinanceAccountResponse {
     currencySymbol: string;
     budget: number;
     spent: number;

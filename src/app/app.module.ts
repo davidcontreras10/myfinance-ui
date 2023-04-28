@@ -20,6 +20,7 @@ import { AccGroupComponent } from './main-view/acc-group/acc-group.component';
 import { HttpTokenInterceptor } from './interceptors/HttpTokenInterceptor';
 import { ClickOutsideDirective } from './clickOutside.directive';
 import { AccountViewComponent } from './main-view/account-view/account-view.component';
+import { TrxAmountComponent } from './main-view/trx-amount/trx-amount.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AccountViewComponent } from './main-view/account-view/account-view.comp
     AccountsAccordeonComponent,
     AccGroupComponent,
     ClickOutsideDirective,
-    AccountViewComponent
+    AccountViewComponent,
+    TrxAmountComponent
   ],
   imports: [
     BrowserModule,
