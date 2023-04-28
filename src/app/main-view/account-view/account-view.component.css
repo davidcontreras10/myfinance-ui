@@ -55,3 +55,7 @@
 .outer-column {
     border: solid cadetblue 5px;
 }
+
+button{
+    margin: 5px;
+}

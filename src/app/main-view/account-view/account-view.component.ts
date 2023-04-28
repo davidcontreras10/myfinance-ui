@@ -11,6 +11,7 @@ export class AccountViewComponent implements OnInit {
   @Input()
   acc: AccountGroupAccount;
   selectedAccountPeriod?: AccountPeriod;
+  showTraxList = false;
 
   constructor(public mainViewModel: MainViewModel) {
   }
@@ -28,5 +29,9 @@ export class AccountViewComponent implements OnInit {
 
   orderedPeriods() {
     return this.acc.accountPeriods.sort((accA, accB) => new Date(accB.initialDate).getTime() - new Date(accA.initialDate).getTime())
+  }
+
+  toggleTrxList(){
+    this.showTraxList = !this.showTraxList;
   }
 }

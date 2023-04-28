@@ -25,11 +25,8 @@
 <br />
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-bordered table-low-margin"
-            [class.table-checking] = "acc.type === 1"
-            [class.table-savings] = "acc.type === 2"
-            [class.table-bank] = "acc.type === 3"
-            >
+        <table class="table table-bordered table-low-margin" [class.table-checking]="acc.type === 1"
+            [class.table-savings]="acc.type === 2" [class.table-bank]="acc.type === 3">
             <thead>
                 <tr>
                     <th data-field="Budget">Budget</th>
@@ -46,6 +43,43 @@
                     <td>{{acc.financeData?.numPeriodBalance}}</td>
                     <td>{{acc.financeData?.numGeneralBalance}}</td>
                     <td>{{acc.financeData?.numGeneralBalanceToday}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <button type="button" class="btn btn-outline-danger">New Expense</button>
+        <button type="button" class="btn btn-outline-success">Add Income</button>
+        <button type="button" class="btn btn-outline-primary">Transfer</button>
+        <button type="button" class="btn btn-outline-secondary">Excel</button>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col">
+        <button class="btn btn-secondary">Account Summary</button>
+        <button class="btn btn-secondary" (click)="toggleTrxList();">Show Period Activity</button>
+    </div>
+</div>
+<div class="row" *ngIf="showTraxList">
+    <div class="col">
+        <table class="table table-bordered table-low-margin">
+            <thead>
+                <tr>
+                    <th data-field="Date">Date</th>
+                    <th data-field="Amount">Amount</th>
+                    <th data-field="Type">Type</th>
+                    <th data-field="Actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let trx of acc.financeData?.spendViewModels">
+                    <td>{{ trx.spendDate | date:"dd/MM/yy" }}</td>
+                    <td>Amount</td>
+                    <td>{{trx.spendTypeName}}</td>
+                    <td>Actions</td>
                 </tr>
             </tbody>
         </table>
