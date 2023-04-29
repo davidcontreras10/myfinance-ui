@@ -75,7 +75,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let trx of acc.financeData?.spendViewModels">
+                <tr *ngFor="let trx of acc.financeData?.spendViewModels" [ngClass]="{'is-pending':trx.isPending}">
                     <td>{{ trx.spendDate | date:"dd/MM/yy" }}</td>
                     <td>
                         <app-trx-amount [account]="acc" [spendViewModel]="trx"></app-trx-amount>

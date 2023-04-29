@@ -37,10 +37,6 @@ export class SpendViewModel {
     amountTypeId: number;
     isPending: boolean;
     convertedAmount: number;
-
-    get isOriginal(): boolean {
-        return this.numerator === 1 && this.denominator === 1;
-    }
 }
 
 export interface FinanceAccountResponse {

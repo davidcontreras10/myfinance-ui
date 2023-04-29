@@ -15,9 +15,19 @@ export class TrxAmountComponent implements OnInit {
   @Input()
   spendViewModel: SpendViewModel;
 
+  showConverted = true;
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  get isOriginal(): boolean {
+    return this.spendViewModel.numerator == 1 && this.spendViewModel.denominator == 1;
+  }
+
+  toggleConverted() {
+    this.showConverted = !this.showConverted;
   }
 
 }
