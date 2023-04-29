@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroupAccount, AccountPeriod } from '../models';
 import { MainViewModel } from '../main-view-model';
+import { SpendViewModel } from 'src/app/services/models';
 
 @Component({
   selector: 'app-account-view',
@@ -31,7 +32,15 @@ export class AccountViewComponent implements OnInit {
     return this.acc.accountPeriods.sort((accA, accB) => new Date(accB.initialDate).getTime() - new Date(accA.initialDate).getTime())
   }
 
-  toggleTrxList(){
+  toggleTrxList() {
     this.showTraxList = !this.showTraxList;
+  }
+
+  onTrxEdit(trx: SpendViewModel) {
+    console.log('onTrxEdit');
+  }
+
+  onTrxDelete(trx: SpendViewModel) {
+    console.log('onTrxDelete');
   }
 }

@@ -22,6 +22,7 @@ import { ClickOutsideDirective } from './clickOutside.directive';
 import { AccountViewComponent } from './main-view/account-view/account-view.component';
 import { TrxAmountComponent } from './main-view/trx-amount/trx-amount.component';
 import { CurrencyAmountPipe } from './currency-amount.pipe';
+import { BsIconComponent } from './bs-icon/bs-icon.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CurrencyAmountPipe } from './currency-amount.pipe';
     ClickOutsideDirective,
     AccountViewComponent,
     TrxAmountComponent,
-    CurrencyAmountPipe
+    CurrencyAmountPipe,
+    BsIconComponent
   ],
   imports: [
     BrowserModule,

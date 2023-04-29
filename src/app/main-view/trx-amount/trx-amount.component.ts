@@ -15,7 +15,7 @@ export class TrxAmountComponent implements OnInit {
   @Input()
   spendViewModel: SpendViewModel;
 
-  showConverted = true;
+  showConverted = false;
 
   constructor() { }
 
