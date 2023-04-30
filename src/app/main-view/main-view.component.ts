@@ -28,6 +28,9 @@ export class MainViewComponent implements OnInit {
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.mainViewApiService.loadAccountFinanance(perioIds, this.mainViewModel.showPendings).subscribe(res => {
         this.mainViewModel.updateFinanceInfo(res);
+        this.mainViewApiService.loadAccountFinanceSummary().subscribe((financeSummary => {
+          console.log('Finance summary:', financeSummary)
+        }))
       })
     }))
   }

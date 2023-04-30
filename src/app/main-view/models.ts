@@ -1,4 +1,4 @@
-import { FinanceAccountResponse } from "../services/models";
+import { FinanceAccountResponse, FinancialSummaryAccount } from "../services/models";
 
 export interface AccountGroup {
     id: number;
@@ -41,4 +41,10 @@ export interface AccountPeriod {
 
 export interface AccRow {
     accounts: AccountGroupAccount[];
+}
+
+export interface BankGroups{
+    financialEntityId?: number;
+    financialEntityName: string;
+    accounts: FinancialSummaryAccount[];
 }

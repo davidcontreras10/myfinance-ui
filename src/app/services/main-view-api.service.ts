@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { AccountGroup } from '../main-view/models';
+import { AccountGroup, BankGroups } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { FinanceAccountRequest, FinanceAccountResponse } from './models';
+import { FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +30,29 @@ export class MainViewApiService {
     });
 
     return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests);
+  }
+
+  public loadAccountFinanceSummary(): Observable<BankGroups[]> {
+    return this.httpClient.get<FinancialSummaryAccount[]>(`${environment.baseApi}/api/Accounts/finance/summary`).pipe(
+      map(accounts => {
+        const banks: BankGroups[] = [];
+        accounts.forEach((acc) => {
+          let bankAcc = banks.find(b => b.financialEntityId == acc.financialEntityId);
+          if (!bankAcc) {
+            const name = acc.financialEntityId == null ? 'Others' : acc.financialEntityName
+            bankAcc = {
+              accounts: [],
+              financialEntityName: name,
+              financialEntityId: acc.financialEntityId
+            }
+
+            banks.push(bankAcc);
+          }
+
+          bankAcc.accounts.push(acc);
+        });
+        return banks;
+      })
+    );
   }
 }

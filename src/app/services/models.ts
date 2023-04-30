@@ -65,3 +65,14 @@ export interface FinanceAccountResponse {
     numGeneralBalanceToday: string;
 }
 
+export interface FinancialSummaryAccount {
+    accountId: number;
+    accountName: string;
+    balance: {
+        amount: number;
+        currencySymbol: string;
+    }
+
+    financialEntityId?: number;
+    financialEntityName: string;
+}
