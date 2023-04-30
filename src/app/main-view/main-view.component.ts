@@ -26,10 +26,8 @@ export class MainViewComponent implements OnInit {
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateData(this.groups);
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.mainViewApiService.loadAccountFinanance(perioIds, true).subscribe(res => {
-        console.log('Updating finance info');
+      this.mainViewApiService.loadAccountFinanance(perioIds, this.mainViewModel.showPendings).subscribe(res => {
         this.mainViewModel.updateFinanceInfo(res);
-        console.log('finance info updated');
       })
     }))
   }

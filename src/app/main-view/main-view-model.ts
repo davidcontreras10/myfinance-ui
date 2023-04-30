@@ -10,6 +10,7 @@ export class MainViewModel {
     public accountGroups: AccountGroup[] = [];
     public periodIds: { [key: number]: number } = {};
     public activeIds: string[] = [];
+    public showPendings: true;
     private periodChangeEvent$ = new Subject<AccountPeriod>();
 
     public static getAccountGroupIdPattern(id: number): string {

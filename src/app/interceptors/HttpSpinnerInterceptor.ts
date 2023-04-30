@@ -11,6 +11,9 @@ export class HttpSpinnerInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (request.headers.get('X-Skip-Spinner-Interceptor') === 'true') {
+            return next.handle(request);
+        }
         this.spinnerService.show();
         return next.handle(request).pipe(
             finalize(() => {
@@ -18,5 +21,4 @@ export class HttpSpinnerInterceptor implements HttpInterceptor {
             })
         );
     }
-
 } 
