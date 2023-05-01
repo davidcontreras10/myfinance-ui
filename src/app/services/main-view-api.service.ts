@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { AccountGroup, BankGroups } from '../main-view/models';
@@ -33,7 +33,10 @@ export class MainViewApiService {
   }
 
   public loadAccountFinanceSummary(): Observable<BankGroups[]> {
-    return this.httpClient.get<FinancialSummaryAccount[]>(`${environment.baseApi}/api/Accounts/finance/summary`).pipe(
+    const headers = new HttpHeaders({
+      'x-skip-interceptor': 'true'
+    });
+    return this.httpClient.get<FinancialSummaryAccount[]>(`${environment.baseApi}/api/Accounts/finance/summary`, { headers: headers }).pipe(
       map(accounts => {
         const banks: BankGroups[] = [];
         accounts.forEach((acc) => {

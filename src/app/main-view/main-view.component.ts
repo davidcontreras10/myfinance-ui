@@ -12,10 +12,12 @@ import { MainViewModel } from './main-view-model';
   providers: [AuthGuard]
 })
 export class MainViewComponent implements OnInit {
+  public showBankSummary = true;
   public groups: AccountGroup[] = [];
+  public bankSummaryloading = false;
 
   constructor(navBarService: NavBarServiceService, private mainViewApiService: MainViewApiService, public mainViewModel: MainViewModel) {
-    navBarService.getSubMenuEvents('banks').subscribe((value) => {
+    navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
     });
   }
@@ -28,14 +30,28 @@ export class MainViewComponent implements OnInit {
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.mainViewApiService.loadAccountFinanance(perioIds, this.mainViewModel.showPendings).subscribe(res => {
         this.mainViewModel.updateFinanceInfo(res);
-        this.mainViewApiService.loadAccountFinanceSummary().subscribe((financeSummary => {
-          console.log('Finance summary:', financeSummary)
-        }))
+        this.loadFinanceSummary();
       })
     }))
   }
 
-  private handleIncomingNavBarAction(action: string) {
+  private loadFinanceSummary() {
+    this.bankSummaryloading = true;
+    this.mainViewApiService.loadAccountFinanceSummary().subscribe({
+      next: financeSummary => {
+        this.bankSummaryloading = false;
+        this.mainViewModel.bankGroups = financeSummary
+      },
+      error: err => {
+        this.bankSummaryloading = false;
+        console.error(err);
+      }
+    });
+  }
 
+  private handleIncomingNavBarAction(action: string) {
+    if (action === 'toggle-summary') {
+      this.showBankSummary = !this.showBankSummary;
+    }
   }
 }

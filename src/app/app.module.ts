@@ -23,6 +23,8 @@ import { AccountViewComponent } from './main-view/account-view/account-view.comp
 import { TrxAmountComponent } from './main-view/trx-amount/trx-amount.component';
 import { CurrencyAmountPipe } from './currency-amount.pipe';
 import { BsIconComponent } from './bs-icon/bs-icon.component';
+import { BankSummaryComponent } from './main-view/bank-summary/bank-summary.component';
+import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { BsIconComponent } from './bs-icon/bs-icon.component';
     AccountViewComponent,
     TrxAmountComponent,
     CurrencyAmountPipe,
-    BsIconComponent
+    BsIconComponent,
+    BankSummaryComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import { BsIconComponent } from './bs-icon/bs-icon.component';
   providers: [
     MainSpinnerService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpNotifyInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,15 @@
+<div class="external-margin" [ngClass]="{
+    'on-data-loading': bankSummaryloading
+}">
+    <div *ngFor="let bank of mainViewModel?.bankGroups" class="row bank-group-limit">
+        <div class="col-md-auto">
+            <span>{{bank.financialEntityName}}</span>
+        </div>
+        <div class="col-md-8">
+            <div *ngFor="let acc of bank.accounts" class="summary-account-div">
+                <span>{{acc.accountName}}: </span>
+                <span>{{acc.balance.amount | currencyAmount:acc.balance.currencySymbol }}</span>
+            </div>
+        </div>
+    </div>
+</div>

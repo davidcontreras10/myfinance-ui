@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AccountGroup, AccountGroupAccount, AccountPeriod } from "./models";
+import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups } from "./models";
 import { Observable, Subject, filter, takeLast } from "rxjs";
 import { FinanceAccountResponse } from "../services/models";
 
@@ -11,7 +11,11 @@ export class MainViewModel {
     public periodIds: { [key: number]: number } = {};
     public activeIds: string[] = [];
     public showPendings: true;
+    public bankGroups: BankGroups[];
+
     private periodChangeEvent$ = new Subject<AccountPeriod>();
+
+
 
     public static getAccountGroupIdPattern(id: number): string {
         return `acc_toggle_${id}`;

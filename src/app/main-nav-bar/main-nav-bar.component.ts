@@ -15,7 +15,6 @@ export class MainNavBarComponent implements OnInit {
     this.items = [
       {
         isActive: true, name: 'Home', subMenus: [
-          { id: 'banks', name: 'Bank Summary' },
           { id: 'toggle-summary', name: 'Toggle Summary'}
         ],
         routingLink: '/'
