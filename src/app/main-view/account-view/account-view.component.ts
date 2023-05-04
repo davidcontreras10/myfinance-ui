@@ -47,7 +47,11 @@ export class AccountViewComponent implements OnInit {
   }
 
   onTrxDelete(trx: SpendViewModel) {
-    console.log('onTrxDelete');
+    if (confirm('Are you sure you want to delete this item?')) {
+      this.mainViewApiService.deleteTrx(trx.spendId).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      })
+    }
   }
 
   newExpenseClick() {
@@ -63,7 +67,7 @@ export class AccountViewComponent implements OnInit {
       const modalRef = this.modalService.open(AddTrxComponent, { backdrop: 'static', keyboard: false });
       modalRef.componentInstance.isSpending = isSpending;
       modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod?.accountPeriodId;
-      
+
     }
   }
 }

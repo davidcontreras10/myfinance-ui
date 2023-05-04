@@ -12,7 +12,13 @@ export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public AddBasicTrx(requestModel: AddTrxRequest, isSpending: boolean): Observable<ItemModifiedRes[]> {
+  public deleteTrx(spendId: number): Observable<ItemModifiedRes[]> {
+    const params = new HttpParams()
+      .set('spendId', spendId);
+    return this.httpClient.delete<ItemModifiedRes[]>(`${environment.baseApi}/api/Spends`, { params: params });
+  }
+
+  public addBasicTrx(requestModel: AddTrxRequest, isSpending: boolean): Observable<ItemModifiedRes[]> {
     let url = isSpending ? '/api/Spends/basic' : '/api/Spends/basic/income';
     url = environment.baseApi + url;
     return this.httpClient.post<ItemModifiedRes[]>(url, requestModel);
