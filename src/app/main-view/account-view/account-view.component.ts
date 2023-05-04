@@ -5,6 +5,7 @@ import { SpendViewModel } from 'src/app/services/models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
+import { ViewTrxComponent } from '../view-trx/view-trx.component';
 
 @Component({
   selector: 'app-account-view',
@@ -43,7 +44,7 @@ export class AccountViewComponent implements OnInit {
   }
 
   onTrxEdit(trx: SpendViewModel) {
-    console.log('onTrxEdit');
+    const modalRef = this.modalService.open(ViewTrxComponent, { backdrop: 'static', keyboard: false });
   }
 
   onTrxDelete(trx: SpendViewModel) {

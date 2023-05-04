@@ -27,6 +27,7 @@ import { BankSummaryComponent } from './main-view/bank-summary/bank-summary.comp
 import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
 import { AddTrxComponent } from './main-view/add-trx/add-trx.component';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform
     CurrencyAmountPipe,
     BsIconComponent,
     BankSummaryComponent,
-    AddTrxComponent
+    AddTrxComponent,
+    ViewTrxComponent
   ],
   imports: [
     BrowserModule,
