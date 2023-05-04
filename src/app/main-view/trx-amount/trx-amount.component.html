@@ -1,6 +1,11 @@
 <div *ngIf="!isOriginal">
     <div *ngIf="showConverted">
-        {{spendViewModel.originalAmount | currencyAmount:spendViewModel.currencySymbol }}
+        <span [ngClass]="{
+            'spend-amount': spendViewModel.amountTypeId === 1,
+            'saving-amount': spendViewModel.amountTypeId === 2
+        }">
+            {{spendViewModel.originalAmount | currencyAmount:spendViewModel.currencySymbol }}
+        </span>
         <app-bs-icon (click)="toggleConverted()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-currency-exchange" viewBox="0 0 16 16">
@@ -10,7 +15,12 @@
         </app-bs-icon>
     </div>
     <div *ngIf="!showConverted">
-        {{spendViewModel.convertedAmount | currencyAmount:account.financeData?.currencySymbol }}
+        <span [ngClass]="{
+            'spend-amount': spendViewModel.amountTypeId === 1,
+            'saving-amount': spendViewModel.amountTypeId === 2
+        }">
+            {{spendViewModel.convertedAmount | currencyAmount:account.financeData?.currencySymbol }}
+        </span>
         <app-bs-icon (click)="toggleConverted()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-currency-exchange" viewBox="0 0 16 16">
@@ -21,5 +31,10 @@
     </div>
 </div>
 <div *ngIf="isOriginal">
-    {{spendViewModel.originalAmount | currencyAmount:spendViewModel.currencySymbol }}
+    <span [ngClass]="{
+        'spend-amount': spendViewModel.amountTypeId === 1,
+        'saving-amount': spendViewModel.amountTypeId === 2
+    }">
+        {{spendViewModel.originalAmount | currencyAmount:spendViewModel.currencySymbol }}
+    </span>
 </div>
