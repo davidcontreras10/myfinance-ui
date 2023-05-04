@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { NgbDropdownModule, NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
 import { NavBarMenuComponent } from './main-nav-bar/nav-bar-menu/nav-bar-menu.component';
@@ -25,6 +25,8 @@ import { CurrencyAmountPipe } from './currency-amount.pipe';
 import { BsIconComponent } from './bs-icon/bs-icon.component';
 import { BankSummaryComponent } from './main-view/bank-summary/bank-summary.component';
 import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
+import { AddTrxComponent } from './main-view/add-trx/add-trx.component';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,8 @@ import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
     TrxAmountComponent,
     CurrencyAmountPipe,
     BsIconComponent,
-    BankSummaryComponent
+    BankSummaryComponent,
+    AddTrxComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,10 @@ import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
     FormsModule,
     HttpClientModule,
     NgbDropdownModule,
-    NgbNavModule
+    NgbNavModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    ReactiveFormsModule
   ],
   providers: [
     MainSpinnerService,

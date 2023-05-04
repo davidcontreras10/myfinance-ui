@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups } from "./models";
 import { Observable, Subject, filter, takeLast } from "rxjs";
-import { FinanceAccountResponse } from "../services/models";
+import { FinanceAccountResponse, ItemModifiedRes } from "../services/models";
 
 @Injectable({
     providedIn: 'root'
@@ -14,8 +14,16 @@ export class MainViewModel {
     public bankGroups: BankGroups[];
 
     private periodChangeEvent$ = new Subject<AccountPeriod>();
+    private accountsModified$ = new Subject<ItemModifiedRes[]>();
 
 
+    public listenAccountsModified(): Observable<ItemModifiedRes[]> {
+        return this.accountsModified$.asObservable();
+    }
+
+    public notifyAccountsModified(modifieds: ItemModifiedRes[]) {
+        this.accountsModified$.next(modifieds);
+    }
 
     public static getAccountGroupIdPattern(id: number): string {
         return `acc_toggle_${id}`;

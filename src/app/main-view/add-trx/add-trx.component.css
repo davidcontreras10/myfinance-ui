@@ -1,0 +1,15 @@
+.basic-input {
+    margin-bottom: 20px;
+}
+
+.is-spending-header {
+    background-color: rgb(193, 147, 147);
+}
+
+.is-income-header{
+    background-color: rgb(148, 193, 147);
+}
+
+.form-control.ng-invalid.ng-touched{
+    border: 2px solid red;
+}

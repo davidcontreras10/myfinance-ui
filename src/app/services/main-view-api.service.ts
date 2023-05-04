@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { AccountGroup, BankGroups } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount } from './models';
+import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,22 @@ import { FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount 
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public AddBasicTrx(requestModel: AddTrxRequest, isSpending: boolean): Observable<ItemModifiedRes[]> {
+    let url = isSpending ? '/api/Spends/basic' : '/api/Spends/basic/income';
+    url = environment.baseApi + url;
+    return this.httpClient.post<ItemModifiedRes[]>(url, requestModel);
+  }
+
+  public loadAddTrxData(accountPeriodId: number): Observable<AddTrxResponse | undefined> {
+    const params = new HttpParams()
+      .set('accountPeriodIds', accountPeriodId);
+    return this.httpClient.get<AddTrxResponse[]>(`${environment.baseApi}/api/Spends/add`, { params: params }).pipe(
+      map(res => {
+        return res.find(r => r.accountPeriodId === accountPeriodId)
+      })
+    );
+  }
 
   public loadMainAccountGroups(): Observable<AccountGroup[]> {
     return this.httpClient.get<any>(`${environment.baseApi}/api/Accounts/user`).pipe(

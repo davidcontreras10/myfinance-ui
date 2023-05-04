@@ -4,6 +4,7 @@ import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.s
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
+import { ItemModifiedRes } from '../services/models';
 
 @Component({
   selector: 'app-main-view',
@@ -23,16 +24,29 @@ export class MainViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mainViewModel.listenAccountsModified().subscribe(modifiedItems => {
+      this.loadModifiedAccountFinanance(modifiedItems);
+    });
+
     this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateData(this.groups);
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.mainViewApiService.loadAccountFinanance(perioIds, this.mainViewModel.showPendings).subscribe(res => {
-        this.mainViewModel.updateFinanceInfo(res);
-        this.loadFinanceSummary();
-      })
-    }))
+      this.loadAccountFinanance(perioIds);
+    }));
+  }
+
+  private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[]) {
+    const periodIds = modifiedItems.map(md => this.mainViewModel.periodIds[md.accountId]);
+    this.loadAccountFinanance(periodIds);
+  }
+
+  private loadAccountFinanance(accountPeriodIds: number[]) {
+    this.mainViewApiService.loadAccountFinanance(accountPeriodIds, this.mainViewModel.showPendings).subscribe(res => {
+      this.mainViewModel.updateFinanceInfo(res);
+      this.loadFinanceSummary();
+    });
   }
 
   private loadFinanceSummary() {

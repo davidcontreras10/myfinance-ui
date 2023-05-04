@@ -65,6 +65,13 @@ export interface FinanceAccountResponse {
     numGeneralBalanceToday: string;
 }
 
+export interface SelectableItem{
+    id: number;
+    isDefault: boolean;
+    name: string;
+    isSelected: boolean;
+}
+
 export interface FinancialSummaryAccount {
     accountId: number;
     accountName: string;
@@ -75,4 +82,33 @@ export interface FinancialSummaryAccount {
 
     financialEntityId?: number;
     financialEntityName: string;
+}
+
+export interface AddTrxResponse{
+    userEndDate: Date;
+    suggestedDate?: string;
+    supportedCurrencies: SelectableItem[];
+    spendTypeViewModels: SelectableItem[];
+    accountPeriodId: number;
+    currencyId: number;
+    initialDate: Date;
+    endDate: Date;
+}
+
+export interface AddTrxRequest{
+    accountPeriodId: number;
+    amount: number;
+    amountDenominator: number;
+    amountNumerator: number;
+    spendTypeId: number;
+    currencyId: number;
+    description: number;
+    isPending: boolean;
+    spendDate: Date;
+    paymentDate: Date;
+}
+
+export interface ItemModifiedRes{
+    accountId: number;
+    isModified: boolean;
 }
