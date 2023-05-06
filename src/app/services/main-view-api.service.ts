@@ -12,6 +12,12 @@ export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
 
+  public updateSpend(spendId: number, model: any): Observable<ItemModifiedRes[]> {
+    const params = new HttpParams()
+      .set('spendId', spendId);
+    return this.httpClient.patch<ItemModifiedRes[]>(`${environment.baseApi}/api/spends`, model, { params: params });
+  }
+
   public getViewTransactionModel(accountPerioId: number, spendId: number): Observable<TransactionViewModel | null> {
     const params = new HttpParams()
       .set('spendId', spendId)
