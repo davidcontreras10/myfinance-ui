@@ -44,7 +44,11 @@ export class AccountViewComponent implements OnInit {
   }
 
   onTrxEdit(trx: SpendViewModel) {
-    const modalRef = this.modalService.open(ViewTrxComponent, { backdrop: 'static', keyboard: false });
+    if (trx && this.selectedAccountPeriod) {
+      const modalRef = this.modalService.open(ViewTrxComponent, { backdrop: 'static', keyboard: false });
+      modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod.accountPeriodId;
+      modalRef.componentInstance.spendId = trx.spendId;
+    }
   }
 
   onTrxDelete(trx: SpendViewModel) {

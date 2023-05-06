@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
-import { AccountGroup, BankGroups } from '../main-view/models';
+import { AccountGroup, BankGroups, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes } from './models';
+import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, TransactionViewResponse } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,43 @@ import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountRes
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public getViewTransactionModel(accountPerioId: number, spendId: number): Observable<TransactionViewModel | null> {
+    const params = new HttpParams()
+      .set('spendId', spendId)
+      .set('accountPerioId', accountPerioId);
+    return this.httpClient.get<TransactionViewResponse[]>(`${environment.baseApi}/api/spends/edit`, { params: params }).pipe(
+      map(items => {
+        return items.find(item => item?.spendInfo?.spendId === spendId)
+      }),
+      map(item => {
+        if (item) {
+
+          let accountsIncluded = item.supportedAccountInclude.filter(x => x.amount);
+          accountsIncluded.forEach(acc => {
+            acc.selectedMethod = acc.methodIds.find(m => m.isDefault)
+          })
+          const response: TransactionViewModel = {
+            accountName: item.accountName,
+            accountsIncluded: accountsIncluded,
+            originalAmount: item.spendInfo.originalAmount,
+            selectedCurrency: item.supportedCurrencies.find(c => c.isSelected),
+            selectedSpendTypeId: item.spendTypeViewModels.find(t => t.isSelected)?.id,
+            spendDate: item.spendInfo.spendDate,
+            spendId: item.spendInfo.spendId,
+            spendTypeViewModels: item.spendTypeViewModels,
+            setPaymentDate: item.spendInfo.setPaymentDate,
+            description: item.spendInfo.description,
+            isPending: item.spendInfo.isPending
+          };
+
+          return response;
+        }
+
+        return null;
+      })
+    )
+  }
 
   public deleteTrx(spendId: number): Observable<ItemModifiedRes[]> {
     const params = new HttpParams()

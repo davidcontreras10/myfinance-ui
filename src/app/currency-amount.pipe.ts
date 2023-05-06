@@ -8,7 +8,7 @@ export class CurrencyAmountPipe implements PipeTransform {
 
   constructor() { }
 
-  transform(value?: number, currency?: string): string | null {
+  transform(value?: number | null, currency?: string | null): string | null {
     if (value) {
       return `${currency}${this.formatNumber(value)}`;
     }

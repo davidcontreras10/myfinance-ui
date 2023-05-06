@@ -1,10 +1,82 @@
 <div class="modal-header">
     <h4 class="modal-title">View transaction</h4>
-    <button type="button" class="btn-close" aria-label="Close"
-        (click)="activeModal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
 <div class="modal-body">
-    <div>Hello there</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="amount-view">Amount:</label>
+                    <input class="form-control" id="amount-view" type="text"
+                        [value]="trxViewModel?.originalAmount | currencyAmount:trxViewModel?.selectedCurrency?.symbol"
+                        disabled />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="spendType-trx-view">Transaction Type:</label>
+                <select [(ngModel)]="selectedSpendTypeId" required ngModel name="spendType" id="spendType-trx-view"
+                    class="form-control">
+                    <option *ngFor="let spendingType of trxViewModel?.spendTypeViewModels" [value]="spendingType.id">
+                        {{spendingType.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="description-view">Description:</label>
+                <input class="form-control" name="description" id="description-view" type="text"
+                    [value]="trxViewModel?.description" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="spend-date-view">Transaction date:</label>
+                <input class="form-control" id="spend-date-view" type="text"
+                    [value]="trxViewModel?.spendDate | date:'fullDate'" disabled />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="spend-date-view">Payment date:</label><br />
+                <input *ngIf="!trxViewModel?.isPending" class="form-control" id="spend-date-view" type="text"
+                    [value]="trxViewModel?.setPaymentDate | date:'fullDate'" disabled />
+                <a *ngIf="trxViewModel?.isPending" class="link-opacity-100-hover" style="cursor: pointer;"
+                    (click)="onPendingClick()">Confirm
+                    payment</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="spend-date-view">In accounts:</label>
+                <table class="table table-bordered table-low-margin">
+                    <thead>
+                        <tr>
+                            <th data-field="Budget">Account</th>
+                            <th data-field="Spent">Amount</th>
+                            <th data-field="Balance">Conversion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let acc of trxViewModel?.accountsIncluded">
+                            <td>{{acc.name}}</td>
+                            <td>{{acc.amount.value | currencyAmount:acc.amount.currencySymbol}}</td>
+                            <td>{{acc.selectedMethod?.name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>

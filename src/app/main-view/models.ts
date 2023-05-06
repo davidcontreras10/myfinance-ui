@@ -1,4 +1,4 @@
-import { FinanceAccountResponse, FinancialSummaryAccount } from "../services/models";
+import { Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxAccountIncluded } from "../services/models";
 
 export interface AccountGroup {
     id: number;
@@ -23,7 +23,7 @@ export class AccountGroupAccount {
     accountPeriods: AccountPeriod[];
     financeData?: FinanceAccountResponse;
     get headerColor(): string {
-        if(this.frontStyle.headerColor){
+        if (this.frontStyle.headerColor) {
             return `background: ${this.frontStyle.headerColor};`;
         }
 
@@ -43,8 +43,22 @@ export interface AccRow {
     accounts: AccountGroupAccount[];
 }
 
-export interface BankGroups{
+export interface BankGroups {
     financialEntityId?: number;
     financialEntityName: string;
     accounts: FinancialSummaryAccount[];
+}
+
+export interface TransactionViewModel {
+    description: string;
+    spendId: number;
+    spendDate: Date;
+    setPaymentDate?: Date;
+    originalAmount: number;
+    selectedCurrency: Currency | undefined;
+    accountsIncluded: SlcTrxAccountIncluded[];
+    spendTypeViewModels: SelectableItem[];
+    selectedSpendTypeId?: number;
+    accountName: string;
+    isPending: boolean;
 }
