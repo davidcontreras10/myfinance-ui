@@ -31,6 +31,14 @@ export class AccountViewComponent implements OnInit {
     })
   }
 
+  confirmTransaction(trx: SpendViewModel) {
+    if (trx.isPending && confirm('Confirm pending transaction?')) {
+      this.mainViewApiService.confirmPending(trx.spendId, new Date()).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      })
+    }
+  }
+
   onPeriodChanged(id: number) {
     this.mainViewModel.notifyPeriodChange(id);
   }
