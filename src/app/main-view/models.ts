@@ -61,4 +61,5 @@ export interface TransactionViewModel {
     selectedSpendTypeId?: number;
     accountName: string;
     isPending: boolean;
+    trxTypeId: number;
 }

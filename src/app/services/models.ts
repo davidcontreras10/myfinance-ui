@@ -139,10 +139,12 @@ export interface TransactionViewResponse {
         originalAmount: number;
         description: string;
         isPending: boolean;
+        amountTypeId: number;
     };
 
     supportedCurrencies: Currency[];
     supportedAccountInclude: SlcTrxAccountIncluded[];
     spendTypeViewModels: SelectableItem[];
     accountName: string;
+    amountTypeId: number;
 }

@@ -44,7 +44,8 @@ export class MainViewApiService {
             spendTypeViewModels: item.spendTypeViewModels,
             setPaymentDate: item.spendInfo.setPaymentDate,
             description: item.spendInfo.description,
-            isPending: item.spendInfo.isPending
+            isPending: item.spendInfo.isPending,
+            trxTypeId: item.spendInfo.amountTypeId
           };
 
           return response;

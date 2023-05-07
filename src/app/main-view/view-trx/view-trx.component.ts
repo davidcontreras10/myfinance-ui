@@ -15,6 +15,11 @@ const PATCH_MAPS = [
     name: "description",
     propName: "description",
     propValue: 4
+  },
+  {
+    name: "trxType",
+    propName: "amountTypeId",
+    propValue: 7
   }
 ]
 

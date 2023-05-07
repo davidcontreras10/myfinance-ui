@@ -7,6 +7,25 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-md-6">
+                <div class="form-group">
+                    <label>Transaction type:</label>
+                    <div class="radio">
+                        <label for="amount-spend-type">
+                            <input required ngModel type="radio" id="amount-spend-type" name="trxType" [value]="1" [checked]="trxViewModel?.trxTypeId === 1">
+                            Spend
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="amount-income-type">
+                            <input required ngModel type="radio" id="amount-income-type" name="trxType" [value]="2" [checked]="trxViewModel?.trxTypeId === 2">
+                            Income
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="amount-view">Amount:</label>
@@ -80,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <!-- <span>Form Value: {{f.value | json}}</span> -->
+        <span>Form Value: {{f.value | json}}</span>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
