@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { AddTrxRequest, AddTrxResponse } from 'src/app/services/models';
 import { MainViewModel } from '../main-view-model';
+import { Utils } from 'src/app/utils';
 
 @Component({
   selector: 'app-add-trx',
@@ -55,7 +56,7 @@ export class AddTrxComponent implements OnInit {
   private fixSuggestedDate(dirtyDate?: string): string | undefined {
     if (dirtyDate) {
       const suggestedDate = new Date(dirtyDate);
-      return this.toViewDateFormat(suggestedDate);
+      return Utils.toViewDateFormat(suggestedDate);
     }
 
     return undefined;
@@ -91,14 +92,5 @@ export class AddTrxComponent implements OnInit {
         this.selectedSpendingTypeId = this.addTrxModel?.spendTypeViewModels[0]?.id
       }
     }
-  }
-
-  private toViewDateFormat(date: Date) {
-    const year = date.getFullYear().toString().padStart(4, '0'); // get the year and pad with leading zeros
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month and pad with leading zeros
-    const day = date.getDate().toString().padStart(2, '0'); // get the day and pad with leading zeros
-    const hours = date.getHours().toString().padStart(2, '0'); // get the hours and pad with leading zeros
-    const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes and pad with leading zeros
-    return `${year}-${month}-${day}T${hours}:${minutes}`; // concatenate the values into a string with the desired format
   }
 }

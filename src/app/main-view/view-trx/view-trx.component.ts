@@ -58,7 +58,12 @@ export class ViewTrxComponent implements OnInit {
   }
 
   onPendingClick() {
-    console.log('Pending click');
+    if (this.trxViewModel && this.trxViewModel.isPending && confirm('Confirm pending transaction?')) {
+      this.mainViewApiService.confirmPending(this.trxViewModel.spendId, new Date()).subscribe(modifieds => {
+        this.mainViewModel.notifyAccountsModified(modifieds);
+        this.activeModal.close('confirm pending');
+      })
+    }
   }
 
   submit(f: NgForm) {

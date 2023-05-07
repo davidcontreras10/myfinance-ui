@@ -4,6 +4,7 @@ import { Observable, filter, map } from 'rxjs';
 import { AccountGroup, BankGroups, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
 import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, TransactionViewResponse } from './models';
+import { Utils } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,15 @@ import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountRes
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public confirmPending(spendId: number, newDate: Date): Observable<ItemModifiedRes[]> {
+    const params = new HttpParams()
+      .set('spendId', spendId);
+    const model = {
+      newDateTime: Utils.toViewDateFormat(newDate)
+    };
+    return this.httpClient.put<ItemModifiedRes[]>(`${environment.baseApi}/api/spends/confirmation`, model, { params: params });
+  }
 
   public updateSpend(spendId: number, model: any): Observable<ItemModifiedRes[]> {
     const params = new HttpParams()
