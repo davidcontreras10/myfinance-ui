@@ -93,6 +93,14 @@ export interface AddTrxResponse {
     currencyId: number;
     initialDate: Date;
     endDate: Date;
+    accountName: string;
+}
+
+export interface AddTransferResponse extends AddTrxResponse {
+    periodBalance: number;
+    generalBalance: number;
+    generalBalanceToday: number;
+    currencySymbol: string;
 }
 
 export interface AddTrxRequest {

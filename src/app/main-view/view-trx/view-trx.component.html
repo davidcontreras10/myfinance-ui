@@ -1,6 +1,6 @@
 <form #f="ngForm" (ngSubmit)="submit(f)">
     <div class="modal-header">
-        <h4 class="modal-title">View transaction</h4>
+        <h4 class="modal-title">{{trxViewModel?.accountName}} - View transaction</h4>
         <button type="button" class="btn-close" aria-label="Close"
             (click)="activeModal.dismiss('Cross click')"></button>
     </div>
@@ -11,13 +11,15 @@
                     <label>Transaction type:</label>
                     <div class="radio">
                         <label for="amount-spend-type">
-                            <input required ngModel type="radio" id="amount-spend-type" name="trxType" [value]="1" [checked]="trxViewModel?.trxTypeId === 1">
-                            Spend
+                            <input required ngModel type="radio" id="amount-spend-type" name="trxType" [value]="1"
+                                [checked]="trxViewModel?.trxTypeId === 1">
+                            Expense
                         </label>
                     </div>
                     <div class="radio">
                         <label for="amount-income-type">
-                            <input required ngModel type="radio" id="amount-income-type" name="trxType" [value]="2" [checked]="trxViewModel?.trxTypeId === 2">
+                            <input required ngModel type="radio" id="amount-income-type" name="trxType" [value]="2"
+                                [checked]="trxViewModel?.trxTypeId === 2">
                             Income
                         </label>
                     </div>
@@ -52,8 +54,8 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="description-view">Description:</label>
-                    <input ngModel class="form-control" name="description" id="description-view" type="text"
-                        [value]="trxViewModel?.description" />
+                    <input ngModel [minlength]="3" [maxlength]="100" class="form-control" name="description"
+                        id="description-view" type="text" [value]="trxViewModel?.description" />
                 </div>
             </div>
         </div>

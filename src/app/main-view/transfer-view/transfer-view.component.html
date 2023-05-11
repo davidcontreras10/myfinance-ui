@@ -1,0 +1,127 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">New Transfer</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row form-row">
+            <div class="col-md-3">
+                <label for="new-transfer-account">From Account:</label>
+            </div>
+            <div class="col-md-7">
+                <input class="form-control" type="text" id="new-transfer-account" [value]="viewModel?.accountName"
+                    disabled />
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-3">
+                <label>Amount:</label>
+            </div>
+            <div class="col">
+                <div class="btn-group">
+                    <input [(ngModel)]="selectedAmountTypeId" mdbRadio type="radio" class="btn-check" name="balanceType"
+                        [value]="BalanceTypes.Custom" id="option1" autocomplete="off" (change)="onAmountTypeChanged()"
+                        [checked]="true" />
+                    <label class="btn btn-outline-secondary" for="option1">Custom</label>
+                    <input [(ngModel)]="selectedAmountTypeId" mdbRadio type="radio" class="btn-check" name="balanceType"
+                        (change)="onAmountTypeChanged()" [value]="BalanceTypes.AccountPeriodBalance" id="option2"
+                        autocomplete="off" />
+                    <label class="btn btn-outline-secondary" for="option2">Period Balance</label>
+                    <input [(ngModel)]="selectedAmountTypeId" mdbRadio type="radio" class="btn-check" name="balanceType"
+                        (change)="onAmountTypeChanged()" [value]="BalanceTypes.AccountOverallBalance" id="option3"
+                        autocomplete="off" />
+                    <label class="btn btn-outline-secondary" for="option3">Overall Balance</label>
+                </div>
+            </div>
+            <div class="row amount-section">
+                <div class="col-md-3"></div>
+                <div class="col-md-7" style="margin-left: 5px;">
+                    <div class="row" *ngIf="f.value.balanceType === BalanceTypes.Custom">
+                        <div class="col-md-6">
+                            <input required ngModel class="form-control" type="amount" name="amount"
+                                placeholder="Custom Amount" />
+                        </div>
+                        <div class="col-md-6">
+                            <select [(ngModel)]="selectedCurrencyId" name="currencyId" class="form-select"
+                                (change)="onCurrencyChanged()" id="transfer-amount-currency-select">
+                                <option *ngFor="let currency of viewModel?.supportedCurrencies" [value]="currency.id">
+                                    {{currency.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col" *ngIf="f.value.balanceType === BalanceTypes.AccountOverallBalance">
+                        <input class="form-control" type="text"
+                            [value]="viewModel?.generalBalance | currencyAmount:viewModel?.currencySymbol" disabled />
+                    </div>
+                    <div class="col" *ngIf="f.value.balanceType === BalanceTypes.AccountPeriodBalance">
+                        <input class="form-control" type="text"
+                            [value]="viewModel?.periodBalance | currencyAmount:viewModel?.currencySymbol" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-3 inner-column">
+                <label>Select Type</label>
+            </div>
+            <div class="col-md-7">
+                <select required [(ngModel)]="selectedSpendTypeId" name="spendTypeId" class="form-control">
+                    <option *ngFor="let st of viewModel?.spendTypeViewModels" [value]="st.id">{{st.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-3 inner-column">
+                <label>Destination Account</label>
+            </div>
+            <div class="col-md-7">
+                <select ngModel required name="destinationAccount" class="form-control">
+                    <option *ngFor="let acc of destinationAccounts" [value]="acc.id">{{acc.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-3 inner-column">
+                <label>Transfer date</label>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group">
+                    <input [min]="viewModel?.initialDate" [max]="viewModel?.userEndDate" ngModel type="datetime-local"
+                        [value]="viewModel?.suggestedDate" name="spendDate" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col">
+                <div class="form-check">
+                    <input mdbCheckbox ngModel name="isPending" class="form-check-input" type="checkbox"
+                        id="new-transfer-pending" />
+                    <label class="form-check-label" for="new-transfer-pending">
+                        Pending
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-3">
+                <label for="new-transfer-description">Description:</label>
+            </div>
+            <div class="col-md-7">
+                <input [minlength]="3" [maxlength]="100" class="form-control" ngModel name="description" type="text" id="new-transfer-description" />
+            </div>
+        </div>
+
+        <span>Form Value: {{f.value | json}}</span>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">Submit</button>
+    </div>
+</form>

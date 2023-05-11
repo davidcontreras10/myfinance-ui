@@ -6,10 +6,10 @@
     background-color: rgb(193, 147, 147);
 }
 
-.is-income-header{
+.is-income-header {
     background-color: rgb(148, 193, 147);
 }
 
-.form-control.ng-invalid.ng-touched{
+.form-control.ng-invalid.ng-touched {
     border: 2px solid red;
 }

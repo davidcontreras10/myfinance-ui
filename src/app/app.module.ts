@@ -28,6 +28,7 @@ import { HttpNotifyInterceptor } from './interceptors/http-notify.interceptor';
 import { AddTrxComponent } from './main-view/add-trx/add-trx.component';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
+import { TransferViewComponent } from './main-view/transfer-view/transfer-view.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
     BsIconComponent,
     BankSummaryComponent,
     AddTrxComponent,
-    ViewTrxComponent
+    ViewTrxComponent,
+    TransferViewComponent
   ],
   imports: [
     BrowserModule,

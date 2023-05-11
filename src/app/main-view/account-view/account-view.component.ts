@@ -6,6 +6,7 @@ import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
 import { ViewTrxComponent } from '../view-trx/view-trx.component';
+import { TransferViewComponent } from '../transfer-view/transfer-view.component';
 
 @Component({
   selector: 'app-account-view',
@@ -73,6 +74,13 @@ export class AccountViewComponent implements OnInit {
 
   newSpendingClick() {
     this.openNewTrxModal(false);
+  }
+
+  newTransferClick() {
+    if (this.selectedAccountPeriod) {
+      const modalRef = this.modalService.open(TransferViewComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
+      modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod?.accountPeriodId;
+    }
   }
 
   private openNewTrxModal(isSpending: boolean) {

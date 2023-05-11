@@ -65,7 +65,6 @@ export class AddTrxComponent implements OnInit {
   private loadAddTrxData() {
     if (this.accountPeriodId) {
       this.mainViewApiSerice.loadAddTrxData(this.accountPeriodId).subscribe(res => {
-        console.log('loadAddTrxData', res);
         if (res) {
           res.suggestedDate = this.fixSuggestedDate(res.suggestedDate);
         }

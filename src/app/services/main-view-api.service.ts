@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
-import { AccountGroup, BankGroups, TransactionViewModel } from '../main-view/models';
+import { AccountGroup, BalanceTypes, BankGroups, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, TransactionViewResponse } from './models';
+import { AddTransferResponse, AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -12,6 +12,24 @@ import { Utils } from '../utils';
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public submitTransfer(request: any): Observable<ItemModifiedRes[]> {
+    return this.httpClient.post<ItemModifiedRes[]>(`${environment.baseApi}/api/Transfers`, request);
+  }
+
+  public getPossibleTransferDestAccounts(accountPeriodId: number, balanceType: BalanceTypes, currencyId?: number): Observable<SelectableItem[]> {
+    const params = new HttpParams()
+      .set('accountPeriodId', accountPeriodId)
+      .set('currencyId', currencyId ? currencyId : 0)
+      .set('balanceType', balanceType);
+    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/Transfers/possibleDestination`, { params: params });
+  }
+
+  public getTransferInfo(accountPeriodId: number): Observable<AddTransferResponse> {
+    const params = new HttpParams()
+      .set('accountPeriodId', accountPeriodId);
+    return this.httpClient.get<AddTransferResponse>(`${environment.baseApi}/api/Transfers/basicAccountInfo`, { params: params });
+  }
 
   public confirmPending(spendId: number, newDate: Date): Observable<ItemModifiedRes[]> {
     const params = new HttpParams()
