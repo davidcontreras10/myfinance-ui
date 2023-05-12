@@ -158,6 +158,6 @@ export interface TransactionViewResponse {
 }
 
 export interface FileResponse {
-    data: Uint8Array,
+    data: Blob,
     fileName: string
 }

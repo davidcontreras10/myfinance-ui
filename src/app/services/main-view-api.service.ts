@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, TransactionViewModel } from '../main-view/models';
@@ -13,8 +13,55 @@ export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getAccountPeriodExcel(accountPeriodId: number): Observable<FileResponse> {
-    return this.httpClient.get<FileResponse>(`${environment.baseApi}/api/AccountPeriods/${accountPeriodId}/excel`);
+  public getAccountPeriodExcel(accountPeriodId: number): Observable<FileResponse | null> {
+    return this.httpClient.get(`${environment.baseApi}/api/AccountPeriods/${accountPeriodId}/excel`, {
+      observe: 'response',
+      responseType: 'blob'
+    }).pipe(
+      map(response => {
+        const contentDisposition = response.headers.get('Content-Disposition');
+        const filename = this.getFilenameFromHeaders(response.headers) || this.getFilenameFromContentDisposition(contentDisposition) || 'excel-file.xlsx';
+        if(filename === 'excel-file.xlsx'){
+          console.warn('File name not read');
+        }
+        const bytes = response.body;
+        if (bytes) {
+          const file = new Blob([response.body], { type: 'application/octet-stream' });
+          const res = {
+            data: file,
+            fileName: filename
+          };
+          return res;
+        }
+        else {
+          return null;
+        }
+      })
+    )
+  }
+
+  private getFilenameFromHeaders(headers: HttpHeaders): string | null {
+    const contentTypeHeader = headers.get('Content-Type');
+    if (contentTypeHeader) {
+      const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentTypeHeader);
+      if (matches != null && matches[1]) {
+        return matches[1].replace(/['"]/g, '');
+      }
+    }
+    return null;
+  }
+
+  // Extract filename from Content-Disposition header
+  private getFilenameFromContentDisposition(contentDisposition: string | null): string {
+    if(!contentDisposition){
+      return '';
+    }
+    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+    const matches = filenameRegex.exec(contentDisposition);
+    if (matches != null && matches[1]) {
+      return matches[1].replace(/['"]/g, '');
+    }
+    return '';
   }
 
   public submitTransfer(request: any): Observable<ItemModifiedRes[]> {

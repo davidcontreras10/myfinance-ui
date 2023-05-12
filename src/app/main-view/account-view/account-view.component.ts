@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
 import { ViewTrxComponent } from '../view-trx/view-trx.component';
 import { TransferViewComponent } from '../transfer-view/transfer-view.component';
+import { saveAs } from "file-saver";
 
 @Component({
   selector: 'app-account-view',
@@ -77,9 +78,11 @@ export class AccountViewComponent implements OnInit {
   }
 
   downloadExcelFile() {
-    if (this.selectedAccountPeriod?.accountPeriodId) {
+    if (this.selectedAccountPeriod?.accountPeriodId && confirm('Download excel file?')) {
       this.mainViewApiService.getAccountPeriodExcel(this.selectedAccountPeriod.accountPeriodId).subscribe(data => {
-        //this.generateFileFromByteArray(data.data, data.fileName);
+        if (data?.data) {
+          saveAs(data.data, data.fileName);
+        }
       })
     }
   }
@@ -98,5 +101,9 @@ export class AccountViewComponent implements OnInit {
       modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod?.accountPeriodId;
 
     }
+  }
+
+  createFileFromByteArray(blob: Blob, fileName: string) {
+    saveAs(blob, fileName);
   }
 }
