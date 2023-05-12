@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AddTransferResponse, AddTrxRequest, AddTrxResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
+import { AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -12,6 +12,10 @@ import { Utils } from '../utils';
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public getAccountPeriodExcel(accountPeriodId: number): Observable<FileResponse> {
+    return this.httpClient.get<FileResponse>(`${environment.baseApi}/api/AccountPeriods/${accountPeriodId}/excel`);
+  }
 
   public submitTransfer(request: any): Observable<ItemModifiedRes[]> {
     return this.httpClient.post<ItemModifiedRes[]>(`${environment.baseApi}/api/Transfers`, request);

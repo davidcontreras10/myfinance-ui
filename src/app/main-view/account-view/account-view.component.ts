@@ -76,6 +76,14 @@ export class AccountViewComponent implements OnInit {
     this.openNewTrxModal(false);
   }
 
+  downloadExcelFile() {
+    if (this.selectedAccountPeriod?.accountPeriodId) {
+      this.mainViewApiService.getAccountPeriodExcel(this.selectedAccountPeriod.accountPeriodId).subscribe(data => {
+        //this.generateFileFromByteArray(data.data, data.fileName);
+      })
+    }
+  }
+
   newTransferClick() {
     if (this.selectedAccountPeriod) {
       const modalRef = this.modalService.open(TransferViewComponent, { backdrop: 'static', keyboard: false, size: 'lg' });

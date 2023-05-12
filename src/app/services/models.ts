@@ -156,3 +156,8 @@ export interface TransactionViewResponse {
     accountName: string;
     amountTypeId: number;
 }
+
+export interface FileResponse {
+    data: Uint8Array,
+    fileName: string
+}
