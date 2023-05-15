@@ -1,3 +1,52 @@
 error-message{
     color: red;
 }
+
+.align-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 98%;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input {
+    margin: 12px;
+    padding: 8px;
+    width: 14rem;
+  }
+  
+  input[type="password" i] {
+    margin-top: 6px;
+  }
+  
+  .btn-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-div .login-btn {
+    width: 15rem;
+    padding: 6px;
+    font-size: 14px;
+    background: orange;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .login-btn:disabled{
+    background: rgb(167, 159, 144) !important;
+    cursor: default !important;
+  }
+  
