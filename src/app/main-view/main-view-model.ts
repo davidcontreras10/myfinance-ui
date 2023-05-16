@@ -12,10 +12,10 @@ export class MainViewModel {
     public activeIds: string[] = [];
     public showPendings: true;
     public bankGroups: BankGroups[];
+    public errorNotification$ = new Subject<Error>();
 
     private periodChangeEvent$ = new Subject<AccountPeriod>();
     private accountsModified$ = new Subject<ItemModifiedRes[]>();
-
 
     public listenAccountsModified(): Observable<ItemModifiedRes[]> {
         return this.accountsModified$.asObservable();
