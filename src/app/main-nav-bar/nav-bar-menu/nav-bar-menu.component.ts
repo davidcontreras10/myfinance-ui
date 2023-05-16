@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavMenuItem } from '../models';
 import { NavBarServiceService } from 'src/app/services/main-nav-bar/nav-bar-service.service';
 
@@ -31,6 +31,7 @@ export class NavBarMenuComponent implements OnInit {
   }
 
   public subMenuItemClicked(subMenu: string){
+    this.showSubmenus = false;
     this.navBarService.emitSubMenuEvent(subMenu);
   }
 

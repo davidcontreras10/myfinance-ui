@@ -1,0 +1,22 @@
+.summary-account-div {
+    border: 1px black solid;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 3px;
+    padding: 2px;
+}
+
+.external-margin {
+    margin-left: 5px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.bank-group-limit {
+    margin-top: 10px;
+}
+
+.on-data-loading {
+    border: 1px red;
+}

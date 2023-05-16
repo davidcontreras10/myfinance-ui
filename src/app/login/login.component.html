@@ -1,22 +1,17 @@
-<div class="container">
-    <form (ngSubmit)="onSubmit()">
-        <div class="row">
-            <div class="col">
-                <label>
-                    Username:
-                    <input type="email" name="email" [(ngModel)]="username" required />
-                </label>
-            </div>
-            <br />
-            <br />
-            <label>
-                Password:
-                <input type="password" name="password" [(ngModel)]="password" required />
-            </label>
-            <label style="color: red;" *ngIf="errorMessage">{{errorMessage}}</label>
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="align-center">
+    <h2>User Login</h2>
+    <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)">
+        <input required placeholder="Username" type="text" name="username" [(ngModel)]="username" />
+        <input required placeholder="Password" type="password" name="password" [(ngModel)]="password" />
+        <div class="btn-div">
+            <button type="submit" [disabled]="!myForm.valid" class="login-btn">
+                Login
+            </button>
         </div>
-        <div class="row">
-            <div class="col"><button class="btn btn-primary" type="submit">Login</button></div>
+        <span>submitte: {{myForm.submitted}}</span>
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{errorMessage}}
         </div>
     </form>
 </div>
