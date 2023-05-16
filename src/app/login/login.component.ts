@@ -23,7 +23,6 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(ngForm: any) {
-    console.log('Form: ', ngForm);
     this.errorMessage = '';
     if (ngForm.valid) {
       const credentials = {

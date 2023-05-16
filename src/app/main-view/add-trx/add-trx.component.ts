@@ -28,7 +28,6 @@ export class AddTrxComponent implements OnInit {
   public submit(submitValue: any) {
     if (submitValue.form.valid) {
       const submittedValue = this.fixFormSubmittedValues(submitValue.value);
-      console.log('Form Value:', JSON.stringify(submittedValue));
       this.mainViewApiSerice.addBasicTrx(submittedValue, this.isSpending).subscribe({
         next: res => {
           alert(`${res.length} account/s updated`);
