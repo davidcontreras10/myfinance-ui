@@ -1,0 +1,15 @@
+.transfer-amount-type-section {
+    padding-top: 4px;
+}
+
+.amount-section {
+    margin-top: 10px;
+}
+
+.form-row {
+    padding-top: 25px;
+}
+
+.form-control.ng-invalid.ng-touched {
+    border: 2px solid red;
+}

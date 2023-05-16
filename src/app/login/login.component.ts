@@ -22,17 +22,21 @@ export class LoginComponent implements OnInit {
     this.password = '';
   }
 
-  onSubmit() {
-    const credentials = {
-      username: this.username,
-      password: this.password
-    };
-    this.authenticationService.getToken(credentials).subscribe({
-      next: (token: TokenResponse) => {
-        this.authenticate(token)
-      },
-      error: err => this.handleAuthError(err)
-    });
+  onSubmit(ngForm: any) {
+    console.log('Form: ', ngForm);
+    this.errorMessage = '';
+    if (ngForm.valid) {
+      const credentials = {
+        username: this.username,
+        password: this.password
+      };
+      this.authenticationService.getToken(credentials).subscribe({
+        next: (token: TokenResponse) => {
+          this.authenticate(token)
+        },
+        error: err => this.handleAuthError(err)
+      });
+    }
   }
 
   private handleAuthError(error: HttpErrorResponse) {
