@@ -35,7 +35,9 @@ export class AddTrxComponent implements OnInit {
           this.mainViewModel.notifyAccountsModified(res);
           this.activeModal.close('Submit');
         },
-        error: err => console.error('Add trx error:', err)
+        error: err => {
+          this.mainViewModel.errorNotification$.next(err);
+        }
       })
     }
   }

@@ -29,6 +29,7 @@ import { AddTrxComponent } from './main-view/add-trx/add-trx.component';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
 import { TransferViewComponent } from './main-view/transfer-view/transfer-view.component';
+import { ErrorModalComponent } from './error-modal/error-modal.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { TransferViewComponent } from './main-view/transfer-view/transfer-view.c
     BankSummaryComponent,
     AddTrxComponent,
     ViewTrxComponent,
-    TransferViewComponent
+    TransferViewComponent,
+    ErrorModalComponent
   ],
   imports: [
     BrowserModule,
