@@ -62,7 +62,6 @@ export class TransferViewComponent implements OnInit {
         this.mainViewModel.notifyAccountsModified(items);
       })
     }
-    console.log(f.value);
   }
 
   private fixSubmitModel(model: any) {
