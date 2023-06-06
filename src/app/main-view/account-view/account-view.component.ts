@@ -24,7 +24,8 @@ export class AccountViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === this.acc.currentPeriodId);
+    const accountPeriodId = this.mainViewModel.periodIds[this.acc.accountId] ?? this.acc.currentPeriodId;
+    this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === accountPeriodId);
     this.mainViewModel.listenOnPeriodChange(this.acc.accountId).subscribe((accountPeriod) => {
       this.selectedAccountPeriod = accountPeriod;
       this.mainViewApiService.loadAccountFinanance([accountPeriod.accountPeriodId], this.mainViewModel.showPendings).subscribe(responses => {
