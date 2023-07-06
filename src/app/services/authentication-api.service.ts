@@ -12,7 +12,7 @@ export class AuthenticationService {
   constructor(private http: HttpClient) { }
 
   public getToken(credentials: ApiCredentials): Observable<TokenResponse> {
-    return this.http.post<any>(`${environment.baseApi}/api/Authentication`, credentials).pipe(
+    return this.http.post<any>(`${environment.baseApi}/api/Authentication`, credentials, { withCredentials: true }).pipe(
       map(response => {
         return {
           accessToken: response.accessToken,
