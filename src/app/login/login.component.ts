@@ -33,7 +33,10 @@ export class LoginComponent implements OnInit {
         next: (token: TokenResponse) => {
           this.authenticate(token)
         },
-        error: err => this.handleAuthError(err)
+        error: err => {
+          this.handleAuthError(err);
+          this.authService.logout();
+        }
       });
     }
   }
