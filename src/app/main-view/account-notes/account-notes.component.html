@@ -1,0 +1,23 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">{{account.accountName}}</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <input type="text" [(ngModel)]="noteTitle" placeholder="Notes Tile" name="notesTitle" style="width: 100%;"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 2%;">
+            <div class="col-md-12">
+                <textarea [(ngModel)]="noteContent" name="noteContent" placeholder="Insert notes details" style="width: 100%;"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid || f.pristine">Save</button>
+    </div>
+</form>

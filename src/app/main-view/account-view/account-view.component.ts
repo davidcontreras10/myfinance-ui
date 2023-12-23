@@ -8,6 +8,7 @@ import { AddTrxComponent } from '../add-trx/add-trx.component';
 import { ViewTrxComponent } from '../view-trx/view-trx.component';
 import { TransferViewComponent } from '../transfer-view/transfer-view.component';
 import { saveAs } from "file-saver";
+import { AccountNotesComponent } from '../account-notes/account-notes.component';
 
 @Component({
   selector: 'app-account-view',
@@ -92,6 +93,13 @@ export class AccountViewComponent implements OnInit {
     if (this.selectedAccountPeriod) {
       const modalRef = this.modalService.open(TransferViewComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
       modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod?.accountPeriodId;
+    }
+  }
+
+  public openNotesModal(account: AccountGroupAccount){
+    if(account){
+      const modalRef = this.modalService.open(AccountNotesComponent, { backdrop: true, keyboard: false, size: 'md' });
+      modalRef.componentInstance.account = account;
     }
   }
 

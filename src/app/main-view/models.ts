@@ -22,6 +22,9 @@ export class AccountGroupAccount {
     simpleTable: boolean;
     accountPeriods: AccountPeriod[];
     financeData?: FinanceAccountResponse;
+    noteTitle: string;
+    noteBody: string;
+
     get headerColor(): string {
         if (this.frontStyle.headerColor) {
             return `background: ${this.frontStyle.headerColor};`;

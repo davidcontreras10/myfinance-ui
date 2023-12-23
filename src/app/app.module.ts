@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbDropdownModule, NgbModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbNavModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +30,7 @@ import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform
 import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
 import { TransferViewComponent } from './main-view/transfer-view/transfer-view.component';
 import { ErrorModalComponent } from './error-modal/error-modal.component';
+import { AccountNotesComponent } from './main-view/account-notes/account-notes.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
     AddTrxComponent,
     ViewTrxComponent,
     TransferViewComponent,
-    ErrorModalComponent
+    ErrorModalComponent,
+    AccountNotesComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,8 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
     NgbNavModule,
     BrowserAnimationsModule,
     NoopAnimationsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbTooltipModule
   ],
   providers: [
     MainSpinnerService,
