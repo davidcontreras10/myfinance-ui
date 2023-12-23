@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -13,6 +13,10 @@ export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
 
+  public updateNotes(accountId: number, notes: AccountNotes): Observable<AccountNotes> {
+    return this.httpClient.post<AccountNotes>(`${environment.baseApi}/api/accounts/${accountId}/notes`, notes)
+  }
+
   public getAccountPeriodExcel(accountPeriodId: number): Observable<FileResponse | null> {
     return this.httpClient.get(`${environment.baseApi}/api/AccountPeriods/${accountPeriodId}/excel`, {
       observe: 'response',
@@ -21,7 +25,7 @@ export class MainViewApiService {
       map(response => {
         const contentDisposition = response.headers.get('Content-Disposition');
         const filename = this.getFilenameFromHeaders(response.headers) || this.getFilenameFromContentDisposition(contentDisposition) || 'excel-file.xlsx';
-        if(filename === 'excel-file.xlsx'){
+        if (filename === 'excel-file.xlsx') {
           console.warn('File name not read');
         }
         const bytes = response.body;
@@ -53,7 +57,7 @@ export class MainViewApiService {
 
   // Extract filename from Content-Disposition header
   private getFilenameFromContentDisposition(contentDisposition: string | null): string {
-    if(!contentDisposition){
+    if (!contentDisposition) {
       return '';
     }
     const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;

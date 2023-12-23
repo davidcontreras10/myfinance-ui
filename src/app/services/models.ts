@@ -116,6 +116,11 @@ export interface AddTrxRequest {
     paymentDate: Date;
 }
 
+export interface AccountNotes{
+    noteTitle: string;
+    noteContent: string;
+}
+
 export interface Currency extends SelectableItem {
     symbol: string;
 }
