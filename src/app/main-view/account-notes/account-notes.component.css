@@ -1,0 +1,7 @@
+textarea {
+    width: 100%;
+    min-height: 30vh; /* Set minimum height to 30% of the viewport height */
+    max-height: 60vh; /* Set maximum height to 80% of the viewport height */
+    overflow-y: auto;
+    box-sizing: border-box;
+}
