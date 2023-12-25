@@ -31,6 +31,7 @@ import { ViewTrxComponent } from './main-view/view-trx/view-trx.component';
 import { TransferViewComponent } from './main-view/transfer-view/transfer-view.component';
 import { ErrorModalComponent } from './error-modal/error-modal.component';
 import { AccountNotesComponent } from './main-view/account-notes/account-notes.component';
+import { MainViewPrefsComponent } from './main-view/main-view-prefs/main-view-prefs.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { AccountNotesComponent } from './main-view/account-notes/account-notes.c
     ViewTrxComponent,
     TransferViewComponent,
     ErrorModalComponent,
-    AccountNotesComponent
+    AccountNotesComponent,
+    MainViewPrefsComponent
   ],
   imports: [
     BrowserModule,

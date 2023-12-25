@@ -1,5 +1,9 @@
 import { Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxAccountIncluded } from "../services/models";
 
+export interface MainViewPrefs{
+    periodsLimit: number;
+}
+
 export interface AccountGroup {
     id: number;
     name: string;

@@ -49,6 +49,7 @@ export class AccountViewComponent implements OnInit {
 
   orderedPeriods() {
     return this.acc.accountPeriods.sort((accA, accB) => new Date(accB.initialDate).getTime() - new Date(accA.initialDate).getTime())
+      .slice(0, this.mainViewModel.mainViewPrefs.periodsLimit);
   }
 
   toggleTrxList() {
@@ -96,8 +97,8 @@ export class AccountViewComponent implements OnInit {
     }
   }
 
-  public openNotesModal(account: AccountGroupAccount){
-    if(account){
+  public openNotesModal(account: AccountGroupAccount) {
+    if (account) {
       const modalRef = this.modalService.open(AccountNotesComponent, { backdrop: true, keyboard: false, size: 'md' });
       modalRef.componentInstance.account = account;
     }
