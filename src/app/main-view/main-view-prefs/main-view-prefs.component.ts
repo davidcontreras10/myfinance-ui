@@ -10,6 +10,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class MainViewPrefsComponent implements OnInit {
 
   periodsLimit: number;
+  periodsLimitMin: number = 1;
+  periodsLimitMax: number = 24;
+
   constructor(public activeModal: NgbActiveModal, public mainViewModel: MainViewModel) { }
 
   ngOnInit(): void {
@@ -18,8 +21,13 @@ export class MainViewPrefsComponent implements OnInit {
 
   periodsLimitLeft(){
     if(this.periodsLimit != this.mainViewModel.mainViewPrefs.periodsLimit){
-      console.log('Should save new value', this.periodsLimit);
-      this.mainViewModel.mainViewPrefs.periodsLimit = this.periodsLimit;
+      if(this.periodsLimit >= this.periodsLimitMin && this.periodsLimit <= this.periodsLimitMax){
+          console.log('Should save new value', this.periodsLimit);
+          this.mainViewModel.mainViewPrefs.periodsLimit = this.periodsLimit;
+      }
+      else{
+        this.periodsLimit = this.mainViewModel.mainViewPrefs.periodsLimit;
+      }
     }
   }
 }

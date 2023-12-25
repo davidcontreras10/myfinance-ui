@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-3">
-            <input class="form-control" type="number" min="1" max="24" [(ngModel)]="periodsLimit" (blur)="periodsLimitLeft()"/>
+            <input class="form-control" type="number" [min]="periodsLimitMin" [max]="periodsLimitMax" [(ngModel)]="periodsLimit" (blur)="periodsLimitLeft()"/>
         </div>
     </div>
 </div>
