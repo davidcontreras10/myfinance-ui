@@ -18,7 +18,7 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   private viewRecordsId: string = "";
   private weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  constructor(private service: AutoTasksApiService, messageBus: AutoTasksMessageBus) { }
+  constructor(private service: AutoTasksApiService, private messageBus: AutoTasksMessageBus) { }
   ngOnChanges(changes: SimpleChanges): void {
     this.showRecords = !!this.selectedTask?.id && !!this.viewRecordsId && this.viewRecordsId === this.selectedTask.id;
   }
@@ -36,13 +36,13 @@ export class TaskDetailComponent implements OnInit, OnChanges {
     }
   }
   public onExecuteTask() {
-    // if (this.selectedTask && confirm("Are you sure to run the transaction now?")) {
-    //   this.service.executeTask(this.selectedTask.id)
-    //     .subscribe(res => {
-    //       this.tasksModelChanged.emit();
-    //       this.messageBus.executedTasksChangedMessage.next(this.selectedTask.id);
-    //     })
-    // }
+    if (this.selectedTask && confirm("Are you sure to run the transaction now?")) {
+      this.service.executeTask(this.selectedTask.id)
+        .subscribe(res => {
+          this.tasksModelChanged.emit();
+          this.messageBus.executedTasksChangedMessage.next(this.selectedTask.id);
+        })
+    }
   }
 
   public onDeleteTask() {

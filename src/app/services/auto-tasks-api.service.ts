@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExecutedTask, IAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
+import { ExecutedTask, ExecutedTaskResult, IAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -10,6 +10,16 @@ import { environment } from 'src/environments/environment';
 export class AutoTasksApiService {
 
   constructor(private http: HttpClient) { }
+
+  executeTask(taskId: string): Observable<ExecutedTaskResult> {
+    const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}/execution`;
+    const model = {
+      requestType: 1,
+      dateTime: new Date()
+    };
+
+    return this.http.post<ExecutedTaskResult>(url, model);
+  }
 
   getExecutedTasks(taskId: string): Observable<ExecutedTask[]> {
     const url = `${environment.baseApi}/api/executedTasks`;
