@@ -1,1 +1,9 @@
-<p>tasks-list works!</p>
+<div class="list-group">
+    <button type="button" *ngFor="let task of tasks" [value]="task" class="list-group-item list-group-item-action">
+        <div class="row">
+            <div class="col-md-4">Name</div>
+            <div class="col-md-4">Desc</div>
+            <div class="col-md-4">Status</div>
+        </div>
+    </button>
+  </div>
