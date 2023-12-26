@@ -36,6 +36,7 @@ import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.compo
 import { TasksListComponent } from './automatic-tasks/tasks-list/tasks-list.component';
 import { TaskDetailComponent } from './automatic-tasks/task-detail/task-detail.component';
 import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.component';
+import { ExecutedTasksComponent } from './automatic-tasks/executed-tasks/executed-tasks.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.c
     AutomaticTasksComponent,
     TasksListComponent,
     TaskDetailComponent,
-    TaskStatusComponent
+    TaskStatusComponent,
+    ExecutedTasksComponent
   ],
   imports: [
     BrowserModule,
