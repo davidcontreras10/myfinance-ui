@@ -1,5 +1,9 @@
 import { Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxAccountIncluded } from "../services/models";
 
+export interface MainViewPrefs{
+    periodsLimit: number;
+}
+
 export interface AccountGroup {
     id: number;
     name: string;
@@ -22,6 +26,9 @@ export class AccountGroupAccount {
     simpleTable: boolean;
     accountPeriods: AccountPeriod[];
     financeData?: FinanceAccountResponse;
+    noteTitle: string;
+    noteBody: string;
+
     get headerColor(): string {
         if (this.frontStyle.headerColor) {
             return `background: ${this.frontStyle.headerColor};`;
