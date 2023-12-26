@@ -9,6 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserError } from '../error-modal/models';
+import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
 
 @Component({
   selector: 'app-main-view',
@@ -25,6 +26,9 @@ export class MainViewComponent implements OnInit {
     navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
     });
+    navBarService.getSubMenuEvents('main-view-prefs').subscribe(value => {
+      this.openPreferencesModal();
+    })
   }
 
   ngOnInit(): void {
@@ -37,10 +41,14 @@ export class MainViewComponent implements OnInit {
       this.loadModifiedAccountFinanance(modifiedItems);
     });
 
+    this.mainViewApiService.getMainViewPrefs().subscribe(response => {
+      this.mainViewModel.mainViewPrefs = response;
+    })
+
     this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
-      this.mainViewModel.updateData(this.groups);
+      this.mainViewModel.updateAccountData(this.groups);
       const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.loadAccountFinanance(perioIds);
     }));
@@ -76,6 +84,10 @@ export class MainViewComponent implements OnInit {
     if (action === 'toggle-summary') {
       this.showBankSummary = !this.showBankSummary;
     }
+  }
+
+  private openPreferencesModal(){
+    this.modalService.open(MainViewPrefsComponent, { backdrop: true, size: 'md' });
   }
 
   private handleHttpError(paramError: Error) {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, filter, map } from 'rxjs';
-import { AccountGroup, BalanceTypes, BankGroups, TransactionViewModel } from '../main-view/models';
+import { Observable, filter, map, of } from 'rxjs';
+import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
 import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
 import { Utils } from '../utils';
@@ -12,6 +12,13 @@ import { Utils } from '../utils';
 export class MainViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public getMainViewPrefs(): Observable<MainViewPrefs> {
+    const defPrefs = {
+      periodsLimit: 12
+    };
+    return of(defPrefs);
+  }
 
   public updateNotes(accountId: number, notes: AccountNotes): Observable<AccountNotes> {
     return this.httpClient.post<AccountNotes>(`${environment.baseApi}/api/accounts/${accountId}/notes`, notes)

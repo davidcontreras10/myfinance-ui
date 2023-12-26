@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups } from "./models";
+import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups, MainViewPrefs } from "./models";
 import { Observable, Subject, filter, takeLast } from "rxjs";
 import { FinanceAccountResponse, ItemModifiedRes } from "../services/models";
 
@@ -13,6 +13,7 @@ export class MainViewModel {
     public showPendings: true;
     public bankGroups: BankGroups[];
     public errorNotification$ = new Subject<Error>();
+    public mainViewPrefs: MainViewPrefs;
 
     private periodChangeEvent$ = new Subject<AccountPeriod>();
     private accountsModified$ = new Subject<ItemModifiedRes[]>();
@@ -47,7 +48,7 @@ export class MainViewModel {
         return ids;
     }
 
-    public updateData(accountGroups: AccountGroup[]) {
+    public updateAccountData(accountGroups: AccountGroup[]) {
         this.accountGroups = accountGroups;
         this.forEachAccount(acc => {
             this.periodIds[acc.accountId] = acc.currentPeriodId;
