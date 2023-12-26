@@ -34,6 +34,8 @@ import { AccountNotesComponent } from './main-view/account-notes/account-notes.c
 import { MainViewPrefsComponent } from './main-view/main-view-prefs/main-view-prefs.component';
 import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
 import { TasksListComponent } from './automatic-tasks/tasks-list/tasks-list.component';
+import { TaskDetailComponent } from './automatic-tasks/task-detail/task-detail.component';
+import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { TasksListComponent } from './automatic-tasks/tasks-list/tasks-list.comp
     AccountNotesComponent,
     MainViewPrefsComponent,
     AutomaticTasksComponent,
-    TasksListComponent
+    TasksListComponent,
+    TaskDetailComponent,
+    TaskStatusComponent
   ],
   imports: [
     BrowserModule,

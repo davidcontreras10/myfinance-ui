@@ -1,9 +1,25 @@
-<div class="list-group">
-    <button type="button" *ngFor="let task of tasks" [value]="task" class="list-group-item list-group-item-action">
-        <div class="row">
-            <div class="col-md-4">Name</div>
-            <div class="col-md-4">Desc</div>
-            <div class="col-md-4">Status</div>
+  <!-- <select class="form-select" [(ngModel)]="selectedTasks" (ngModelChange)="onSelectedTasksChanged()">
+  <option  *ngFor="let task of tasks" [value]="task">
+    <div class="row">
+        <div class="col-xs-4">
+          {{task.accountName}}
         </div>
-    </button>
-  </div>
+        <div class="col-xs-4">
+          {{task.description}}
+        </div>
+        <div class="col-xs-4">
+            <span>status</span>
+          <app-task-status [taskStatus]="task.lastExecutedStatus"></app-task-status>
+        </div>
+      </div>
+    </option>
+</select> -->
+<table class="table">
+    <tbody>
+        <tr *ngFor="let task of tasks" [class.table-active]="task === selectedTask" (click)="selectRow(task)">
+          <td>{{task.accountName}}</td>
+          <td>{{task.description}}</td>
+          <td><app-task-status [taskStatus]="task.lastExecutedStatus"></app-task-status></td>
+        </tr>
+      </tbody>
+</table>

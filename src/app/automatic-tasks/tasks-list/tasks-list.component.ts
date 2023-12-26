@@ -10,7 +10,7 @@ export class TasksListComponent implements OnInit {
 
   TaskStatus = TaskStatus;
 
-  selectedTasks!: IAutomaticTask[];
+  selectedTask: IAutomaticTask;
 
   @Input() tasks: IAutomaticTask[];
   @Output() selectedChanged = new EventEmitter();
@@ -20,4 +20,17 @@ export class TasksListComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  selectRow(task: IAutomaticTask) {
+    this.selectedTask = task;
+    this.onSelectedTasksChanged();
+  }
+
+  onSelectedTasksChanged() {
+    if (this.selectedTask) {
+      this.selectedChanged.emit(this.selectedTask);
+    }
+    else {
+      this.selectedChanged.emit(null);
+    }
+  }
 }
