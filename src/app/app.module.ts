@@ -32,6 +32,8 @@ import { TransferViewComponent } from './main-view/transfer-view/transfer-view.c
 import { ErrorModalComponent } from './error-modal/error-modal.component';
 import { AccountNotesComponent } from './main-view/account-notes/account-notes.component';
 import { MainViewPrefsComponent } from './main-view/main-view-prefs/main-view-prefs.component';
+import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
+import { TasksListComponent } from './automatic-tasks/tasks-list/tasks-list.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import { MainViewPrefsComponent } from './main-view/main-view-prefs/main-view-pr
     TransferViewComponent,
     ErrorModalComponent,
     AccountNotesComponent,
-    MainViewPrefsComponent
+    MainViewPrefsComponent,
+    AutomaticTasksComponent,
+    TasksListComponent
   ],
   imports: [
     BrowserModule,
