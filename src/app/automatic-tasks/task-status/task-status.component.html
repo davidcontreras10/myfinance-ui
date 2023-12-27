@@ -1,0 +1,7 @@
+<span [ngClass]="{
+    'createdTask' :  taskStatus === TaskStatus.Created,
+    'succededTask' :  taskStatus === TaskStatus.Succeeded,
+    'failedTask' :  taskStatus === TaskStatus.Failed
+}">
+    {{getStatus(taskStatus)}}
+</span>

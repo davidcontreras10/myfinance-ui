@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 partial-view">
+            <h3>Scheduled tasks list:</h3>
+            <div *ngIf="loadedTasks && loadedTasks.length > 0">
+                <app-tasks-list [tasks]="loadedTasks"
+                    (selectedChanged)="onSelectedTaskChanged($event)"></app-tasks-list>
+            </div>
+            <div *ngIf="loadedTasks && loadedTasks.length < 1">
+                <span>No scheduled tasks</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <app-task-detail [selectedTask]="selectedTask" (tasksModelChanged)="onTaskModelChanged()"></app-task-detail>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6" style="margin-top: 30px;">
+            <button class="btn btn-success" (click)="goToNew()">Set New Scheduled Transaction</button>
+        </div>
+    </div>
+</div>
