@@ -89,17 +89,14 @@
             <div class="col-md-3 inner-column">
                 <label>Transfer date</label>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-4">
                 <div class="form-group">
                     <input [min]="viewModel?.initialDate" [max]="viewModel?.userEndDate" ngModel type="datetime-local"
                         [value]="viewModel?.suggestedDate" name="spendDate" class="form-control" />
                 </div>
             </div>
-        </div>
-
-        <div class="row form-row">
-            <div class="col">
-                <div class="form-check">
+            <div class="col-md-3">
+                <div class="form-check" style="float: right;">
                     <input mdbCheckbox ngModel name="isPending" class="form-check-input" type="checkbox"
                         id="new-transfer-pending" />
                     <label class="form-check-label" for="new-transfer-pending">
@@ -107,6 +104,10 @@
                     </label>
                 </div>
             </div>
+        </div>
+
+        <div class="row form-row">
+
         </div>
 
         <div class="row form-row">
