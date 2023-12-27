@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IAutomaticTask } from './automatic-tasks.model';
 import { AutoTasksApiService } from '../services/auto-tasks-api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-automatic-tasks',
@@ -12,7 +13,7 @@ export class AutomaticTasksComponent implements OnInit {
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
 
-  constructor(private service: AutoTasksApiService) { }
+  constructor(private service: AutoTasksApiService, private router: Router) { }
 
   ngOnInit(): void {
     this._reloadScheduledTasks();
@@ -22,6 +23,7 @@ export class AutomaticTasksComponent implements OnInit {
     this.selectedTask = selectedOption;
   }
   public goToNew(): void {
+    this.router.navigate(['/scheduled-tasks/new']);
   }
 
   public onTaskModelChanged() {

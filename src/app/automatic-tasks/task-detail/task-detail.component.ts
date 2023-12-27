@@ -46,14 +46,14 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   }
 
   public onDeleteTask() {
-    // if (this.selectedTask) {
-    //   if (confirm("Are you sure to delete scheduled task")) {
-    //     this.service.deleteScheduledTask(this.selectedTask.id)
-    //       .subscribe(data => {
-    //         this._onDeleted(data);
-    //       })
-    //   }
-    // }
+    if (this.selectedTask) {
+      if (confirm("Are you sure to delete scheduled task")) {
+        this.service.deleteScheduledTask(this.selectedTask.id)
+          .subscribe(data => {
+            this._onDeleted(data);
+          })
+      }
+    }
   }
 
   public getDesc(task: IAutomaticTask): string {
