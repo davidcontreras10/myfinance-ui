@@ -175,6 +175,10 @@ export class NewScheduledTaskComponent implements OnInit {
     return this._readNumberValue(accountId);
   }
 
+  private _readIsPending(): boolean {
+    return this.form.value.isPending;
+  }
+
   private _readSpendTypeId() {
     const spendType = this.form.value.spendType;
     return this._readNumberValue(spendType);
@@ -220,7 +224,8 @@ export class NewScheduledTaskComponent implements OnInit {
       isSpendTrx: this._readIsSpendTrx(),
       frequencyType: this._readFreqType(),
       spendTypeId: this._readSpendTypeId(),
-      accountId: this._readAccountId()
+      accountId: this._readAccountId(),
+      isPending: this._readIsPending()
     };
   }
 
@@ -239,7 +244,8 @@ export class NewScheduledTaskComponent implements OnInit {
       frequencyType: this._readFreqType(),
       spendTypeId: this._readSpendTypeId(),
       accountId: this._readAccountId(),
-      toAccountId: this._readToAccountId()
+      toAccountId: this._readToAccountId(),
+      isPending: this._readIsPending()
     };
   }
 

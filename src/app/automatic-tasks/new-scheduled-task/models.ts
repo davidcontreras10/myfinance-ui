@@ -6,6 +6,7 @@ export interface NewScheduledTask{
     frequencyType: number;
     days: number[];
     accountId: number;
+    isPending: boolean;
 }
 
 export interface BasicNewScheduledTask extends NewScheduledTask{
