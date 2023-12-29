@@ -1,0 +1,8 @@
+.full-width{
+    width: 100%;
+}
+
+.partial-view{
+    max-height: 55vh;
+    overflow-y: auto;
+  }

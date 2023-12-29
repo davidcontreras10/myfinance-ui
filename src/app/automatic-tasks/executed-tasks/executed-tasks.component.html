@@ -1,23 +1,25 @@
 <div *ngIf="dataSource && dataSource.length > 0">
     <h3>Executed Tasks:</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Message</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let element of dataSource">
-                <td> {{element.executedDate | date: 'dd/MM HH:mm'}}</td>
-                <td>
-                    <app-task-status [taskStatus]="element.status"></app-task-status>
-                </td>
-                <td> {{element.message}} </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="partial-view">
+        <table class="table full-width">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let element of dataSource">
+                    <td> {{element.executedDate | date: 'dd/MM HH:mm'}}</td>
+                    <td>
+                        <app-task-status [taskStatus]="element.status"></app-task-status>
+                    </td>
+                    <td> {{element.message}} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div *ngIf="dataSource && dataSource.length < 1">
     <h3>Not executed records</h3>
