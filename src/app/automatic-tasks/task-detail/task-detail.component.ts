@@ -76,6 +76,10 @@ export class TaskDetailComponent implements OnInit, OnChanges {
 
   private _getFrequencyText(task: IAutomaticTask): string {
     const day = task.days?.length > 0 ? task.days[0] : null;
+    if(task.frequencyType === FrequencyType.Manual){
+      return 'on manual execution';
+    }
+    
     if (task.frequencyType === FrequencyType.Monthly && day && day > 0) {
       return `every ${day}${this._getMonthDayPrefix(day)} of the month`;
     }
