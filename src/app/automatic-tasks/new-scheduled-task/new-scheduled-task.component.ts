@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserSelectAccount, BasicOption, ScheduleTaskRequestType } from '../automatic-tasks.model';
+import { UserSelectAccount, BasicOption, ScheduleTaskRequestType, FrequencyType } from '../automatic-tasks.model';
 import { AutoTasksApiService } from 'src/app/services/auto-tasks-api.service';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 import { Router } from '@angular/router';
@@ -176,7 +176,11 @@ export class NewScheduledTaskComponent implements OnInit {
   }
 
   private _readIsPending(): boolean {
-    return this.form.value.isPending;
+    if(this.form.value.isPending){
+      return true;
+    }
+
+    return false;
   }
 
   private _readSpendTypeId() {
@@ -184,8 +188,16 @@ export class NewScheduledTaskComponent implements OnInit {
     return this._readNumberValue(spendType);
   }
 
-  private _readDay(): number {
+  private _readDays(): number[] {
     const frqType = this._readFreqType();
+    if (frqType < 3) {
+      return [this._readDay(frqType)];
+    }
+
+    return [];
+  }
+
+  private _readDay(frqType: FrequencyType): number {
     if (frqType === 1) {
       return this._readNumberValue(this.form.value?.dayOfMonth);
     }
@@ -214,12 +226,10 @@ export class NewScheduledTaskComponent implements OnInit {
       return null;
     }
 
-    const days = [];
-    days.push(this._readDay())
     return {
       amount: this._readAmount(),
       currencyId: this._readCurrencyId(),
-      days: [this._readDay()],
+      days: this._readDays(),
       description: this.form.value.description,
       isSpendTrx: this._readIsSpendTrx(),
       frequencyType: this._readFreqType(),
@@ -234,12 +244,10 @@ export class NewScheduledTaskComponent implements OnInit {
       return null;
     }
 
-    const days = [];
-    days.push(this._readDay())
     return {
       amount: this._readAmount(),
       currencyId: this._readCurrencyId(),
-      days: [this._readDay()],
+      days: this._readDays(),
       description: this.form.value.description,
       frequencyType: this._readFreqType(),
       spendTypeId: this._readSpendTypeId(),

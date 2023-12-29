@@ -16,7 +16,8 @@ export enum TaskStatus {
 export enum FrequencyType{
     Unknown = 0,
     Monthly = 1,
-    Weekly = 2
+    Weekly = 2,
+    Manual = 3
 }
 
 export interface ExecutedTaskResult{
