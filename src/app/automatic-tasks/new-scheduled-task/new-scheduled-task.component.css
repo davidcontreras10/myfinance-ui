@@ -3,10 +3,10 @@ label {
     font: 1rem 'Fira Sans', sans-serif;
 }
 
-input {
-    margin: .4rem;
-}
-
 .form-control.ng-touched.ng-invalid{
     border: 2px solid red;
+}
+
+.row{
+    margin-top: 0.4rem;
 }
