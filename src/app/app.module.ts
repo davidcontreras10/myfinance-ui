@@ -38,6 +38,7 @@ import { TaskDetailComponent } from './automatic-tasks/task-detail/task-detail.c
 import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.component';
 import { ExecutedTasksComponent } from './automatic-tasks/executed-tasks/executed-tasks.component';
 import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/new-scheduled-task.component';
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/
     BrowserAnimationsModule,
     NoopAnimationsModule,
     ReactiveFormsModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    DragDropModule
   ],
   providers: [
     MainSpinnerService,
