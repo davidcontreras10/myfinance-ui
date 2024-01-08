@@ -36,6 +36,7 @@ export class AccountsComponent implements OnInit {
   private loadMainData() {
     this.apiService.getMainViewModel(this.accountGroupId).subscribe(res => {
       this.accountGroups = res.accountGroupViewModels;
+      this.accountGroupId = !this.accountGroupId && this.accountGroups.length > 0 ? this.accountGroups[0].accountGroupId : null;
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }
