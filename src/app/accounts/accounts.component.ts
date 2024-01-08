@@ -12,7 +12,7 @@ import { AccGroupViewModel, AccountViewModel } from '../services/models';
 export class AccountsComponent implements OnInit {
 
   accountGroupId: number | null = null;
-  accountGroups: AccGroupViewModel;
+  accountGroups: AccGroupViewModel[];
   dragGridItems: DragGridItem[] | null = null;
 
   constructor(private apiService: AccountViewService) { }
@@ -35,6 +35,7 @@ export class AccountsComponent implements OnInit {
 
   private loadMainData() {
     this.apiService.getMainViewModel(this.accountGroupId).subscribe(res => {
+      this.accountGroups = res.accountGroupViewModels;
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }

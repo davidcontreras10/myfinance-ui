@@ -1,5 +1,13 @@
 <div class="container-fluid text-center">
-    <div class="row"></div>
+    <div class="row">
+        <div class="col">
+            <select [(ngModel)]="accountGroupId" name="currencyId" class="form-select"
+                (change)="onAccountGroupChanged($event)" id="transfer-amount-currency-select">
+                <option *ngFor="let item of accountGroups" [value]="item.accountGroupId">
+                    {{item.accountGroupName}}</option>
+            </select>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12" *ngIf="dragGridItems">
             <app-draggable-grid [columnsNumber]="2" [dataSource]="dragGridItems"
