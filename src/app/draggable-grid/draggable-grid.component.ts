@@ -42,6 +42,8 @@ export class DraggableGridComponent implements OnInit, OnChanges {
     else {
       this.dataGridSource = null;
     }
+
+    console.log('grid:', this.dataGridSource)
   }
 
   private readItems(): DragGridItem[] | null {
@@ -144,7 +146,7 @@ export class DraggableGridComponent implements OnInit, OnChanges {
         const item = items[i];
         positions.push({
           id: item.id,
-          position: i
+          position: i + 1
         });
       }
 

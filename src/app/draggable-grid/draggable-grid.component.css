@@ -1,5 +1,4 @@
 .example-container {
-    width: 400px;
     max-width: 100%;
     margin: 0 25px 25px 0;
     display: inline-block;
@@ -29,6 +28,9 @@
     cursor: move;
     background: white;
     font-size: 14px;
+    min-width: 20vw;
+    min-height: 15vh;
+    text-align: center;
   }
   
   .cdk-drag-preview {
@@ -58,4 +60,11 @@
   
   .drop-zone {
     margin: 40px;
+  }
+
+  .box-content{
+    max-width: 140px;
+    overflow-x: hidden;
+    text-align: center;
+    display: inline-block;
   }
