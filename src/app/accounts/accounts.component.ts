@@ -1,5 +1,8 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { DragGridItem, DragGridPosition } from '../draggable-grid/model';
+import { AccountViewService } from '../services/account-view.service';
+import { AccGroupViewModel, AccountViewModel } from '../services/models';
 
 @Component({
   selector: 'app-accounts',
@@ -8,28 +11,48 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountsComponent implements OnInit {
 
-  constructor() { }
+  accountGroupId: number | null = null;
+  accountGroups: AccGroupViewModel;
+  dragGridItems: DragGridItem[] | null = null;
+
+  constructor(private apiService: AccountViewService) { }
 
   ngOnInit(): void {
+    this.loadMainData();
   }
 
-  todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
+  onAccountGroupChanged(event: any) {
+    console.log("onAccountGroupChanged", event);
+  }
 
-  done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
+  onPositionsChanged(items: DragGridPosition[] | null) {
+    console.log('New items:', items);
+  }
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
+  onItemClick(item: DragGridItem) {
+    console.log('Item Clicked', item);
+  }
+
+  private loadMainData() {
+    this.apiService.getMainViewModel(this.accountGroupId).subscribe(res => {
+      this.setDraggableGridAccounts(res.accountDetailsViewModels);
+    });
+  }
+
+  private setDraggableGridAccounts(items: AccountViewModel[]) {
+    if (items) {
+      this.dragGridItems = items
+        .sort((a, b) => a.accountPosition - b.accountPosition)
+        .map(i => {
+          return {
+            id: i.accountId,
+            name: i.accountName
+          }
+        })
     }
 
-    console.log('Todo:', this.todo);
-    console.log('done:', this.done);
+    else {
+      this.dragGridItems = null;
+    }
   }
 }

@@ -1,0 +1,8 @@
+<div *ngIf="dataGridSource && dataGridSource.cols && columnsNumber > 0" class="example-container" cdkDropListGroup>
+    <div *ngFor="let col of dataGridSource.cols" cdkDropList [cdkDropListData]="col.items" class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of col.items" cdkDrag>{{item.name}}<button
+                (click)="itemClick(item)">Click
+                me</button></div>
+    </div>
+</div>

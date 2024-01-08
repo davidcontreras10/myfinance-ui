@@ -1,22 +1,10 @@
-<div class="container-fluid">
-
-    <div class="example-container">
-        <h2>To do</h2>
-
-        <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList]"
-            class="example-list" (cdkDropListDropped)="drop($event)">
-            <div *ngFor="let item of todo" class="example-box" cdkDrag>{{item}}</div>
+<div class="container-fluid text-center">
+    <div class="row"></div>
+    <div class="row">
+        <div class="col-md-12" *ngIf="dragGridItems">
+            <app-draggable-grid [columnsNumber]="2" [dataSource]="dragGridItems"
+                (positionsChanged)="onPositionsChanged($event)"
+                (itemClicked)="onItemClick($event)"></app-draggable-grid>
         </div>
     </div>
-
-    <div class="example-container">
-        <h2>Done</h2>
-
-        <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]"
-            class="example-list" (cdkDropListDropped)="drop($event)">
-            <div *ngFor="let item of done" class="example-box" cdkDrag>{{item}}</div>
-        </div>
-    </div>
-    <p>{{todo | json}}</p>
-    <p>{{done | json}}</p>
 </div>

@@ -116,7 +116,7 @@ export interface AddTrxRequest {
     paymentDate: Date;
 }
 
-export interface AccountNotes{
+export interface AccountNotes {
     noteTitle: string;
     noteContent: string;
 }
@@ -165,4 +165,30 @@ export interface TransactionViewResponse {
 export interface FileResponse {
     data: Blob,
     fileName: string
+}
+
+export interface AccountViewModel {
+    accountId: number;
+    accountName: string;
+    accountPosition: number;
+    currencyId: number;
+    currencyName: string;
+    frontStyle: {
+        headerColor: string;
+        borderColor: string;
+    };
+
+    type: number;
+}
+
+export interface AccGroupViewModel {
+    accountGroupId: number;
+    accountGroupName: string;
+    accountGroupPosition: number;
+    accountGroupDisplayValue: number;
+}
+
+export interface AccountViewApiModel {
+    accountDetailsViewModels: AccountViewModel[];
+    accountGroupViewModels: AccGroupViewModel[];
 }

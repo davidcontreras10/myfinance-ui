@@ -39,6 +39,7 @@ import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.c
 import { ExecutedTasksComponent } from './automatic-tasks/executed-tasks/executed-tasks.component';
 import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/new-scheduled-task.component';
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
     TaskDetailComponent,
     TaskStatusComponent,
     ExecutedTasksComponent,
-    NewScheduledTaskComponent
+    NewScheduledTaskComponent,
+    DraggableGridComponent
   ],
   imports: [
     BrowserModule,
