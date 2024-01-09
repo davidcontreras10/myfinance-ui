@@ -23,7 +23,8 @@ export class MainNavBarComponent implements OnInit {
       },
       {
         isActive: false, name: 'Accounts', routingLink: '/accounts', subMenus: [
-          { id: NavBarMenusIds.ACCOUNT_GROUPS, name: 'Manager Account Groups' }
+          { id: NavBarMenusIds.ACCOUNT_GROUPS, name: 'Manager Account Groups' },
+          { id: NavBarMenusIds.NEW_ACCOUNT, name: 'New Account...' }
         ]
       },
       { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' }

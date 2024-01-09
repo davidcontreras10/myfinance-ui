@@ -10,7 +10,7 @@ export class AccountViewModelService {
 
   accountGroups: AccGroupViewModel[];
 
-  public upsert(model: AccGroupViewModel) {
+  public upsertAccountGroup(model: AccGroupViewModel) {
     if (this.accountGroups) {
       let removeIndex = -1;
       for (let i = 0; i < this.accountGroups.length; i++) {

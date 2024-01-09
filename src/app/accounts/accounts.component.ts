@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccountsGroupsComponent } from './accounts-groups/accounts-groups.component';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountViewModelService } from '../services/account-view-model.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-accounts',
@@ -20,11 +21,20 @@ export class AccountsComponent implements OnInit {
   currentPositions: DragGridPosition[] | null = null;
   canSavePositions: boolean = false;
 
-  constructor(public viewModel: AccountViewModelService, private apiService: AccountViewApiService, private modalService: NgbModal, private menuService: NavBarServiceService) { }
+  constructor(public viewModel: AccountViewModelService,
+    private apiService: AccountViewApiService,
+    private modalService: NgbModal,
+    private menuService: NavBarServiceService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    this.menuService.getSubMenuEvents(NavBarMenusIds.ACCOUNT_GROUPS).subscribe(res => {
-      this.openAccountGroupsModal()
+    this.menuService.getSubMenuEvents(NavBarMenusIds.ACCOUNT_GROUPS, NavBarMenusIds.NEW_ACCOUNT).subscribe(res => {
+      if (res === NavBarMenusIds.ACCOUNT_GROUPS) {
+        this.openAccountGroupsModal();
+      }
+      else if (res === NavBarMenusIds.NEW_ACCOUNT) {
+        this.router.navigate(['accounts/new', this.accountGroupId]);
+      }
     })
     this.loadMainData();
   }

@@ -48,7 +48,7 @@ export class AccountsGroupsComponent implements OnInit {
     const accountGroupId = id > 0 ? id : this.selected?.accountGroupId;
     if (accountGroupId && accountGroupId > 0) {
       this.service.getAccountGroupById(accountGroupId).subscribe(res => {
-        this.viewModel.upsert(res);
+        this.viewModel.upsertAccountGroup(res);
         this.activeModal.close('Submit');
       })
     }
