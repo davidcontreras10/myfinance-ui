@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AccountViewApiModel, AccountViewModel } from './models';
+import { AccGroupViewModel, AccountGroupRequest, AccountViewApiModel, AccountViewModel } from './models';
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
 import { DragGridPosition } from '../draggable-grid/model';
@@ -8,9 +8,19 @@ import { DragGridPosition } from '../draggable-grid/model';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountViewService {
+export class AccountViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public createNewAccountGroup(model: AccountGroupRequest): Observable<number> {
+    const url = `${environment.baseApi}/api/AccountsGroups`;
+    return this.httpClient.post<number>(url, model);
+  }
+
+  public updateAccountGroup(model: AccountGroupRequest, accountGroupId: number): Observable<number> {
+    const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
+    return this.httpClient.patch<number>(url, model);
+  }
 
   public savePositions(positions: DragGridPosition[]): Observable<any> {
     const model = positions.map(pos => {
@@ -22,6 +32,11 @@ export class AccountViewService {
 
     const url = `${environment.baseApi}/api/Accounts/positions`;
     return this.httpClient.put(url, model);
+  }
+
+  public getAccountGroupById(accountGroupId: number): Observable<AccGroupViewModel> {
+    const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
+    return this.httpClient.get<AccGroupViewModel>(url);
   }
 
   public getAccountsByAccountGroup(accountGroupId: number | null): Observable<AccountViewModel[]> {

@@ -1,0 +1,61 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">Account Groups Admin</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6" *ngIf="viewModel.accountGroups">
+                <label>Account groups:</label>
+                <select class="form-select" [(ngModel)]="selected" name="accountGroupId">
+                    <option [ngValue]="null" selected="selected">New...</option>
+                    <option *ngFor="let group of viewModel.accountGroups" [ngValue]="group">
+                        {{group?.accountGroupName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="horizontal-line"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Name</label>
+                <input ngModel type="text" class="form-control" name="name" [ngModel]="selected?.accountGroupName"
+                    required [minlength]="3" />
+            </div>
+            <div class="col-md-6">
+                <label>Display Name</label>
+                <input ngModel type="text" id="display-value" class="basic-input form-control" name="displayValue"
+                    required [minlength]="3" [ngModel]="selected?.accountGroupDisplayValue" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Position</label>
+                <input ngModel type="number" class="basic-input form-control" *ngIf="viewModel.accountGroups"
+                    name="position" [ngModel]="selected?.accountGroupPosition" [min]="minPosition"
+                    [max]="viewModel.accountGroups.length + 1" [placeholder]="getPlaceholder()" required />
+            </div>
+            <div class="col-md-6">
+                <br />
+                <div class="basic-input form-control">
+                    <div class="form-check">
+                        <input mdbCheckbox ngModel name="showDefault" class="form-check-input" type="checkbox"
+                            #showDefault="ngModel" id="show-default" [checked]="selected?.isSelected" />
+                        <label class="form-check-label" for="show-default">
+                            Show by default
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">{{selected ? 'Update' :
+            'Create'}}</button>
+    </div>
+</form>

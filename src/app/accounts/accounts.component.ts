@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DragGridItem, DragGridPosition } from '../draggable-grid/model';
-import { AccountViewService } from '../services/account-view.service';
+import { AccountViewApiService } from '../services/account-view-api.service';
 import { AccGroupViewModel, AccountViewModel } from '../services/models';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AccountsGroupsComponent } from './accounts-groups/accounts-groups.component';
+import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { AccountViewModelService } from '../services/account-view-model.service';
 
 @Component({
   selector: 'app-accounts',
@@ -11,16 +15,23 @@ import { AccGroupViewModel, AccountViewModel } from '../services/models';
 export class AccountsComponent implements OnInit {
 
   accountGroupId: number | null = null;
-  accountGroups: AccGroupViewModel[];
   dragGridItems: DragGridItem[] | null = null;
   originalPositions: DragGridPosition[] | null = null;
   currentPositions: DragGridPosition[] | null = null;
   canSavePositions: boolean = false;
 
-  constructor(private apiService: AccountViewService) { }
+  constructor(public viewModel: AccountViewModelService, private apiService: AccountViewApiService, private modalService: NgbModal, private menuService: NavBarServiceService) { }
 
   ngOnInit(): void {
+    this.menuService.getSubMenuEvents(NavBarMenusIds.ACCOUNT_GROUPS).subscribe(res => {
+      this.openAccountGroupsModal()
+    })
     this.loadMainData();
+  }
+
+  openAccountGroupsModal() {
+    const modalRef = this.modalService.open(AccountsGroupsComponent, { backdrop: 'static', keyboard: false, size: 'md' });
+    modalRef.componentInstance.accountGroups = this.viewModel.accountGroups;
   }
 
   onSavePositions() {
@@ -67,13 +78,12 @@ export class AccountsComponent implements OnInit {
     }
 
     this.canSavePositions = false;
-    console.log('Can seve pos:', this.canSavePositions);
   }
 
   private loadMainData() {
     this.apiService.getMainViewModel(this.accountGroupId).subscribe(res => {
-      this.accountGroups = res.accountGroupViewModels;
-      this.accountGroupId = !this.accountGroupId && this.accountGroups.length > 0 ? this.accountGroups[0].accountGroupId : null;
+      this.viewModel.accountGroups = res.accountGroupViewModels;
+      this.accountGroupId = !this.accountGroupId && this.viewModel.accountGroups.length > 0 ? this.viewModel.accountGroups[0].accountGroupId : null;
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }
@@ -81,11 +91,6 @@ export class AccountsComponent implements OnInit {
   private setDraggableGridAccounts(items: AccountViewModel[]) {
     if (items) {
       this.fixEmptyPositions(items);
-      console.log('New accs:', items.map(i => {
-        return {
-          id: i.accountId, pos: i.accountPosition
-        }
-      }));
       this.dragGridItems = items
         .sort((a, b) => a.accountPosition - b.accountPosition)
         .map(i => {

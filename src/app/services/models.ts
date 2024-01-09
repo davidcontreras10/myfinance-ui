@@ -186,9 +186,17 @@ export interface AccGroupViewModel {
     accountGroupName: string;
     accountGroupPosition: number;
     accountGroupDisplayValue: number;
+    isSelected: boolean;
 }
 
 export interface AccountViewApiModel {
     accountDetailsViewModels: AccountViewModel[];
     accountGroupViewModels: AccGroupViewModel[];
+}
+
+export interface AccountGroupRequest {
+    accountGroupName: string;
+    accountGroupPosition: number;
+    accountGroupDisplayValue: string;
+    displayDefault: boolean;
 }

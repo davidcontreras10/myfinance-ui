@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { NavMenuItem } from './models';
 import { AuthService } from '../auth.service';
+import { NavBarMenusIds } from '../services/main-nav-bar/nav-bar-service.service';
 
 @Component({
   selector: 'app-main-nav-bar',
@@ -15,12 +16,16 @@ export class MainNavBarComponent implements OnInit {
     this.items = [
       {
         isActive: true, name: 'Home', subMenus: [
-          { id: 'toggle-summary', name: 'Toggle Summary'},
-          { id: 'main-view-prefs', name: 'Preferences'}
+          { id: 'toggle-summary', name: 'Toggle Summary' },
+          { id: 'main-view-prefs', name: 'Preferences' }
         ],
         routingLink: '/'
       },
-      { isActive: false, name: 'Accounts', routingLink: '/accounts' },
+      {
+        isActive: false, name: 'Accounts', routingLink: '/accounts', subMenus: [
+          { id: NavBarMenusIds.ACCOUNT_GROUPS, name: 'Manager Account Groups' }
+        ]
+      },
       { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' }
     ];
 

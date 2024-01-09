@@ -1,0 +1,14 @@
+.row {
+    padding-top: 1vh;
+}
+
+.horizontal-line {
+    border-top: 1px solid black;
+    width: 100%;
+    /* Takes up the full width of the parent container */
+    padding-top: 2vh;
+}
+
+.form-control.ng-invalid.ng-touched {
+    border: 2px solid red;
+}
