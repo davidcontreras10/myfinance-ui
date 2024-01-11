@@ -130,12 +130,15 @@ export interface ItemModifiedRes {
     isModified: boolean;
 }
 
-export interface TrxAccountIncluded extends SelectableItem {
+export interface BasicAccountIncluded extends SelectableItem {
+    methodIds: SelectableItem[]
+}
+
+export interface TrxAccountIncluded extends BasicAccountIncluded {
     amount: {
         value: number;
         currencySymbol: string;
     },
-    methodIds: SelectableItem[]
 }
 
 export interface SlcTrxAccountIncluded extends TrxAccountIncluded {
@@ -167,17 +170,18 @@ export interface FileResponse {
     fileName: string
 }
 
+export interface AccountStyle {
+    headerColor: string;
+    borderColor: string;
+}
+
 export interface AccountViewModel {
     accountId: number;
     accountName: string;
     accountPosition: number;
     currencyId: number;
     currencyName: string;
-    frontStyle: {
-        headerColor: string;
-        borderColor: string;
-    };
-
+    frontStyle: AccountStyle;
     type: number;
 }
 
@@ -199,4 +203,18 @@ export interface AccountGroupRequest {
     accountGroupPosition: number;
     accountGroupDisplayValue: string;
     displayDefault: boolean;
+}
+
+export interface AddNewAccountModels {
+    accountStyle: AccountStyle;
+    baseBudget: number;
+    accountName: string;
+    spendTypeViewModels: SelectableItem[];
+    accountTypeViewModels: SelectableItem[];
+    periodTypeViewModels: SelectableItem[];
+    financialEntityViewModels: SelectableItem[];
+    accountIncludeViewModels: BasicAccountIncluded[];
+    currencyViewModels: Currency[];
+    accountGroupViewModels: SelectableItem[];
+    
 }

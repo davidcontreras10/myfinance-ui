@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AccGroupViewModel, AccountGroupRequest, AccountViewApiModel, AccountViewModel } from './models';
+import { AccGroupViewModel, AccountGroupRequest, AccountViewApiModel, AccountViewModel, AddNewAccountModels } from './models';
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
 import { DragGridPosition } from '../draggable-grid/model';
@@ -11,6 +11,11 @@ import { DragGridPosition } from '../draggable-grid/model';
 export class AccountViewApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public getAddAccountViewModel(): Observable<AddNewAccountModels> {
+    const url = `${environment.baseApi}/api/Accounts/add`;
+    return this.httpClient.get<AddNewAccountModels>(url);
+  }
 
   public createNewAccountGroup(model: AccountGroupRequest): Observable<number> {
     const url = `${environment.baseApi}/api/AccountsGroups`;

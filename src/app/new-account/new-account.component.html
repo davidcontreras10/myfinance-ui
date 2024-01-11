@@ -1,1 +1,83 @@
-<p>new-account works!</p>
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input ngModel required [minlength]="3" [maxlength]="100" class="form-control" name="name" id="name"
+                        type="text" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="account-currency">Currency</label>
+                <select id="account-currency" class="basic-input form-control" ngModel name="currencyId">
+                    <option *ngFor="let currency of viewModel?.currencyViewModels" [value]="currency.id">
+                        {{currency.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="account-period-type">Period Type</label>
+                <select id="account-period-type" class="basic-input form-control" ngModel name="periodType">
+                    <option *ngFor="let item of viewModel?.periodTypeViewModels" [value]="item.id">
+                        {{item.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="account-type">Account Type</label>
+                <select id="account-type" class="basic-input form-control" ngModel name="accountType">
+                    <option *ngFor="let item of viewModel?.accountTypeViewModels" [value]="item.id">
+                        {{item.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="account-financial-entity">Financial Entity</label>
+                <select id="account-financial-entity" class="basic-input form-control" ngModel name="financialEntity">
+                    <option *ngFor="let item of viewModel?.financialEntityViewModels" [value]="item.id">
+                        {{item.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="account-spend-type">Default Spend Type</label>
+                <select id="account-spend-type" class="basic-input form-control" ngModel name="spendType">
+                    <option *ngFor="let item of viewModel?.spendTypeViewModels" [value]="item.id">
+                        {{item.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="base-budget">Base Budget</label>
+                <input ngModel required name="baseBudget" type="number" id="base-budget"
+                    class="basic-input form-control" placeholder="Amount"
+                    pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
+            </div>
+            <div class="col-md-4">
+                <label for="header-color">Header Color</label>
+                <input type="color" ngModel id="header-color" name="headerColor"
+                    [ngModel]="viewModel.accountStyle.headerColor"
+                    class="basic-input form-control form-control-color" />
+            </div>
+            <div class="col-md-4">
+                <label for="border-color">Border Color</label>
+                <input type="color" ngModel id="border-color" name="borderColor"
+                    [ngModel]="viewModel.accountStyle.borderColor"
+                    class="basic-input form-control form-control-color" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="parent-accounts"></label>
+                <select id="parent-accounts" class="basic-input form-control" [(ngModel)]="selectedParentAccs"
+                    name="accountsInclude" multiple>
+                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item">
+                        {{item.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <span>{{selectedParentAccs | json}}</span>
+            </div>
+        </div>
+    </div>
+</form>
