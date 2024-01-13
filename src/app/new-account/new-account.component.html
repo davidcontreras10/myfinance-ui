@@ -69,14 +69,16 @@
         <div class="row">
             <div class="col-md-4">
                 <label for="parent-accounts"></label>
-                <select id="parent-accounts" class="basic-input form-control" [(ngModel)]="selectedParentAccs"
+                <select id="parent-accounts" class="basic-input form-control"
                     name="accountsInclude" multiple>
-                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item">
+                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item" (click)="accountIncludeClick(item)">
                         {{item.name}}</option>
                 </select>
             </div>
             <div class="col-md-4">
-                <span>{{selectedParentAccs | json}}</span>
+                <ul>
+                    <li *ngFor="let item of selectedParentAccs">{{item.name}}<span (click)="removeAccountInclude(item)"> X</span></li>
+                </ul>
             </div>
         </div>
     </div>

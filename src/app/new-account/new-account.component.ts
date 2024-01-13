@@ -10,6 +10,8 @@ import { AccountViewApiService } from '../services/account-view-api.service';
 })
 export class NewAccountComponent implements OnInit {
 
+
+
   viewModel: AddNewAccountModels;
   selectedParentAccs: BasicAccountIncluded[] = [];
 
@@ -27,5 +29,16 @@ export class NewAccountComponent implements OnInit {
 
   getIncludedAccounts(): BasicAccountIncluded[] {
     return this.viewModel.accountIncludeViewModels.filter(vm => this.selectedParentAccs.every(s => s.id !== vm.id));
+  }
+
+  accountIncludeClick(item: BasicAccountIncluded) {
+    this.selectedParentAccs.push(item);
+  }
+
+  removeAccountInclude(item: BasicAccountIncluded) {
+    const index = this.selectedParentAccs.indexOf(item);
+    if (index !== -1) {
+      this.selectedParentAccs.splice(index, 1);
+    }
   }
 }
