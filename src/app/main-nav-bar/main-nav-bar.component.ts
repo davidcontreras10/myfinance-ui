@@ -20,7 +20,8 @@ export class MainNavBarComponent implements OnInit {
         ],
         routingLink: '/'
       },
-      { isActive: false, name: 'Accounts', routingLink: '/accounts' }
+      { isActive: false, name: 'Accounts', routingLink: '/accounts' },
+      { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' }
     ];
 
     router.events.subscribe(value => {

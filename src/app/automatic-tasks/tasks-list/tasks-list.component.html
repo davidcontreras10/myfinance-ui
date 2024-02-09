@@ -1,0 +1,9 @@
+<table class="table">
+    <tbody>
+        <tr *ngFor="let task of tasks" [class.table-active]="task === selectedTask" (click)="selectRow(task)">
+          <td>{{task.accountName}}</td>
+          <td>{{task.description}}</td>
+          <td><app-task-status [taskStatus]="task.lastExecutedStatus"></app-task-status></td>
+        </tr>
+      </tbody>
+</table>

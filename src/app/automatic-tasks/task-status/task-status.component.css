@@ -1,0 +1,14 @@
+.createdTask{
+    color: blue;
+    font-weight: bold;
+}
+
+.succededTask{
+    color: green;
+    font-weight: bold;
+}
+
+.failedTask{
+    color: red;
+    font-weight: bold;
+}

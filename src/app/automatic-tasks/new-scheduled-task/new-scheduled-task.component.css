@@ -1,0 +1,12 @@
+p,
+label {
+    font: 1rem 'Fira Sans', sans-serif;
+}
+
+.form-control.ng-touched.ng-invalid{
+    border: 2px solid red;
+}
+
+.row{
+    margin-top: 0.4rem;
+}

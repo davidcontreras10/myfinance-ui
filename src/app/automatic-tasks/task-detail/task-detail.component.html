@@ -1,0 +1,31 @@
+<div *ngIf="selectedTask?.id">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Details:</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            {{selectedTask.accountName}}
+        </div>
+        <div class="col-md-9">
+            {{getDesc(selectedTask)}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 center-content">
+            <button class="btn btn-danger full-width-btn" (click)="onDeleteTask()">Delete</button>
+        </div>
+        <div class="col-md-5 center-content">
+            <button class="btn btn-success full-width-btn" (click)="onExecuteTask()">Manual Run</button>
+        </div>
+        <div class="col-md-5 center-content">
+            <button class="btn btn-primary full-width-btn" (click)="onViewRecordsClicked()">View Records</button>
+        </div>
+    </div>
+    <div class="row" *ngIf="showRecords">
+        <div class="col-md-12 upper-separated">
+            <app-executed-tasks [selectedTask]="selectedTask"></app-executed-tasks>
+        </div>
+    </div>
+</div>
