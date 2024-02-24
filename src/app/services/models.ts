@@ -206,7 +206,7 @@ export interface AccountGroupRequest {
 }
 
 export interface AddNewAccountModels {
-    accountStyle: AccountStyle;
+    accountStyle?: AccountStyle;
     baseBudget: number;
     accountName: string;
     spendTypeViewModels: SelectableItem[];

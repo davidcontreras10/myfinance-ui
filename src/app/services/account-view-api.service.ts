@@ -1,20 +1,48 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AccGroupViewModel, AccountGroupRequest, AccountViewApiModel, AccountViewModel, AddNewAccountModels } from './models';
+import {
+  AccGroupViewModel,
+  AccountGroupRequest,
+  AccountViewApiModel,
+  AccountViewModel,
+  AddNewAccountModels,
+  BasicAccountIncluded,
+} from './models';
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
 import { DragGridPosition } from '../draggable-grid/model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountViewApiService {
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
+  public getPossibleAccountInclude(
+    currencyId: number,
+    financialEntityId: number | undefined
+  ): Observable<BasicAccountIncluded[]> {
+    const url = `${environment.baseApi}/api/Accounts/include/${currencyId}`;
+    if (financialEntityId && financialEntityId > 0) {
+      financialEntityId = financialEntityId;
+    } else {
+      financialEntityId = 0;
+    }
+
+    const params = new HttpParams().set('financialEntityId', financialEntityId);
+    return this.httpClient.get<BasicAccountIncluded[]>(url, {
+      params,
+    });
+  }
 
   public getAddAccountViewModel(): Observable<AddNewAccountModels> {
     const url = `${environment.baseApi}/api/Accounts/add`;
-    return this.httpClient.get<AddNewAccountModels>(url);
+    return this.httpClient.get<AddNewAccountModels>(url).pipe(
+      map((v) => {
+        v.accountIncludeViewModels = [];
+        return v;
+      })
+    );
   }
 
   public createNewAccountGroup(model: AccountGroupRequest): Observable<number> {
@@ -22,37 +50,46 @@ export class AccountViewApiService {
     return this.httpClient.post<number>(url, model);
   }
 
-  public updateAccountGroup(model: AccountGroupRequest, accountGroupId: number): Observable<number> {
+  public updateAccountGroup(
+    model: AccountGroupRequest,
+    accountGroupId: number
+  ): Observable<number> {
     const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
     return this.httpClient.patch<number>(url, model);
   }
 
   public savePositions(positions: DragGridPosition[]): Observable<any> {
-    const model = positions.map(pos => {
+    const model = positions.map((pos) => {
       return {
         accountId: pos.id,
-        position: pos.position
-      }
-    })
+        position: pos.position,
+      };
+    });
 
     const url = `${environment.baseApi}/api/Accounts/positions`;
     return this.httpClient.put(url, model);
   }
 
-  public getAccountGroupById(accountGroupId: number): Observable<AccGroupViewModel> {
+  public getAccountGroupById(
+    accountGroupId: number
+  ): Observable<AccGroupViewModel> {
     const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
     return this.httpClient.get<AccGroupViewModel>(url);
   }
 
-  public getAccountsByAccountGroup(accountGroupId: number | null): Observable<AccountViewModel[]> {
+  public getAccountsByAccountGroup(
+    accountGroupId: number | null
+  ): Observable<AccountViewModel[]> {
     return this.getMainViewModel(accountGroupId).pipe(
-      map(res => {
+      map((res) => {
         return res.accountDetailsViewModels;
       })
-    )
+    );
   }
 
-  public getMainViewModel(accountGroupId: number | null): Observable<AccountViewApiModel> {
+  public getMainViewModel(
+    accountGroupId: number | null
+  ): Observable<AccountViewApiModel> {
     if (accountGroupId === null) {
       accountGroupId = -1;
     }

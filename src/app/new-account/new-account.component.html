@@ -10,7 +10,8 @@
             </div>
             <div class="col-md-4">
                 <label for="account-currency">Currency</label>
-                <select id="account-currency" class="basic-input form-control" ngModel name="currencyId">
+                <select id="account-currency" class="basic-input form-control" ngModel name="currencyId"
+                    [(ngModel)]="selectedCurrencyId" (change)="onCurrencyChanged()">
                     <option *ngFor="let currency of viewModel?.currencyViewModels" [value]="currency.id">
                         {{currency.name}}</option>
                 </select>
@@ -33,7 +34,8 @@
             </div>
             <div class="col-md-4">
                 <label for="account-financial-entity">Financial Entity</label>
-                <select id="account-financial-entity" class="basic-input form-control" ngModel name="financialEntity">
+                <select id="account-financial-entity" class="basic-input form-control" ngModel name="financialEntity"
+                    [(ngModel)]="selectedFinancialEntityId" (change)="onFianancialEntityChanged()">
                     <option *ngFor="let item of viewModel?.financialEntityViewModels" [value]="item.id">
                         {{item.name}}</option>
                 </select>
@@ -55,30 +57,71 @@
             </div>
             <div class="col-md-4">
                 <label for="header-color">Header Color</label>
-                <input type="color" ngModel id="header-color" name="headerColor"
-                    [ngModel]="viewModel.accountStyle.headerColor"
+                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="header-color"
+                    name="headerColor" [ngModel]="viewModel.accountStyle?.headerColor"
                     class="basic-input form-control form-control-color" />
             </div>
             <div class="col-md-4">
                 <label for="border-color">Border Color</label>
-                <input type="color" ngModel id="border-color" name="borderColor"
-                    [ngModel]="viewModel.accountStyle.borderColor"
+                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="border-color"
+                    name="borderColor" [ngModel]="viewModel.accountStyle?.borderColor"
                     class="basic-input form-control form-control-color" />
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
-                <label for="parent-accounts"></label>
-                <select id="parent-accounts" class="basic-input form-control"
-                    name="accountsInclude" multiple>
-                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item" (click)="accountIncludeClick(item)">
+            <div class="col-lg-4">
+                <label for="parent-accounts">Include in accounts...</label>
+                <select id="parent-accounts" class="basic-input form-control" name="accountsInclude" multiple>
+                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item"
+                        (click)="accountIncludeClick(item)">
                         {{item.name}}</option>
                 </select>
             </div>
-            <div class="col-md-4">
-                <ul>
-                    <li *ngFor="let item of selectedParentAccs">{{item.name}}<span (click)="removeAccountInclude(item)"> X</span></li>
-                </ul>
+            <div class="col-md-6">
+                <!-- <ul>
+                    <li *ngFor="let item of selectedParentAccs">{{item.name}}<span (click)="removeAccountInclude(item)">
+                            X</span></li>
+                </ul> -->
+                <table class="table table-bordered table-low-margin">
+                    <thead>
+                        <tr>
+                            <th data-field="Budget">Account</th>
+                            <th data-field="Spent">Exchange</th>
+                            <th data-field="Balance">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let parAccount of selectedParentAccs">
+                            <td>{{parAccount.name}}</td>
+                            <td>
+                                <select class="basic-input form-control" name="accountIncludeMethod">
+                                    <ng-container *ngFor="let method of parAccount.methodIds">
+                                        <ng-container *ngIf="method.isSelected; else elseBlock">
+                                            <option [ngValue]="method" selected>
+                                                {{method.name}} - {{method.isSelected}} - {{method.id}}
+                                            </option>
+                                        </ng-container>
+                                        <ng-template #elseBlock>
+                                            <option [ngValue]="method">
+                                                {{method.name}} - {{method.isSelected}} - {{method.id}}
+                                            </option>
+                                        </ng-template>
+                                    </ng-container>
+                                </select>
+                            </td>
+                            <td>
+                                <span (click)="removeAccountInclude(parAccount)">
+                                    X
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    {{parAccount.id}}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
