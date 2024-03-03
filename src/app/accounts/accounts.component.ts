@@ -86,6 +86,10 @@ export class AccountsComponent implements OnInit {
     console.log('Item Clicked', item);
   }
 
+  onEditClick(accountId: number) {
+    this.router.navigate([`accounts/edit/${accountId}`]);
+  }
+
   private updateSavePositionsStatus() {
     const items = this.currentPositions;
     if (

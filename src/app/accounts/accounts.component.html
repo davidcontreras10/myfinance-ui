@@ -23,8 +23,14 @@
     <div class="row">
         <div class="col-md-12" *ngIf="dragGridItems">
             <app-draggable-grid [columnsNumber]="2" [dataSource]="dragGridItems"
-                (positionsChanged)="onPositionsChanged($event)"
-                (itemClicked)="onItemClick($event)"></app-draggable-grid>
+                (positionsChanged)="onPositionsChanged($event)" (itemClicked)="onItemClick($event)">
+                <ng-template let-item>
+                    <span style="font-weight: bold;">{{item.name}} </span><br />
+                    <button style="margin: 5px;" type="button" class="btn btn-outline-secondary"
+                        (click)="onEditClick(item.id)">Edit</button>
+                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                </ng-template>
+            </app-draggable-grid>
         </div>
     </div>
 </div>

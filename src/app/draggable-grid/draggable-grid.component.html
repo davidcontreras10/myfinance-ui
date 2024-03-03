@@ -3,10 +3,8 @@
         (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let item of col.items" cdkDrag>
             <div class="box-content">
-                <ng-content [item]="item"></ng-content>
-                <span style="font-weight: bold;">{{item.name}} </span><br />
-                <button style="margin: 5px;" type="button" class="btn btn-outline-secondary">Edit</button>
-                <button type="button" class="btn btn-outline-danger">Delete</button>
+                <ng-template [ngTemplateOutlet]="templateRef"
+                    [ngTemplateOutletContext]="{$implicit: item}"></ng-template>
             </div>
         </div>
     </div>
