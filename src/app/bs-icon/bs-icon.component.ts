@@ -3,11 +3,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 @Component({
   selector: 'app-bs-icon',
   templateUrl: './bs-icon.component.html',
-  styleUrls: ['./bs-icon.component.css']
+  styleUrls: ['./bs-icon.component.css'],
 })
 export class BsIconComponent {
-
-
-  constructor() { }
-
+  //https://icons.getbootstrap.com/
+  constructor() {}
 }

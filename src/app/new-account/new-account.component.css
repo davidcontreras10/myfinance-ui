@@ -5,3 +5,11 @@
 .form-control-color{
     width: 100%;
 }
+
+.form-control.ng-touched.ng-invalid{
+    border: 2px solid red;
+}
+
+button{
+    margin-right: 2vh;
+}

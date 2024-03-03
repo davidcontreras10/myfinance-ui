@@ -13,14 +13,30 @@ const routes: Routes = [
   { path: '', component: MainViewComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard] },
-  { path: 'accounts/new', component: NewAccountComponent, canActivate: [AuthGuard] },
-  { path: 'accounts/new/:accountGroupId?', component: NewAccountComponent, canActivate: [AuthGuard] },
-  { path: 'scheduled-tasks', component: AutomaticTasksComponent, canActivate: [AuthGuard] },
-  { path: 'scheduled-tasks/new', component: NewScheduledTaskComponent, canActivate: [AuthGuard] }
+  {
+    path: 'accounts/new',
+    component: NewAccountComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'accounts/edit/:accountId',
+    component: NewAccountComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'scheduled-tasks',
+    component: AutomaticTasksComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'scheduled-tasks/new',
+    component: NewScheduledTaskComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
