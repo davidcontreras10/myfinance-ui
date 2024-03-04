@@ -54,7 +54,6 @@ export class NewAccountComponent implements OnInit {
 
   private editAccountNgOnInit(accountId: number) {
     this.apiService.getEditAccountViewModel(accountId).subscribe((res) => {
-      console.log('Edit Model:', res);
       this.viewModel = res;
       this.inputModel.setValues(res);
     });
@@ -68,7 +67,6 @@ export class NewAccountComponent implements OnInit {
           Number.parseInt(queryAccountGroupId);
       }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
-        console.log('New Model:', res);
         this.viewModel = res;
       });
     });
