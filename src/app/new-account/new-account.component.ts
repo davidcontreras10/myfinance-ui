@@ -32,13 +32,11 @@ export class NewAccountComponent implements OnInit {
         ? this.activatedRoute.snapshot.url[1]
         : null;
     if (urlSegment?.path === 'new') {
-      console.log('Handling new account scenario');
       this.newAccountNgOnInit();
     } else if (urlSegment?.path === 'edit') {
       const paramAccountId = this.activatedRoute.snapshot.params['accountId'];
       const accountId = Number.parseInt(paramAccountId);
       if (accountId > 0) {
-        console.log('Handling edit account scenario for accountId:', accountId);
         this.editAccountNgOnInit(accountId);
       } else {
         console.log('Invalid account Id');

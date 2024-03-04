@@ -27,5 +27,15 @@ export class AccountViewModel {
     this.selectedAccountTypeId = viewModel.accountTypeViewModels.find(x => x.isSelected)?.id;
     this.editMode = true;
     this.accountName = viewModel.accountName;
+    this.setAccountIncludes(viewModel);
+  }
+
+  private setAccountIncludes(viewModel: EditAccountViewModel): void {
+    viewModel.accountIncludeViewModels.filter(x => x.isSelected).forEach((basicAccountIncluded: BasicAccountIncluded) => {
+      this.selectedParentAccs.push(basicAccountIncluded);
+      this.selectedMethodIds[basicAccountIncluded.id.toString()] = basicAccountIncluded.methodIds.find(
+        (x) => x.isSelected
+      );
+    })
   }
 }
