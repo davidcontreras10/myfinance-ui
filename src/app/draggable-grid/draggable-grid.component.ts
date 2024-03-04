@@ -66,7 +66,7 @@ export class DraggableGridComponent implements OnInit, OnChanges {
       this.dataGridSource = null;
     }
 
-    console.log('grid:', this.dataGridSource);
+    //console.log('grid:', this.dataGridSource);
   }
 
   private readItems(): DragGridItem[] | null {

@@ -5,8 +5,9 @@ import {
   AccountGroupRequest,
   AccountViewApiModel,
   AccountViewModel,
-  DetailAccountViewModel,
+  AddNewAccountViewModel,
   BasicAccountIncluded,
+  EditAccountViewModel,
   NewAccountViewModel,
 } from './models';
 import { environment } from 'src/environments/environment';
@@ -19,12 +20,21 @@ import { DragGridPosition } from '../draggable-grid/model';
 export class AccountViewApiService {
   constructor(private httpClient: HttpClient) {}
 
-  public getEditAccountViewModel(accountId: number): Observable<any> {
+  public getEditAccountViewModel(
+    accountId: number
+  ): Observable<EditAccountViewModel> {
     const params = new HttpParams().set('accountIds', accountId);
     const url = `${environment.baseApi}/api/Accounts`;
-    return this.httpClient.get<any>(url, {
-      params,
-    });
+    return this.httpClient
+      .get<EditAccountViewModel[]>(url, {
+        params,
+      })
+      .pipe(
+        map((res) => {
+          const accountInfo = res[0];
+          return accountInfo;
+        })
+      );
   }
 
   public addNewAccount(model: NewAccountViewModel): Observable<void> {
@@ -51,9 +61,9 @@ export class AccountViewApiService {
     });
   }
 
-  public getAddAccountViewModel(): Observable<DetailAccountViewModel> {
+  public getAddAccountViewModel(): Observable<AddNewAccountViewModel> {
     const url = `${environment.baseApi}/api/Accounts/add`;
-    return this.httpClient.get<DetailAccountViewModel>(url).pipe(
+    return this.httpClient.get<AddNewAccountViewModel>(url).pipe(
       map((v) => {
         v.accountIncludeViewModels = [];
         return v;

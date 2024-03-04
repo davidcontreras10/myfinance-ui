@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
   AccountInclude,
-  DetailAccountViewModel,
+  AddNewAccountViewModel,
   BasicAccountIncluded,
   NewAccountViewModel,
 } from '../services/models';
@@ -16,14 +16,15 @@ import { AccountViewModel } from './acc-view-model';
   styleUrls: ['./new-account.component.css'],
 })
 export class NewAccountComponent implements OnInit {
-  viewModel: DetailAccountViewModel;
+
+  viewModel: AddNewAccountViewModel;
   inputModel: AccountViewModel = new AccountViewModel();
 
   constructor(
     private apiService: AccountViewApiService,
     private activatedRoute: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const urlSegment =
@@ -49,9 +50,15 @@ export class NewAccountComponent implements OnInit {
     }
   }
 
+  onClose() {
+    this.router.navigate(['/accounts']);
+  }
+
   private editAccountNgOnInit(accountId: number) {
     this.apiService.getEditAccountViewModel(accountId).subscribe((res) => {
       console.log('Edit Model:', res);
+      this.viewModel = res;
+      this.inputModel.setValues(res);
     });
   }
 
@@ -59,10 +66,11 @@ export class NewAccountComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       const queryAccountGroupId = params['accountGroupId'];
       if (queryAccountGroupId) {
-        this.inputModel.selectedAccountGroup =
+        this.inputModel.selectedAccountGroupId =
           Number.parseInt(queryAccountGroupId);
       }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
+        console.log('New Model:', res);
         this.viewModel = res;
       });
     });

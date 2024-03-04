@@ -205,7 +205,7 @@ export interface AccountGroupRequest {
   displayDefault: boolean;
 }
 
-export interface DetailAccountViewModel {
+export interface AddNewAccountViewModel {
   accountStyle?: AccountStyle;
   baseBudget: number;
   accountName: string;
@@ -216,6 +216,12 @@ export interface DetailAccountViewModel {
   accountIncludeViewModels: BasicAccountIncluded[];
   currencyViewModels: Currency[];
   accountGroupViewModels: SelectableItem[];
+}
+
+export interface EditAccountViewModel extends AddNewAccountViewModel {
+  accountGroupId: number;
+  accountId: number;
+  accountPosition: number;
 }
 
 export interface AccountInclude {

@@ -4,21 +4,24 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="new-account-name">Name:</label>
-                    <input ngModel required [minlength]="3" [maxlength]="100" class="form-control" name="accountName"
-                        id="new-account-name" type="text" />
+                    <input [(ngModel)]="inputModel.accountName" required [minlength]="3" [maxlength]="100"
+                        class="form-control" name="accountName" id="new-account-name" type="text" />
                 </div>
             </div>
             <div class="col-md-4">
                 <label for="account-currency">Currency</label>
                 <select id="account-currency" class="basic-input form-control" ngModel name="currencyId"
-                    [(ngModel)]="inputModel.selectedCurrencyId" (change)="onCurrencyChanged()" required>
+                    [(ngModel)]="inputModel.selectedCurrencyId" (change)="onCurrencyChanged()"
+                    [disabled]="inputModel.editMode" required>
                     <option *ngFor="let currency of viewModel?.currencyViewModels" [value]="currency.id">
                         {{currency.name}}</option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label for="account-period-type">Period Type</label>
-                <select id="account-period-type" class="basic-input form-control" ngModel name="periodType" required>
+                <select id="account-period-type" class="basic-input form-control"
+                    [(ngModel)]="inputModel.selectedPeriodTypeId" name="periodType" [disabled]="inputModel.editMode"
+                    required>
                     <option *ngFor="let item of viewModel?.periodTypeViewModels" [value]="item.id">
                         {{item.name}}</option>
                 </select>
@@ -27,7 +30,8 @@
         <div class="row">
             <div class="col-md-4">
                 <label for="account-type">Account Type</label>
-                <select id="account-type" class="basic-input form-control" ngModel name="accountTypeId" required>
+                <select id="account-type" class="basic-input form-control"
+                    [(ngModel)]="inputModel.selectedAccountTypeId" name="accountTypeId" required>
                     <option *ngFor="let item of viewModel?.accountTypeViewModels" [value]="item.id">
                         {{item.name}}</option>
                 </select>
@@ -123,7 +127,7 @@
             <div class="col-md-4">
                 <label for="account-group">Account Group</label>
                 <select id="account-group" class="basic-input form-control"
-                    [(ngModel)]="inputModel.selectedAccountGroup" name="accountGroupId" required>
+                    [(ngModel)]="inputModel.selectedAccountGroupId" name="accountGroupId" required>
                     <option *ngFor="let accountGroup of viewModel?.accountGroupViewModels" [value]="accountGroup.id">
                         {{accountGroup.name}}</option>
                 </select>
@@ -134,7 +138,7 @@
         </div> -->
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-outline-dark">Close</button>
+                <button type="button" class="btn btn-outline-dark" (click)="onClose()">Close</button>
                 <button [disabled]="f.invalid" type="submit" class="btn btn-outline-dark">Submit</button>
             </div>
         </div>

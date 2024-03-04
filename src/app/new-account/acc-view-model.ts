@@ -1,12 +1,31 @@
-import { BasicAccountIncluded, SelectableItem } from '../services/models';
+import {
+  BasicAccountIncluded,
+  EditAccountViewModel,
+  SelectableItem,
+} from '../services/models';
 
 export class AccountViewModel {
   amount: number = 0;
+  accountName: string;
   selectedParentAccs: BasicAccountIncluded[] = [];
   selectedCurrencyId: number | undefined;
   selectedFinancialEntityId: number | undefined;
-  selectedAccountGroup: number | undefined;
+  selectedAccountGroupId: number | undefined;
   selectedSpendTypeId: number | undefined;
+  selectedPeriodTypeId: number | undefined;
+  selectedAccountTypeId: number | undefined;
   editMode: boolean = false;
-  selectedMethodIds: { [key: string]: SelectableItem | undefined } = {};
+  selectedMethodIds: { [accountId: string]: SelectableItem | undefined } = {};
+
+  public setValues(viewModel: EditAccountViewModel): void {
+    this.amount = viewModel.baseBudget;
+    this.selectedCurrencyId = viewModel.currencyViewModels.find(x => x.isSelected)?.id;
+    this.selectedFinancialEntityId = viewModel.financialEntityViewModels.find(x => x.isSelected)?.id;
+    this.selectedAccountGroupId = viewModel.accountGroupViewModels.find(x => x.isSelected)?.id;
+    this.selectedSpendTypeId = viewModel.spendTypeViewModels.find(x => x.isSelected)?.id;
+    this.selectedPeriodTypeId = viewModel.periodTypeViewModels.find(x => x.isSelected)?.id;
+    this.selectedAccountTypeId = viewModel.accountTypeViewModels.find(x => x.isSelected)?.id;
+    this.editMode = true;
+    this.accountName = viewModel.accountName;
+  }
 }
