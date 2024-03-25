@@ -11,6 +11,7 @@ import {
 import { AccountViewApiService } from '../services/account-view-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountViewModel } from './acc-view-model';
+import { NavigationService } from '../services/navigation.service';
 
 @Component({
   selector: 'app-new-account',
@@ -35,7 +36,8 @@ export class NewAccountComponent implements OnInit {
   constructor(
     private apiService: AccountViewApiService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private navigation: NavigationService
   ) { }
 
   ngOnInit(): void {
@@ -61,7 +63,7 @@ export class NewAccountComponent implements OnInit {
   }
 
   onClose() {
-    this.router.navigate(['/accounts']);
+    this.navigation.goBack();
   }
 
   private editAccountNgOnInit(accountId: number) {

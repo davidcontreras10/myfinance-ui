@@ -14,12 +14,13 @@ import {
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
 import { DragGridPosition } from '../draggable-grid/model';
+import { NavigationService } from './navigation.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountViewApiService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private navigation: NavigationService) { }
 
   public getEditAccountViewModel(
     accountId: number
