@@ -245,6 +245,12 @@ export class NewAccountComponent implements OnInit {
   private submitEditAccount(form: NgForm) {
     const requestModel = this.readEditSubmitModel(form);
     console.log('Request Model:', requestModel);
+    if (requestModel) {
+      this.apiService.editAccount(requestModel).subscribe(() => {
+        alert('Account edited');
+        this.router.navigate(['/accounts']);
+      });
+    }
   }
 
   private submitNewAccount(form: NgForm): void {

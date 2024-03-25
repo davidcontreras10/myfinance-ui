@@ -7,6 +7,7 @@ import {
   AccountViewModel,
   AddNewAccountViewModel,
   BasicAccountIncluded,
+  EditAccountRequestModel,
   EditAccountViewModel,
   NewAccountRequestModel,
 } from './models';
@@ -35,6 +36,11 @@ export class AccountViewApiService {
           return accountInfo;
         })
       );
+  }
+
+  public editAccount(model: EditAccountRequestModel): Observable<void> {
+    return this.httpClient.patch<void>(`${environment.baseApi}/api/Accounts`,
+      model);
   }
 
   public addNewAccount(model: NewAccountRequestModel): Observable<void> {
