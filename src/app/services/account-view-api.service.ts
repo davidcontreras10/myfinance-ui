@@ -8,7 +8,7 @@ import {
   AddNewAccountViewModel,
   BasicAccountIncluded,
   EditAccountViewModel,
-  NewAccountViewModel,
+  NewAccountRequestModel,
 } from './models';
 import { environment } from 'src/environments/environment';
 import { Observable, map } from 'rxjs';
@@ -18,7 +18,7 @@ import { DragGridPosition } from '../draggable-grid/model';
   providedIn: 'root',
 })
 export class AccountViewApiService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   public getEditAccountViewModel(
     accountId: number
@@ -37,7 +37,7 @@ export class AccountViewApiService {
       );
   }
 
-  public addNewAccount(model: NewAccountViewModel): Observable<void> {
+  public addNewAccount(model: NewAccountRequestModel): Observable<void> {
     return this.httpClient.post<void>(
       `${environment.baseApi}/api/Accounts`,
       model

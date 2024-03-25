@@ -37,7 +37,6 @@ export class AccountsGroupsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('accountGroups', this.viewModel.accountGroups);
   }
 
   getPlaceholder(): string {

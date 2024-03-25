@@ -230,7 +230,7 @@ export interface AccountInclude {
   currencyConverterMethodId: number;
 }
 
-export class NewAccountViewModel {
+export class NewAccountRequestModel {
   baseBudget: number;
   accountName: string;
   headerColor: AccountStyle;
@@ -241,4 +241,22 @@ export class NewAccountViewModel {
   financialEntityId: number;
   accountGroupId: number;
   accountIncludes: AccountInclude[];
+}
+
+export class EditAccountRequestModel {
+  constructor(public accountId: number) {
+
+  }
+
+  baseBudget: number;
+  accountName: string;
+  headerColor: AccountStyle;
+  periodDefinitionId: number;
+  currencyId: number;
+  accountTypeId: number;
+  spendTypeId: number;
+  financialEntityId: number;
+  accountGroupId: number;
+  accountIncludes: AccountInclude[];
+  editAccountFields: number[] = [];
 }

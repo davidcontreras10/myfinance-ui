@@ -76,7 +76,7 @@
         </div>
         <div class="row" *ngIf="inputModel.selectedCurrencyId">
             <div class="col-lg-4">
-                <label for="parent-accounts">Include in accounts...</label>
+                <label for="parent-accounts">Parent accounts...</label>
                 <select id="parent-accounts" class="basic-input form-control" multiple>
                     <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item.id"
                         (click)="accountIncludeClick(item)">
@@ -91,14 +91,14 @@
                 <table class="table table-bordered table-low-margin">
                     <thead>
                         <tr>
-                            <th data-field="Budget">Account</th>
+                            <th data-field="Budget">Parent Account</th>
                             <th data-field="Spent">Exchange</th>
                             <th data-field="Balance">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let parAccount of inputModel.selectedParentAccs">
-                            <td>{{parAccount.name}} - {{parAccount.id}}</td>
+                            <td>{{parAccount.name}}</td>
                             <td>
                                 <select class="basic-input form-control" [name]="'acci-' + parAccount.id"
                                     [(ngModel)]="inputModel.selectedMethodIds[parAccount.id]" required>
@@ -133,17 +133,14 @@
                 </select>
             </div>
         </div>
-        <!-- <div>
-            {{f.value| json}}
-        </div> -->
+        <div>
+            {{inputModel.selectedMethodIds| json}}
+        </div>
         <div class="row">
             <div class="col">
                 <button type="button" class="btn btn-outline-dark" (click)="onClose()">Close</button>
-                <button [disabled]="f.invalid" type="submit" class="btn btn-outline-dark">Submit</button>
+                <button [disabled]="f.invalid" type="submit" class="btn btn-outline-dark">Save</button>
             </div>
-        </div>
-        <div>
-            {{inputModel.selectedMethodIds | json}}
         </div>
     </div>
 </form>

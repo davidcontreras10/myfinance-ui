@@ -4,7 +4,9 @@ import {
   AccountInclude,
   AddNewAccountViewModel,
   BasicAccountIncluded,
-  NewAccountViewModel,
+  EditAccountRequestModel,
+  EditAccountViewModel,
+  NewAccountRequestModel,
 } from '../services/models';
 import { AccountViewApiService } from '../services/account-view-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +21,16 @@ export class NewAccountComponent implements OnInit {
 
   viewModel: AddNewAccountViewModel;
   inputModel: AccountViewModel = new AccountViewModel();
+  accountFiedlds: { [fieldId: string]: number } = {
+    'accountName': 1,
+    'baseBudget': 4,
+    'headerColor': 5,
+    'accountTypeId': 6,
+    'spendTypeId': 7,
+    'financialEntityId': 8,
+    'accountIncludes': 9,
+    'accountGroupId': 10
+  }
 
   constructor(
     private apiService: AccountViewApiService,
@@ -72,10 +84,91 @@ export class NewAccountComponent implements OnInit {
     });
   }
 
-  private readSubmitModel(form: NgForm): NewAccountViewModel | null {
+  private readEditSubmitModel(form: NgForm): EditAccountRequestModel | null {
+    const viewModel = this.getIfEditModel();
+    if (viewModel) {
+      const controls = form.controls;
+      console.log('Edit Form:', form);
+      const requestModel = new EditAccountRequestModel(viewModel.accountId);
+      if (controls['accountName'].dirty) {
+        requestModel.accountName = this.inputModel.accountName;
+        requestModel.editAccountFields.push(this.accountFiedlds['accountName']);
+      }
+
+      if (controls['baseBudget'].dirty) {
+        requestModel.baseBudget = this.inputModel.amount;
+        requestModel.editAccountFields.push(this.accountFiedlds['baseBudget']);
+      }
+
+      if (controls['accountTypeId'].dirty) {
+        requestModel.accountTypeId = this.inputModel.selectedAccountTypeId ?? 0;
+        requestModel.editAccountFields.push(this.accountFiedlds['accountTypeId']);
+      }
+
+      if (controls['financialEntityId'].dirty) {
+        requestModel.financialEntityId = this.inputModel.selectedFinancialEntityId ?? 0;
+        requestModel.editAccountFields.push(this.accountFiedlds['financialEntityId']);
+      }
+
+      if (controls['spendTypeId'].dirty) {
+        requestModel.spendTypeId = this.inputModel.selectedSpendTypeId ?? 0;
+        requestModel.editAccountFields.push(this.accountFiedlds['spendTypeId']);
+      }
+
+      if (controls['accountGroupId'].dirty) {
+        requestModel.accountGroupId = this.inputModel.selectedAccountGroupId ?? 0;
+        requestModel.editAccountFields.push(this.accountFiedlds['accountGroupId']);
+      }
+
+      if (this.isAccountIncludeModified()) {
+        requestModel.editAccountFields.push(this.accountFiedlds['accountIncludes']);
+        requestModel.accountIncludes = this.readAccountIncludes(viewModel.accountId);
+      }
+
+      if (controls['headerColor'].dirty || controls['borderColor'].dirty) {
+        requestModel.headerColor = {
+          headerColor: form.value.headerColor,
+          borderColor: form.value.borderColor,
+        };
+        requestModel.editAccountFields.push(this.accountFiedlds['headerColor']);
+      }
+
+      return requestModel;
+    }
+    return null;
+  }
+
+  private isAccountIncludeModified(): boolean {
+    const selectedAccountIncludes = this.viewModel.accountIncludeViewModels.filter(x => x.isSelected);
+    const acciCount = Object.keys(this.inputModel.selectedMethodIds).length;
+    if (acciCount !== selectedAccountIncludes.length) {
+      return true;
+    }
+    for (let acci of selectedAccountIncludes) {
+      const inputAcciMethod = this.inputModel.selectedMethodIds[acci.id.toString()];
+      if (inputAcciMethod) {
+        const vmSelectedMethod = acci.methodIds.find(m => m.isSelected);
+        if (vmSelectedMethod) {
+          if (vmSelectedMethod.id != inputAcciMethod.id) {
+            return true;
+          }
+        }
+        else {
+          return true;
+        }
+      }
+      else {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private readNewSubmitModel(form: NgForm): NewAccountRequestModel | null {
     if (form.valid) {
       const formValue = form.value;
-      const model = new NewAccountViewModel();
+      const model = new NewAccountRequestModel();
       model.accountGroupId = Number.parseInt(formValue.accountGroupId);
       model.baseBudget = formValue.baseBudget;
       model.accountName = formValue.accountName;
@@ -96,7 +189,7 @@ export class NewAccountComponent implements OnInit {
     return null;
   }
 
-  private readAccountIncludes(): AccountInclude[] {
+  private readAccountIncludes(accountId: number = 0): AccountInclude[] {
     const accArray: AccountInclude[] = [];
     if (this.inputModel.selectedMethodIds) {
       const methodsArray = this.inputModel.selectedMethodIds;
@@ -105,7 +198,7 @@ export class NewAccountComponent implements OnInit {
           const method = methodsArray[key];
           if (method) {
             const accInclude = {
-              accountId: 0,
+              accountId: accountId,
               accountIncludeId: Number.parseInt(key),
               currencyConverterMethodId: method.id,
             };
@@ -119,9 +212,13 @@ export class NewAccountComponent implements OnInit {
     return accArray;
   }
 
-  private loadAccountIncludes() {
+  private loadAccountIncludes(preserveAccSelection: boolean = false) {
     this.inputModel.selectedMethodIds = {};
     this.viewModel.accountIncludeViewModels = [];
+    let tempSelectedParentAccs: number[] = [];
+    if (preserveAccSelection) {
+      tempSelectedParentAccs = this.inputModel.selectedParentAccs.map(x => x.id);
+    }
     this.inputModel.selectedParentAccs = [];
     if (
       this.inputModel.selectedCurrencyId &&
@@ -134,12 +231,24 @@ export class NewAccountComponent implements OnInit {
         )
         .subscribe((res) => {
           this.viewModel.accountIncludeViewModels = res;
+          if (preserveAccSelection) {
+            for (let accId of tempSelectedParentAccs) {
+              const acc = this.viewModel.accountIncludeViewModels.find(acci => acci.id === accId);
+              if (acc)
+                this.accountIncludeClick(acc);
+            }
+          }
         });
     }
   }
 
-  submit(form: NgForm) {
-    const submitModel = this.readSubmitModel(form);
+  private submitEditAccount(form: NgForm) {
+    const requestModel = this.readEditSubmitModel(form);
+    console.log('Request Model:', requestModel);
+  }
+
+  private submitNewAccount(form: NgForm): void {
+    const submitModel = this.readNewSubmitModel(form);
     if (submitModel) {
       this.apiService.addNewAccount(submitModel).subscribe(() => {
         alert('Account created');
@@ -148,12 +257,31 @@ export class NewAccountComponent implements OnInit {
     }
   }
 
+  private getIfEditModel(): EditAccountViewModel | null {
+    // Check if the object has the necessary properties to match MyInterface
+    if ('accountId' in this.viewModel) {
+      // Type assertion: Assert that obj matches MyInterface
+      return this.viewModel as EditAccountViewModel;
+    } else {
+      return null;
+    }
+  }
+
+  submit(form: NgForm) {
+    if (!this.inputModel.editMode) {
+      this.submitNewAccount(form);
+    }
+    else {
+      this.submitEditAccount(form);
+    }
+  }
+
   onCurrencyChanged() {
     this.loadAccountIncludes();
   }
 
   onFianancialEntityChanged() {
-    this.loadAccountIncludes();
+    this.loadAccountIncludes(true);
   }
 
   getIncludedAccounts(): BasicAccountIncluded[] {
