@@ -54,16 +54,16 @@ export class NewAccountComponent implements OnInit {
         this.editAccountNgOnInit(accountId);
       } else {
         console.log('Invalid account Id');
-        this.router.navigate(['/accounts']);
+        this.navigation.goBack(['/accounts']);
       }
     } else {
       console.log('Handling other scenarios');
-      this.router.navigate(['/accounts']);
+      this.navigation.goBack(['/accounts']);
     }
   }
 
   onClose() {
-    this.navigation.goBack();
+    this.navigation.goBack(['/accounts']);
   }
 
   private editAccountNgOnInit(accountId: number) {
@@ -250,7 +250,7 @@ export class NewAccountComponent implements OnInit {
     if (requestModel) {
       this.apiService.editAccount(requestModel).subscribe(() => {
         alert('Account edited');
-        this.router.navigate(['/accounts']);
+        this.navigation.goBack(['/accounts']);
       });
     }
   }
@@ -260,7 +260,7 @@ export class NewAccountComponent implements OnInit {
     if (submitModel) {
       this.apiService.addNewAccount(submitModel).subscribe(() => {
         alert('Account created');
-        this.router.navigate(['/accounts']);
+        this.navigation.goBack(['/accounts']);
       });
     }
   }

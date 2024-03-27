@@ -9,7 +9,7 @@ import {
   NavBarServiceService,
 } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountViewModelService } from '../services/account-view-model.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-accounts',
@@ -22,29 +22,42 @@ export class AccountsComponent implements OnInit {
   originalPositions: DragGridPosition[] | null = null;
   currentPositions: DragGridPosition[] | null = null;
   canSavePositions: boolean = false;
+  initalLoad: boolean = true;
 
   constructor(
     public viewModel: AccountViewModelService,
     private apiService: AccountViewApiService,
     private modalService: NgbModal,
     private menuService: NavBarServiceService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-    this.menuService
-      .getSubMenuEvents(
-        NavBarMenusIds.ACCOUNT_GROUPS,
-        NavBarMenusIds.NEW_ACCOUNT
-      )
-      .subscribe((res) => {
-        if (res === NavBarMenusIds.ACCOUNT_GROUPS) {
-          this.openAccountGroupsModal();
-        } else if (res === NavBarMenusIds.NEW_ACCOUNT) {
-          this.router.navigate(['accounts/new']);
+    if (this.initalLoad) {
+      console.log('Initial Load');
+      this.initalLoad = false;
+      this.menuService
+        .getSubMenuEvents(
+          NavBarMenusIds.ACCOUNT_GROUPS,
+          NavBarMenusIds.NEW_ACCOUNT
+        )
+        .subscribe((res) => {
+          if (res === NavBarMenusIds.ACCOUNT_GROUPS) {
+            this.openAccountGroupsModal();
+          } else if (res === NavBarMenusIds.NEW_ACCOUNT) {
+            this.router.navigate(['accounts/new']);
+          }
+        });
+
+      this.route.queryParams.subscribe(params => {
+        if (!this.accountGroupId) {
+          console.log('loading accountGroupId');
+          this.accountGroupId = Number.parseInt(params['accountGroupId']);
+          this.loadMainData(this.accountGroupId);
         }
       });
-    this.loadMainData();
+    }
   }
 
   openAccountGroupsModal() {
@@ -74,6 +87,7 @@ export class AccountsComponent implements OnInit {
       .getAccountsByAccountGroup(this.accountGroupId)
       .subscribe((res) => {
         this.setDraggableGridAccounts(res);
+        this.router.navigate([], { relativeTo: this.route, queryParams: { accountGroupId: this.accountGroupId } });
       });
   }
 
@@ -116,13 +130,19 @@ export class AccountsComponent implements OnInit {
     this.canSavePositions = false;
   }
 
-  private loadMainData() {
+  private loadMainData(accountGroupId: number | null) {
     this.apiService.getMainViewModel(this.accountGroupId).subscribe((res) => {
       this.viewModel.accountGroups = res.accountGroupViewModels;
-      this.accountGroupId =
-        !this.accountGroupId && this.viewModel.accountGroups.length > 0
-          ? this.viewModel.accountGroups[0].accountGroupId
-          : null;
+      if (!accountGroupId) {
+        this.accountGroupId =
+          !this.accountGroupId && this.viewModel.accountGroups.length > 0
+            ? this.viewModel.accountGroups[0].accountGroupId
+            : null;
+      }
+      else {
+        this.accountGroupId = accountGroupId;
+      }
+
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }

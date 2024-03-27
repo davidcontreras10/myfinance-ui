@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class NavigationService {
     });
   }
 
-  goBack(): void {
+  goBack(defaultNavigation: any[], extras?: NavigationExtras): void {
     if (this.history.length > 1) {
       this.history.pop(); // Current route
       const previousUrl = this.history.pop(); // Previous route
@@ -23,7 +23,7 @@ export class NavigationService {
         this.router.navigateByUrl(previousUrl);
       }
     } else {
-      // Handle if there's no previous route
+      this.router.navigate(defaultNavigation, extras);
     }
   }
 }
