@@ -25,7 +25,8 @@ export class MainNavBarComponent implements OnInit {
         isActive: false, name: 'Accounts', routingLink: '/accounts', subMenus: [
           { id: NavBarMenusIds.ACCOUNT_GROUPS, name: 'Manager Account Groups' },
           { id: NavBarMenusIds.NEW_ACCOUNT, name: 'New Account...' }
-        ]
+        ],
+        routingRegexPattern: /^\/accounts(\?.*)?$/
       },
       { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' }
     ];
@@ -49,7 +50,8 @@ export class MainNavBarComponent implements OnInit {
 
   private onNavigationChanged(event: NavigationStart) {
     this.items.forEach(item => {
-      item.isActive = event.url === item.routingLink
+      console.log(`EventUrl: ${event.url} - item routing link: ${item.routingLink}`)
+      item.isActive = event.url === item.routingLink || (!!item.routingRegexPattern && item.routingRegexPattern.test(event.url))
     })
   }
 

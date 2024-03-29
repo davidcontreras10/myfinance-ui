@@ -1,4 +1,4 @@
-export class SubMenu{
+export class SubMenu {
     public name: string = '';
     public id: string = '';
 }
@@ -8,4 +8,5 @@ export class NavMenuItem {
     public isActive: boolean = false;
     public subMenus?: SubMenu[] = [];
     public routingLink?: string;
+    public routingRegexPattern?: RegExp;
 }

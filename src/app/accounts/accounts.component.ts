@@ -46,7 +46,7 @@ export class AccountsComponent implements OnInit {
           if (res === NavBarMenusIds.ACCOUNT_GROUPS) {
             this.openAccountGroupsModal();
           } else if (res === NavBarMenusIds.NEW_ACCOUNT) {
-            this.router.navigate(['accounts/new']);
+            this.router.navigate(['accounts/new'], { queryParams: { accountGroupId: this.accountGroupId } });
           }
         });
 
