@@ -34,6 +34,7 @@ export class AccountsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('ngOnInit');
     if (this.initalLoad) {
       console.log('Initial Load');
       this.initalLoad = false;
@@ -51,10 +52,11 @@ export class AccountsComponent implements OnInit {
         });
 
       this.route.queryParams.subscribe(params => {
+        console.log('queryParams');
         if (!this.accountGroupId) {
-          console.log('loading accountGroupId');
-          this.accountGroupId = Number.parseInt(params['accountGroupId']);
-          this.loadMainData(this.accountGroupId);
+          const accountGroupId = Number.parseInt(params['accountGroupId']);
+          console.log('loading accountGroupId', accountGroupId);
+          this.loadMainData(accountGroupId);
         }
       });
     }
@@ -142,7 +144,7 @@ export class AccountsComponent implements OnInit {
       else {
         this.accountGroupId = accountGroupId;
       }
-
+      console.log('New accountGroupId', this.accountGroupId);
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }

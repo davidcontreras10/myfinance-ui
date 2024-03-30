@@ -5,6 +5,7 @@
             <label>Account Groups:</label>
             <select [(ngModel)]="accountGroupId" name="currencyId" class="form-select"
                 (change)="onAccountGroupChanged($event)" id="transfer-amount-currency-select">
+                <option [ngValue]="null">Select an account group</option>
                 <option *ngFor="let item of viewModel.accountGroups" [value]="item.accountGroupId">
                     {{item.accountGroupName}}</option>
             </select>

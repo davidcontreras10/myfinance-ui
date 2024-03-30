@@ -50,7 +50,6 @@ export class MainNavBarComponent implements OnInit {
 
   private onNavigationChanged(event: NavigationStart) {
     this.items.forEach(item => {
-      console.log(`EventUrl: ${event.url} - item routing link: ${item.routingLink}`)
       item.isActive = event.url === item.routingLink || (!!item.routingRegexPattern && item.routingRegexPattern.test(event.url))
     })
   }
