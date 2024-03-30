@@ -1,1 +1,37 @@
-<p>accounts works!</p>
+<div class="container-fluid text-center">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <label>Account Groups:</label>
+            <select [(ngModel)]="accountGroupId" name="currencyId" class="form-select"
+                (change)="onAccountGroupChanged($event)" id="transfer-amount-currency-select">
+                <option [ngValue]="null">Select an account group</option>
+                <option *ngFor="let item of viewModel.accountGroups" [value]="item.accountGroupId">
+                    {{item.accountGroupName}}</option>
+            </select>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" style="text-align: left;">
+            <button class="btn btn-secondary" (click)="onSavePositions()" [disabled]="!canSavePositions">Save
+                positions</button>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" *ngIf="dragGridItems">
+            <app-draggable-grid [columnsNumber]="2" [dataSource]="dragGridItems"
+                (positionsChanged)="onPositionsChanged($event)" (itemClicked)="onItemClick($event)">
+                <ng-template let-item>
+                    <span style="font-weight: bold;">{{item.name}} </span><br />
+                    <button style="margin: 5px;" type="button" class="btn btn-outline-secondary"
+                        (click)="onEditClick(item.id)">Edit</button>
+                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                </ng-template>
+            </app-draggable-grid>
+        </div>
+    </div>
+</div>

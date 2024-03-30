@@ -20,3 +20,8 @@ export class NavBarServiceService {
     );
   }
 }
+
+export enum NavBarMenusIds {
+  ACCOUNT_GROUPS = 'account-groups',
+  NEW_ACCOUNT = 'new-account'
+}
