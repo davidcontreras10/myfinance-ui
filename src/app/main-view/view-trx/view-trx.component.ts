@@ -35,6 +35,7 @@ export class ViewTrxComponent implements OnInit {
 
   public trxViewModel?: TransactionViewModel;
   public selectedSpendTypeId: number;
+  public selectedtrxType: number;
 
   constructor(public activeModal: NgbActiveModal, private mainViewApiService: MainViewApiService, private mainViewModel: MainViewModel) { }
 
@@ -54,6 +55,7 @@ export class ViewTrxComponent implements OnInit {
       if (this.trxViewModel.selectedSpendTypeId) {
         this.selectedSpendTypeId = this.trxViewModel.selectedSpendTypeId
       }
+      this.selectedtrxType = this.trxViewModel.trxTypeId;
     }
   }
 

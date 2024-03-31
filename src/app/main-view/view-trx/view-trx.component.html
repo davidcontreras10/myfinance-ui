@@ -11,15 +11,15 @@
                     <label>Transaction type:</label>
                     <div class="radio">
                         <label for="amount-spend-type">
-                            <input required ngModel type="radio" id="amount-spend-type" name="trxType" [value]="1"
-                                [checked]="trxViewModel?.trxTypeId === 1">
+                            <input required [(ngModel)]="selectedtrxType" type="radio" id="amount-spend-type"
+                                name="trxType" [value]="1" [checked]="trxViewModel?.trxTypeId === 1">
                             Expense
                         </label>
                     </div>
                     <div class="radio">
                         <label for="amount-income-type">
-                            <input required ngModel type="radio" id="amount-income-type" name="trxType" [value]="2"
-                                [checked]="trxViewModel?.trxTypeId === 2">
+                            <input required [(ngModel)]="selectedtrxType" type="radio" id="amount-income-type"
+                                name="trxType" [value]="2" [checked]="trxViewModel?.trxTypeId === 2">
                             Income
                         </label>
                     </div>
@@ -54,7 +54,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="description-view">Description:</label>
-                    <input ngModel [minlength]="3" [maxlength]="100" class="form-control" name="description"
+                    <input ngModel [minlength]="1" [maxlength]="100" class="form-control" name="description"
                         id="description-view" type="text" [value]="trxViewModel?.description" />
                 </div>
             </div>

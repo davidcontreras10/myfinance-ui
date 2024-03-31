@@ -52,10 +52,8 @@ export class AccountsComponent implements OnInit {
         });
 
       this.route.queryParams.subscribe(params => {
-        console.log('queryParams');
         if (!this.accountGroupId) {
           const accountGroupId = Number.parseInt(params['accountGroupId']);
-          console.log('loading accountGroupId', accountGroupId);
           this.loadMainData(accountGroupId);
         }
       });
@@ -144,7 +142,6 @@ export class AccountsComponent implements OnInit {
       else {
         this.accountGroupId = accountGroupId;
       }
-      console.log('New accountGroupId', this.accountGroupId);
       this.setDraggableGridAccounts(res.accountDetailsViewModels);
     });
   }
