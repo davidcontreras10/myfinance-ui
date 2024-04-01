@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DragGridItem, DragGridPosition } from '../draggable-grid/model';
 import { AccountViewApiService } from '../services/account-view-api.service';
 import { AccountViewModel } from '../services/models';
@@ -10,19 +10,21 @@ import {
 } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountViewModelService } from '../services/account-view-model.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css'],
 })
-export class AccountsComponent implements OnInit {
+export class AccountsComponent implements OnInit, OnDestroy {
   accountGroupId: number | null = null;
   dragGridItems: DragGridItem[] | null = null;
   originalPositions: DragGridPosition[] | null = null;
   currentPositions: DragGridPosition[] | null = null;
   canSavePositions: boolean = false;
   initalLoad: boolean = true;
+  menuSub: Subscription;
 
   constructor(
     public viewModel: AccountViewModelService,
@@ -32,19 +34,23 @@ export class AccountsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) { }
+  ngOnDestroy(): void {
+    this.menuSub.unsubscribe();
+  }
 
   ngOnInit(): void {
     console.log('ngOnInit');
     if (this.initalLoad) {
       console.log('Initial Load');
       this.initalLoad = false;
-      this.menuService
+      this.menuSub = this.menuService
         .getSubMenuEvents(
           NavBarMenusIds.ACCOUNT_GROUPS,
           NavBarMenusIds.NEW_ACCOUNT
         )
         .subscribe((res) => {
           if (res === NavBarMenusIds.ACCOUNT_GROUPS) {
+            console.log('openAccountGroupsModal');
             this.openAccountGroupsModal();
           } else if (res === NavBarMenusIds.NEW_ACCOUNT) {
             this.router.navigate(['accounts/new'], { queryParams: { accountGroupId: this.accountGroupId } });
