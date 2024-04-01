@@ -30,5 +30,6 @@ export class AccountViewModelService {
     }
 
     this.accountGroups.push(model);
+    this.accountGroups = this.accountGroups.sort((a, b) => a.accountGroupPosition - b.accountGroupPosition);
   }
 }
