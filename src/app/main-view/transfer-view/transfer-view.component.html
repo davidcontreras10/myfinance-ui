@@ -41,7 +41,8 @@
                     <div class="row" *ngIf="f.value.balanceType === BalanceTypes.Custom">
                         <div class="col-md-6">
                             <input required ngModel class="form-control" type="number" name="amount"
-                                placeholder="Custom Amount" />
+                                placeholder="Custom Amount"
+                                pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
                         </div>
                         <div class="col-md-6">
                             <select [(ngModel)]="selectedCurrencyId" name="currencyId" class="form-select"
@@ -115,7 +116,8 @@
                 <label for="new-transfer-description">Description:</label>
             </div>
             <div class="col-md-7">
-                <input [minlength]="3" [maxlength]="100" class="form-control" ngModel name="description" type="text" id="new-transfer-description" />
+                <input [minlength]="3" [maxlength]="100" class="form-control" ngModel name="description" type="text"
+                    id="new-transfer-description" />
             </div>
         </div>
     </div>
