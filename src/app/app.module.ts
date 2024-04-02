@@ -43,6 +43,7 @@ import { DraggableGridComponent } from './draggable-grid/draggable-grid.componen
 import { AccountsGroupsComponent } from './accounts/accounts-groups/accounts-groups.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
+import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { TransactionTypesComponent } from './transaction-types/transaction-types
     DraggableGridComponent,
     AccountsGroupsComponent,
     NewAccountComponent,
-    TransactionTypesComponent
+    TransactionTypesComponent,
+    TransactionTypesTableComponent
   ],
   imports: [
     BrowserModule,

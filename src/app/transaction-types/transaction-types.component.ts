@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TrxTypeServiceService } from '../services/trx-type-service.service';
 import { TrxTypeViewModel } from '../services/models';
+import { TextCangedArgs } from './models';
 
 @Component({
   selector: 'app-transaction-types',
@@ -8,6 +9,7 @@ import { TrxTypeViewModel } from '../services/models';
   styleUrls: ['./transaction-types.component.css']
 })
 export class TransactionTypesComponent implements OnInit {
+
   private transactionTypes: TrxTypeViewModel[] = [];
 
   constructor(private apiService: TrxTypeServiceService) { }
@@ -18,15 +20,15 @@ export class TransactionTypesComponent implements OnInit {
     })
   }
 
-  onTextChanged($event: FocusEvent, trxTypeElement: TrxTypeViewModel, isNameField: boolean) {
-    const element = $event.target as HTMLElement;
-    if (element) {
-      const fieldValue = isNameField ? trxTypeElement.name : trxTypeElement.description;
-      if (fieldValue !== element.innerText) {
-        console.log('Should change value', element.innerText);
-      }
+  onTextChanged($event: TextCangedArgs) {
+    if ($event.isNameField) {
+      $event.trxType.name = $event.newValue + 'edited'
+    }
+    else {
+      $event.trxType.description = $event.newValue + 'edited'
     }
   }
+
   allItems(): TrxTypeViewModel[] {
     return this.transactionTypes.filter(x => !x.isSelected);;
   }
