@@ -260,3 +260,7 @@ export class EditAccountRequestModel {
   accountIncludes: AccountInclude[];
   editAccountFields: number[] = [];
 }
+
+export interface TrxTypeViewModel extends SelectableItem {
+  description: string;
+}

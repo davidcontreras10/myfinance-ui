@@ -8,6 +8,7 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
 import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/new-scheduled-task.component';
 import { NewAccountComponent } from './new-account/new-account.component';
+import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 
 const routes: Routes = [
   { path: '', component: MainViewComponent, canActivate: [AuthGuard] },
@@ -33,10 +34,15 @@ const routes: Routes = [
     component: NewScheduledTaskComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'transaction-types',
+    component: TransactionTypesComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

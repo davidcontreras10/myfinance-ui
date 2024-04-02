@@ -28,7 +28,8 @@ export class MainNavBarComponent implements OnInit {
         ],
         routingRegexPattern: /^\/accounts(\?.*)?$/
       },
-      { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' }
+      { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' },
+      { isActive: false, name: 'Transaction Types', routingLink: '/transaction-types' }
     ];
 
     router.events.subscribe(value => {
