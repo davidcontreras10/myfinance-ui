@@ -21,12 +21,7 @@ export class TransactionTypesComponent implements OnInit {
   }
 
   onTextChanged($event: TextCangedArgs) {
-    if ($event.isNameField) {
-      $event.trxType.name = $event.newValue + 'edited'
-    }
-    else {
-      $event.trxType.description = $event.newValue + 'edited'
-    }
+
   }
 
   allItems(): TrxTypeViewModel[] {
