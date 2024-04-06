@@ -54,7 +54,7 @@ export class AddTrxComponent implements OnInit {
     return formValue as AddTrxRequest;
   }
 
-  private fixSuggestedDate(dirtyDate?: string): string | undefined {
+  private fixSuggestedDateFormat(dirtyDate?: string): string | undefined {
     if (dirtyDate) {
       const suggestedDate = new Date(dirtyDate);
       return Utils.toViewDateFormat(suggestedDate);
@@ -67,7 +67,7 @@ export class AddTrxComponent implements OnInit {
     if (this.accountPeriodId) {
       this.mainViewApiSerice.loadAddTrxData(this.accountPeriodId).subscribe(res => {
         if (res) {
-          res.suggestedDate = this.fixSuggestedDate(res.suggestedDate);
+          res.suggestedDate = this.fixSuggestedDateFormat(res.suggestedDate);
         }
         this.addTrxModel = res;
         this.assignDefaultSupportedCurrency();

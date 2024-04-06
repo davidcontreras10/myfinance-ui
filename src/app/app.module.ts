@@ -38,6 +38,10 @@ import { TaskDetailComponent } from './automatic-tasks/task-detail/task-detail.c
 import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.component';
 import { ExecutedTasksComponent } from './automatic-tasks/executed-tasks/executed-tasks.component';
 import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/new-scheduled-task.component';
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
+import { AccountsGroupsComponent } from './accounts/accounts-groups/accounts-groups.component';
+import { NewAccountComponent } from './new-account/new-account.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +72,10 @@ import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/
     TaskDetailComponent,
     TaskStatusComponent,
     ExecutedTasksComponent,
-    NewScheduledTaskComponent
+    NewScheduledTaskComponent,
+    DraggableGridComponent,
+    AccountsGroupsComponent,
+    NewAccountComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +88,8 @@ import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/
     BrowserAnimationsModule,
     NoopAnimationsModule,
     ReactiveFormsModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    DragDropModule
   ],
   providers: [
     MainSpinnerService,
