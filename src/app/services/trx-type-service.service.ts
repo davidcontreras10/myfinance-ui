@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TrxTypeViewModel } from './models';
+import { EditTrxTypeRequest, TrxTypeViewModel } from './models';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -15,9 +15,27 @@ export class TrxTypeServiceService {
     return `${environment.baseApi}/api/SpendTypes`;
   }
 
+  public editTrxTrype(request: EditTrxTypeRequest): Observable<TrxTypeViewModel> {
+    const url = this.getBaseUrl();
+    const params = new HttpParams().set('entireResponse', true);
+    return this.httpClient.patch<TrxTypeViewModel>(url, request, { params: params });
+  }
+
   public getAllTransactionTypes(): Observable<TrxTypeViewModel[]> {
     const url = this.getBaseUrl();
     return this.httpClient.get<TrxTypeViewModel[]>(url);
   }
 
+  public changeTrxTypeUserSelected(trxTypeId: number, newIsSelected: boolean): Observable<number[]> {
+    const url = `${this.getBaseUrl()}/${trxTypeId}/user`;
+    let method: Observable<number[]>;
+    if (newIsSelected) {
+      method = this.httpClient.post<number[]>(url, null);
+    }
+    else {
+      method = this.httpClient.delete<number[]>(url)
+    }
+
+    return method;
+  }
 }

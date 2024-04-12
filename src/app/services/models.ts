@@ -264,3 +264,10 @@ export class EditAccountRequestModel {
 export interface TrxTypeViewModel extends SelectableItem {
   description: string;
 }
+
+export interface EditTrxTypeRequest {
+  isSelected: boolean;
+  spendTypeId: number;
+  spendTypeName: string;
+  spendTypeDescription: string;
+}

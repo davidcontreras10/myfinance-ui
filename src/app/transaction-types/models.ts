@@ -1,7 +1,10 @@
 import { TrxTypeViewModel } from "../services/models";
 
-export interface TextCangedArgs {
+export interface TrxEventArgs {
     trxType: TrxTypeViewModel;
+}
+
+export interface TextChangedArgs extends TrxEventArgs {
     newValue: string;
     isNameField: boolean;
 }

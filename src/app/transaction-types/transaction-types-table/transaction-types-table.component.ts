@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TrxTypeViewModel } from 'src/app/services/models';
-import { TextCangedArgs } from '../models';
+import { TextChangedArgs, TrxEventArgs } from '../models';
 
 @Component({
   selector: 'app-transaction-types-table',
@@ -12,12 +12,33 @@ export class TransactionTypesTableComponent implements OnInit {
   @Input()
   transactionTypes: TrxTypeViewModel[] = [];
 
+  @Input()
+  myTable: boolean;
+
   @Output()
-  textChanged = new EventEmitter<TextCangedArgs>();
+  textChanged = new EventEmitter<TextChangedArgs>();
+
+  @Output()
+  deletedTrx = new EventEmitter<TrxEventArgs>();
+
+  @Output()
+  arrowClicked = new EventEmitter<TrxEventArgs>();
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onArrowClicked(trxTypeElement: TrxTypeViewModel) {
+    this.arrowClicked.emit({
+      trxType: trxTypeElement
+    });
+  }
+
+  onDeleteClicked(trxTypeElement: TrxTypeViewModel) {
+    this.deletedTrx.emit({
+      trxType: trxTypeElement
+    });
   }
 
   onTextChanged($event: FocusEvent, trxTypeElement: TrxTypeViewModel, isNameField: boolean) {
