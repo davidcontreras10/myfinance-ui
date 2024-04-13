@@ -44,6 +44,7 @@ import { AccountsGroupsComponent } from './accounts/accounts-groups/accounts-gro
 import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
+import { NewTransactionTypeComponent } from './transaction-types/new-transaction-type/new-transaction-type.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { TransactionTypesTableComponent } from './transaction-types/transaction-
     AccountsGroupsComponent,
     NewAccountComponent,
     TransactionTypesComponent,
-    TransactionTypesTableComponent
+    TransactionTypesTableComponent,
+    NewTransactionTypeComponent
   ],
   imports: [
     BrowserModule,

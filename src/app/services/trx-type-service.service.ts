@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EditTrxTypeRequest, TrxTypeViewModel } from './models';
+import { EditTrxTypeRequest, NewTrxTypeRequest, TrxTypeViewModel } from './models';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -15,7 +15,13 @@ export class TrxTypeServiceService {
     return `${environment.baseApi}/api/SpendTypes`;
   }
 
-  public editTrxTrype(request: EditTrxTypeRequest): Observable<TrxTypeViewModel> {
+  public newTrxType(request: NewTrxTypeRequest): Observable<TrxTypeViewModel> {
+    const url = this.getBaseUrl();
+    const params = new HttpParams().set('entireResponse', true);
+    return this.httpClient.post<TrxTypeViewModel>(url, request, { params: params });
+  }
+
+  public editTrxType(request: EditTrxTypeRequest): Observable<TrxTypeViewModel> {
     const url = this.getBaseUrl();
     const params = new HttpParams().set('entireResponse', true);
     return this.httpClient.patch<TrxTypeViewModel>(url, request, { params: params });

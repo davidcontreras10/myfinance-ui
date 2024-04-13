@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TrxTypeServiceService } from '../services/trx-type-service.service';
 import { TrxTypeViewModel } from '../services/models';
-import { TextChangedArgs, TrxEventArgs } from './models';
+import { NewTrxTypeDialogResult, TextChangedArgs, TrxEventArgs } from './models';
+import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NewTransactionTypeComponent } from './new-transaction-type/new-transaction-type.component';
 
 @Component({
   selector: 'app-transaction-types',
@@ -12,12 +15,25 @@ export class TransactionTypesComponent implements OnInit {
 
   private transactionTypes: TrxTypeViewModel[] = [];
 
-  constructor(private apiService: TrxTypeServiceService) { }
+  constructor(private apiService: TrxTypeServiceService, private menuService: NavBarServiceService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    this.menuService
+      .getSubMenuEvents(
+        NavBarMenusIds.NEW_TRX_TYPE
+      ).subscribe((res) => {
+        const modal = this.modalService.open(NewTransactionTypeComponent, { backdrop: true, size: 'lg' });
+        modal.result.then((res) => {
+          const result = <NewTrxTypeDialogResult>res;
+          if (result.success && result.value) {
+            this.transactionTypes.push(result.value);
+          }
+        })
+      });
+
     this.apiService.getAllTransactionTypes().subscribe(res => {
       this.transactionTypes = res;
-    })
+    });
   }
 
   onArrowChanged($event: TrxEventArgs) {
@@ -47,7 +63,7 @@ export class TransactionTypesComponent implements OnInit {
     else {
       requestModel.spendTypeDescription = $event.newValue;
     }
-    this.apiService.editTrxTrype(requestModel).subscribe(res => {
+    this.apiService.editTrxType(requestModel).subscribe(res => {
       this.updateReloadedTrxType(res);
     })
   }

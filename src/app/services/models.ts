@@ -265,9 +265,12 @@ export interface TrxTypeViewModel extends SelectableItem {
   description: string;
 }
 
-export interface EditTrxTypeRequest {
+export interface NewTrxTypeRequest {
   isSelected: boolean;
-  spendTypeId: number;
   spendTypeName: string;
   spendTypeDescription: string;
+}
+
+export interface EditTrxTypeRequest extends NewTrxTypeRequest {
+  spendTypeId: number;
 }
