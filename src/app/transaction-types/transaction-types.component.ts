@@ -46,7 +46,19 @@ export class TransactionTypesComponent implements OnInit {
   }
 
   onDeleted($event: TrxEventArgs) {
-
+    console.log('delete', $event);
+    const trxType = $event.trxType;
+    if (confirm(`Are you sure to delete Transaction type ${$event.trxType.name}`)) {
+      this.apiService.deleteTrxType($event.trxType.id).subscribe({
+        next: res => {
+          const index = this.transactionTypes.findIndex(tr => tr.id === trxType.id);
+          this.transactionTypes.splice(index, 1);
+        },
+        error: res => {
+          alert('Unable to delete transaction type.');
+        }
+      })
+    }
   }
 
   onTextChanged($event: TextChangedArgs) {

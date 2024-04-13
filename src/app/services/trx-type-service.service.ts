@@ -15,6 +15,11 @@ export class TrxTypeServiceService {
     return `${environment.baseApi}/api/SpendTypes`;
   }
 
+  public deleteTrxType(trxTypeId: number): Observable<Object> {
+    const url = `${this.getBaseUrl()}/${trxTypeId}`;
+    return this.httpClient.delete(url);
+  }
+
   public newTrxType(request: NewTrxTypeRequest): Observable<TrxTypeViewModel> {
     const url = this.getBaseUrl();
     const params = new HttpParams().set('entireResponse', true);

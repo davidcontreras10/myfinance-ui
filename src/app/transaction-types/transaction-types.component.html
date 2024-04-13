@@ -3,13 +3,14 @@
         <div class="col-md-6">
             <div class="text-center">All types</div>
             <app-transaction-types-table [transactionTypes]="allItems()" (textChanged)="onTextChanged($event)"
-                (arrowClicked)="onArrowChanged($event)" [myTable]="false"></app-transaction-types-table>
+                (arrowClicked)="onArrowChanged($event)" [myTable]="false"
+                (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
         </div>
         <div class="col-md-6">
             <div class="text-center">My types</div>
             <app-transaction-types-table [transactionTypes]="userItems()" [myTable]="true"
-                (textChanged)="onTextChanged($event)"
-                (arrowClicked)="onArrowChanged($event)"></app-transaction-types-table>
+                (textChanged)="onTextChanged($event)" (arrowClicked)="onArrowChanged($event)"
+                (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
         </div>
     </div>
 </div>

@@ -11,7 +11,8 @@
             <td [contentEditable]="true" (blur)="onTextChanged($event, item, true)">{{item.name}}</td>
             <td [contentEditable]="true" (blur)="onTextChanged($event, item, false)">{{item.description}}</td>
             <td>
-                <button *ngIf="!myTable" class="btn btn-outline-danger cell-button">X</button>
+                <button *ngIf="!myTable" class="btn btn-outline-danger cell-button"
+                    (click)="onDeleteClicked(item)">X</button>
                 <button *ngIf="!myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">→</button>
                 <button *ngIf="myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">←</button>
             </td>
