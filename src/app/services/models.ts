@@ -260,3 +260,17 @@ export class EditAccountRequestModel {
   accountIncludes: AccountInclude[];
   editAccountFields: number[] = [];
 }
+
+export interface TrxTypeViewModel extends SelectableItem {
+  description: string;
+}
+
+export interface NewTrxTypeRequest {
+  isSelected: boolean;
+  spendTypeName: string;
+  spendTypeDescription: string;
+}
+
+export interface EditTrxTypeRequest extends NewTrxTypeRequest {
+  spendTypeId: number;
+}

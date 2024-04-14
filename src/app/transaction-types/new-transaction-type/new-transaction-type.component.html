@@ -1,0 +1,31 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">New Transaction type</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-3">
+                <input ngModel type="text" class="form-control" placeholder="Name" name="spendTypeName" required
+                    minlength="2" />
+            </div>
+            <div class="col-6">
+                <input ngModel type="text" class="form-control" placeholder="Description" name="spendTypeDescription" />
+            </div>
+            <div class="col-3">
+                <div class="form-check" style="float: right;">
+                    <input mdbCheckbox ngModel name="isSelected" class="form-check-input" type="checkbox"
+                        id="new-type-included" />
+                    <label class="form-check-label" for="new-type-included">
+                        Include in my list
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">Submit</button>
+    </div>
+</form>

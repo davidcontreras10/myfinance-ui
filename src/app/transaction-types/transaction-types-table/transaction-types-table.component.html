@@ -1,0 +1,21 @@
+<table class="table table-bordered table-low-margin">
+    <thead>
+        <tr>
+            <th data-field="Name">Name</th>
+            <th data-field="Description">Description</th>
+            <th data-field="Action">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of transactionTypes">
+            <td [contentEditable]="true" (blur)="onTextChanged($event, item, true)">{{item.name}}</td>
+            <td [contentEditable]="true" (blur)="onTextChanged($event, item, false)">{{item.description}}</td>
+            <td>
+                <button *ngIf="!myTable" class="btn btn-outline-danger cell-button"
+                    (click)="onDeleteClicked(item)">X</button>
+                <button *ngIf="!myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">→</button>
+                <button *ngIf="myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">←</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
