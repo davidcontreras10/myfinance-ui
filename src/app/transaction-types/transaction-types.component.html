@@ -1,13 +1,17 @@
 <div class="container-fluid text-center">
     <div class="row">
         <div class="col-md-6">
-            <div class="text-center">All types</div>
+            <div class="text-center">
+                <h2>Others</h2>
+            </div>
             <app-transaction-types-table [transactionTypes]="allItems()" (textChanged)="onTextChanged($event)"
                 (arrowClicked)="onArrowChanged($event)" [myTable]="false"
                 (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
         </div>
         <div class="col-md-6">
-            <div class="text-center">My types</div>
+            <div class="text-center">
+                <h2>My list</h2>
+            </div>
             <app-transaction-types-table [transactionTypes]="userItems()" [myTable]="true"
                 (textChanged)="onTextChanged($event)" (arrowClicked)="onArrowChanged($event)"
                 (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
