@@ -37,6 +37,7 @@ export class SpendViewModel {
   amountTypeId: number;
   isPending: boolean;
   convertedAmount: number;
+  vmIsSelected: boolean = false;
 }
 
 export interface FinanceAccountResponse {

@@ -1,7 +1,8 @@
 <table *ngIf="acc?.financeData?.spendViewModels" class="table table-bordered table-low-margin">
     <thead>
         <tr>
-            <th><input type="checkbox" class="form-check-input" /></th>
+            <th><input type="checkbox" class="form-check-input" [(ngModel)]="isAllSelected"
+                    (change)="toggleAllSelection()" /></th>
             <th data-field="Date">Date</th>
             <th data-field="Amount">Amount</th>
             <th data-field="Type">Type</th>
@@ -11,7 +12,8 @@
     <tbody>
         <tr *ngFor="let trx of acc?.financeData?.spendViewModels" [ngClass]="{'is-pending':trx.isPending}">
             <td>
-                <input type="checkbox" class="form-check-input" />
+                <input type="checkbox" class="form-check-input" [(ngModel)]="trx.vmIsSelected"
+                    (change)="toggleSelection(trx)" />
             </td>
             <td>{{ trx.spendDate | date:"dd/MM/yy" }}</td>
             <td>

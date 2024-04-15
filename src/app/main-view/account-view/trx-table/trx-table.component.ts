@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { SpendViewModel } from 'src/app/services/models';
 import { AccountGroupAccount } from '../../models';
+import { MainViewModel } from '../../main-view-model';
 
 @Component({
   selector: 'app-trx-table',
@@ -21,19 +22,38 @@ export class TrxTableComponent implements OnInit {
   @Input()
   acc: AccountGroupAccount;
 
-  constructor() { }
+  isAllSelected: boolean = false;
+
+  constructor(private mainViewModel: MainViewModel) { }
 
   ngOnInit(): void {
+    this.mainViewModel.listenAccountsModelChanges().subscribe(items => {
+      if (items.some(item => item.accountId === this.acc.accountId)) {
+        this.checkAllSelected();
+      }
+    })
   }
 
   onConfirmTransaction(_t13: SpendViewModel) {
     this.confirmTransaction.emit(_t13);
   }
   onTrxDelete(_t13: SpendViewModel) {
-    this.trxDelete.emit()
+    this.trxDelete.emit(_t13);
   }
   onTrxEdit(_t13: SpendViewModel) {
     this.trxEdit.emit(_t13);
+  }
+
+  toggleSelection(_t13: SpendViewModel): void {
+    this.checkAllSelected();
+  }
+
+  checkAllSelected(): void {
+    this.isAllSelected = this.acc?.financeData?.spendViewModels?.every(trx => trx.vmIsSelected) ?? false;
+  }
+
+  toggleAllSelection(): void {
+    this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = this.isAllSelected);
   }
 
 }
