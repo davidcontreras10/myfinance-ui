@@ -16,6 +16,7 @@ import { AccountNotesComponent } from '../account-notes/account-notes.component'
   styleUrls: ['./account-view.component.css']
 })
 export class AccountViewComponent implements OnInit {
+
   @Input()
   acc: AccountGroupAccount;
   selectedAccountPeriod?: AccountPeriod;
