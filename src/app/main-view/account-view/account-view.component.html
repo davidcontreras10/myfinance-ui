@@ -77,5 +77,6 @@
 </div>
 <div class="row" *ngIf="showTraxList">
     <app-trx-table [acc]="acc" (confirmTransaction)="confirmTransaction($event);" (trxDelete)="onTrxDelete($event)"
-        (trxEdit)="onTrxEdit($event)"></app-trx-table>
+        (trxEdit)="onTrxEdit($event)" (selectedDelete)="onSelectedDelete($event)"
+        (selectedConfirm)="onSelectedConfirm($event)"></app-trx-table>
 </div>

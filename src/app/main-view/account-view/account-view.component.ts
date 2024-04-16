@@ -73,6 +73,22 @@ export class AccountViewComponent implements OnInit {
     }
   }
 
+  onSelectedDelete(trxs: SpendViewModel[]) {
+    if (trxs && confirm(`Are you sure you want to DELETE ${trxs.length} items?`)) {
+      this.mainViewApiService.deleteMultipleTrxs(trxs.map(x => x.spendId)).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      })
+    }
+  }
+
+  onSelectedConfirm(trxs: SpendViewModel[]) {
+    if (trxs && confirm(`Are you sure you want to CONFIRM ${trxs.length} pending items?`)) {
+      this.mainViewApiService.confirmPendingMultiple(trxs.map(x => x.spendId), new Date()).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      });
+    }
+  }
+
   newExpenseClick() {
     this.openNewTrxModal(true);
   }

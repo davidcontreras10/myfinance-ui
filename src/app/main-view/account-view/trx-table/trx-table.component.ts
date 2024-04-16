@@ -17,6 +17,12 @@ export class TrxTableComponent implements OnInit {
   trxDelete = new EventEmitter<SpendViewModel>();
 
   @Output()
+  selectedDelete = new EventEmitter<SpendViewModel[]>();
+
+  @Output()
+  selectedConfirm = new EventEmitter<SpendViewModel[]>();
+
+  @Output()
   trxEdit = new EventEmitter<SpendViewModel>();
 
   @Input()
@@ -56,4 +62,19 @@ export class TrxTableComponent implements OnInit {
     this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = this.isAllSelected);
   }
 
+  anySelected() {
+    return this.acc?.financeData?.spendViewModels?.some(trx => trx.vmIsSelected) ?? false;
+  }
+
+  anyPending() {
+    return this.acc?.financeData?.spendViewModels?.some(trx => trx.vmIsSelected && trx.isPending) ?? false;
+  }
+
+  onDeleteAllSelected() {
+    this.selectedDelete.emit(this.acc.financeData?.spendViewModels.filter(s => s.vmIsSelected));
+  }
+
+  onConfirmAllSelected() {
+    this.selectedConfirm.emit(this.acc?.financeData?.spendViewModels?.filter(trx => trx.vmIsSelected && trx.isPending));
+  }
 }
