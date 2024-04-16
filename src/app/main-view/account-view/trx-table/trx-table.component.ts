@@ -78,4 +78,8 @@ export class TrxTableComponent implements OnInit {
   onConfirmAllSelected() {
     this.selectedConfirm.emit(this.acc?.financeData?.spendViewModels?.filter(trx => trx.vmIsSelected && trx.isPending));
   }
+
+  selectedItemsCount(): number {
+    return this.acc?.financeData?.spendViewModels?.filter(x => x.vmIsSelected)?.length ?? 0;
+  }
 }
