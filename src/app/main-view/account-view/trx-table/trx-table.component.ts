@@ -55,7 +55,8 @@ export class TrxTableComponent implements OnInit {
   }
 
   checkAllSelected(): void {
-    this.isAllSelected = this.acc?.financeData?.spendViewModels?.every(trx => trx.vmIsSelected) ?? false;
+    this.isAllSelected = ((this.acc?.financeData?.spendViewModels?.length ?? 0) > 0)
+      && (this.acc?.financeData?.spendViewModels?.every(trx => trx.vmIsSelected) ?? false);
   }
 
   toggleAllSelection(): void {
