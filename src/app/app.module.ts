@@ -45,6 +45,7 @@ import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
 import { NewTransactionTypeComponent } from './transaction-types/new-transaction-type/new-transaction-type.component';
+import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { NewTransactionTypeComponent } from './transaction-types/new-transaction
     NewAccountComponent,
     TransactionTypesComponent,
     TransactionTypesTableComponent,
-    NewTransactionTypeComponent
+    NewTransactionTypeComponent,
+    TrxTableComponent
   ],
   imports: [
     BrowserModule,
