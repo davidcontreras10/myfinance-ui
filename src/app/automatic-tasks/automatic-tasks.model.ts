@@ -13,14 +13,14 @@ export enum TaskStatus {
     Failed = 3
 }
 
-export enum FrequencyType{
+export enum FrequencyType {
     Unknown = 0,
     Monthly = 1,
     Weekly = 2,
     Manual = 3
 }
 
-export interface ExecutedTaskResult{
+export interface ExecutedTaskResult {
     status: TaskStatus,
     errorMsg: string
 }
@@ -35,7 +35,8 @@ export interface IAutomaticTask {
     lastExecutedStatus: TaskStatus,
     frequencyType: FrequencyType,
     taskType: AutomaticTaskType,
-    days: number[]
+    days: number[],
+    isPending: boolean
 }
 
 export interface UserSelectAccount {
@@ -62,10 +63,7 @@ export interface ExecutedTask {
 }
 
 export class SpInAutomaticTask implements IAutomaticTask {
-    // getTaskDesc(): string {
-        //     return `${this.currencySymbol}${this.amount} ${!this.isSpendTrx ? 'Income' : 'Spend'} every tenth of the month`;
-    // }
-
+    isPending: boolean;
     accountId!: number;
     lastExecutedStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
@@ -80,10 +78,7 @@ export class SpInAutomaticTask implements IAutomaticTask {
 }
 
 export class TransferAutomaticTask implements IAutomaticTask {
-    // getTaskDesc(): string {
-        //     return `${this.currencySymbol}${this.amount} to ${this.toAccountName} every sixteenth of the month`;
-    // }
-
+    isPending: boolean;
     accountId!: number;
     lastExecutedStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
