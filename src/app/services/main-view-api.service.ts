@@ -93,6 +93,14 @@ export class MainViewApiService {
     return this.httpClient.get<AddTransferResponse>(`${environment.baseApi}/api/Transfers/basicAccountInfo`, { params: params });
   }
 
+  public confirmPendingMultiple(transactionIds: number[], newDate: Date): Observable<ItemModifiedRes[]> {
+    const model = {
+      newDateTime: Utils.toViewDateFormat(newDate),
+      transactionIds: transactionIds
+    };
+    return this.httpClient.put<ItemModifiedRes[]>(`${environment.baseApi}/api/spends/bulk-confirmation`, model);
+  }
+
   public confirmPending(spendId: number, newDate: Date): Observable<ItemModifiedRes[]> {
     const params = new HttpParams()
       .set('spendId', spendId);
@@ -146,6 +154,15 @@ export class MainViewApiService {
     )
   }
 
+
+  public deleteMultipleTrxs(trxIds: number[]): Observable<ItemModifiedRes[]> {
+    let params = new HttpParams();
+    for (let trxId of trxIds) {
+      params = params.append('spendId', trxId);
+    }
+
+    return this.httpClient.delete<ItemModifiedRes[]>(`${environment.baseApi}/api/Spends`, { params: params });
+  }
   public deleteTrx(spendId: number): Observable<ItemModifiedRes[]> {
     const params = new HttpParams()
       .set('spendId', spendId);

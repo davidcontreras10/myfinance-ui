@@ -37,6 +37,7 @@ export class SpendViewModel {
   amountTypeId: number;
   isPending: boolean;
   convertedAmount: number;
+  vmIsSelected: boolean = false;
 }
 
 export interface FinanceAccountResponse {
@@ -259,4 +260,18 @@ export class EditAccountRequestModel {
   accountGroupId: number;
   accountIncludes: AccountInclude[];
   editAccountFields: number[] = [];
+}
+
+export interface TrxTypeViewModel extends SelectableItem {
+  description: string;
+}
+
+export interface NewTrxTypeRequest {
+  isSelected: boolean;
+  spendTypeName: string;
+  spendTypeDescription: string;
+}
+
+export interface EditTrxTypeRequest extends NewTrxTypeRequest {
+  spendTypeId: number;
 }

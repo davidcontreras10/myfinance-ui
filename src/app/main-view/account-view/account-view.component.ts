@@ -16,6 +16,7 @@ import { AccountNotesComponent } from '../account-notes/account-notes.component'
   styleUrls: ['./account-view.component.css']
 })
 export class AccountViewComponent implements OnInit {
+
   @Input()
   acc: AccountGroupAccount;
   selectedAccountPeriod?: AccountPeriod;
@@ -69,6 +70,22 @@ export class AccountViewComponent implements OnInit {
       this.mainViewApiService.deleteTrx(trx.spendId).subscribe(items => {
         this.mainViewModel.notifyAccountsModified(items);
       })
+    }
+  }
+
+  onSelectedDelete(trxs: SpendViewModel[]) {
+    if (trxs && confirm(`Are you sure you want to DELETE ${trxs.length} items?`)) {
+      this.mainViewApiService.deleteMultipleTrxs(trxs.map(x => x.spendId)).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      })
+    }
+  }
+
+  onSelectedConfirm(trxs: SpendViewModel[]) {
+    if (trxs && confirm(`Are you sure you want to CONFIRM ${trxs.length} pending items?`)) {
+      this.mainViewApiService.confirmPendingMultiple(trxs.map(x => x.spendId), new Date()).subscribe(items => {
+        this.mainViewModel.notifyAccountsModified(items);
+      });
     }
   }
 

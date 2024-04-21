@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups, MainViewPrefs } from "./models";
-import { Observable, Subject, filter, takeLast } from "rxjs";
+import { Observable, Subject, filter, observable, takeLast } from "rxjs";
 import { FinanceAccountResponse, ItemModifiedRes } from "../services/models";
 
 @Injectable({
@@ -17,6 +17,11 @@ export class MainViewModel {
 
     private periodChangeEvent$ = new Subject<AccountPeriod>();
     private accountsModified$ = new Subject<ItemModifiedRes[]>();
+    private accountsModelChanged$ = new Subject<FinanceAccountResponse[]>();
+
+    public listenAccountsModelChanges(): Observable<FinanceAccountResponse[]> {
+        return this.accountsModelChanged$.asObservable();
+    }
 
     public listenAccountsModified(): Observable<ItemModifiedRes[]> {
         return this.accountsModified$.asObservable();
@@ -31,12 +36,15 @@ export class MainViewModel {
     }
 
     public updateFinanceInfo(financeAccounts: FinanceAccountResponse[]) {
-        this.forEachAccount(acc => {
-            const financeAccount = financeAccounts.find(f => f.accountId === acc.accountId);
-            if (financeAccount) {
-                acc.financeData = financeAccount;
-            }
-        })
+        if (financeAccounts) {
+            this.forEachAccount(acc => {
+                const financeAccount = financeAccounts.find(f => f.accountId === acc.accountId);
+                if (financeAccount) {
+                    acc.financeData = financeAccount;
+                }
+            });
+            this.accountsModelChanged$.next(financeAccounts);
+        }
     }
 
     public getAllSelectedPeriodIds() {
