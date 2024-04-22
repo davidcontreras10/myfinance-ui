@@ -33,7 +33,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <input ngModel [minlength]="3" [maxlength]="100" class="form-control" name="description"
-                        id="description" type="text" placeholder="Description"/>
+                        id="description" type="text" placeholder="Description" />
                 </div>
             </div>
         </div>
@@ -48,8 +48,8 @@
             <div class="col-sm-6">
                 <div class="basic-input form-control">
                     <div class="form-check">
-                        <input mdbCheckbox ngModel name="isPending" class="form-check-input" type="checkbox"
-                            id="new-trx-pending" />
+                        <input mdbCheckbox [(ngModel)]="isDefaultPending" name="isPending" class="form-check-input"
+                            type="checkbox" id="new-trx-pending" />
                         <label class="form-check-label" for="new-trx-pending">
                             Pending
                         </label>
@@ -61,13 +61,15 @@
             <div class="col">
                 <div class="radio">
                     <label for="expense">
-                        <input required [(ngModel)]="isSpending" type="radio" id="expense" name="trxType" [value]="true">
+                        <input required [(ngModel)]="isSpending" type="radio" id="expense" name="trxType"
+                            [value]="true">
                         Expense
                     </label>
                 </div>
                 <div class="radio">
                     <label for="income">
-                        <input required [(ngModel)]="isSpending" type="radio" id="income" name="trxType" [value]="false">
+                        <input required [(ngModel)]="isSpending" type="radio" id="income" name="trxType"
+                            [value]="false">
                         Income
                     </label>
                 </div>

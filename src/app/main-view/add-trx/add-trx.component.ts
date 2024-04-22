@@ -18,6 +18,7 @@ export class AddTrxComponent implements OnInit {
   addTrxModel?: AddTrxResponse;
   selectedCurrencyId?: number;
   selectedSpendingTypeId?: number;
+  isDefaultPending: boolean = false;
 
   constructor(public activeModal: NgbActiveModal, private mainViewApiSerice: MainViewApiService, private mainViewModel: MainViewModel) { }
 
@@ -70,6 +71,7 @@ export class AddTrxComponent implements OnInit {
           res.suggestedDate = this.fixSuggestedDateFormat(res.suggestedDate);
         }
         this.addTrxModel = res;
+        this.isDefaultPending = res?.isDefaultPending ?? false;
         this.assignDefaultSupportedCurrency();
         this.assignDefaultSpendingType();
       });

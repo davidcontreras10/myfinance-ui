@@ -95,6 +95,7 @@ export interface AddTrxResponse {
   initialDate: Date;
   endDate: Date;
   accountName: string;
+  isDefaultPending: boolean | undefined;
 }
 
 export interface AddTransferResponse extends AddTrxResponse {
