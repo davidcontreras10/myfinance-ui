@@ -59,7 +59,7 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   public getDesc(task: IAutomaticTask): string {
     if (task.taskType === AutomaticTaskType.SpIn) {
       const basicTask = task as SpInAutomaticTask;
-      return `${basicTask.currencySymbol}${basicTask.amount} ${!basicTask.isSpend ? 'Income' : 'Spend'} ${this._getFrequencyText(task)}`;
+      return `${basicTask.currencySymbol}${basicTask.amount}${basicTask.isPending ? ' pending ' : ' '}${!basicTask.isSpend ? 'Income' : 'Spend'} ${this._getFrequencyText(task)}`;
     }
 
     if (task.taskType === AutomaticTaskType.Trasnfer) {
@@ -76,10 +76,10 @@ export class TaskDetailComponent implements OnInit, OnChanges {
 
   private _getFrequencyText(task: IAutomaticTask): string {
     const day = task.days?.length > 0 ? task.days[0] : null;
-    if(task.frequencyType === FrequencyType.Manual){
+    if (task.frequencyType === FrequencyType.Manual) {
       return 'on manual execution';
     }
-    
+
     if (task.frequencyType === FrequencyType.Monthly && day && day > 0) {
       return `every ${day}${this._getMonthDayPrefix(day)} of the month`;
     }
