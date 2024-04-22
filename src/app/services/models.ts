@@ -217,6 +217,8 @@ export interface AddNewAccountViewModel {
   accountIncludeViewModels: BasicAccountIncluded[];
   currencyViewModels: Currency[];
   accountGroupViewModels: SelectableItem[];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export interface EditAccountViewModel extends AddNewAccountViewModel {
@@ -242,6 +244,8 @@ export class NewAccountRequestModel {
   financialEntityId: number;
   accountGroupId: number;
   accountIncludes: AccountInclude[];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export class EditAccountRequestModel {
@@ -260,6 +264,8 @@ export class EditAccountRequestModel {
   accountGroupId: number;
   accountIncludes: AccountInclude[];
   editAccountFields: number[] = [];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export interface TrxTypeViewModel extends SelectableItem {
