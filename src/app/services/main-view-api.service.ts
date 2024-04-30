@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, filter, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, ItemModifiedRes, SelectableItem, TransactionViewResponse } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -191,15 +191,17 @@ export class MainViewApiService {
     );
   }
 
-  public loadAccountFinanance(accountPerioIds: number[], isPending: boolean): Observable<FinanceAccountResponse[]> {
-    const requests: FinanceAccountRequest[] = [];
-    accountPerioIds.forEach(accpId => {
-      requests.push({
-        accountPeriodId: accpId,
+  public loadAccountFinanance(requests: GetFinanceReq[], isPending: boolean): Observable<FinanceAccountResponse[]> {
+    requests.forEach(req => {
+      const request = {
+        accountPeriodId: req.accountPeriodId,
         amountTypeId: 0,
         loanSpends: false,
-        pendingSpends: isPending
-      })
+        pendingSpends: isPending,
+        trxFilters: req.trxFilters
+      };
+
+      requests.push(request);
     });
 
     return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests);

@@ -9,7 +9,10 @@ export interface TextChangedArgs extends TrxEventArgs {
     isNameField: boolean;
 }
 
-export interface NewTrxTypeDialogResult {
-    value: TrxTypeViewModel;
+export interface DialogResultModel<T> {
+    value: T;
     success: boolean;
+}
+
+export interface NewTrxTypeDialogResult extends DialogResultModel<TrxTypeViewModel> {
 }

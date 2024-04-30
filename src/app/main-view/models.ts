@@ -1,6 +1,6 @@
-import { Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxAccountIncluded } from "../services/models";
+import { Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
 
-export interface MainViewPrefs{
+export interface MainViewPrefs {
     periodsLimit: number;
 }
 
@@ -44,6 +44,11 @@ export interface AccountPeriod {
     initialDate: string;
     endDate: string;
     name?: string;
+}
+
+export interface AccountPeriodEventArg {
+    accountPeriod: AccountPeriod;
+    trxFilters: TrxFilters | null;
 }
 
 export interface AccRow {

@@ -1,3 +1,4 @@
+
 export interface ApiCredentials {
   username: string;
   password: string;
@@ -13,11 +14,34 @@ export interface StoredToken {
   expireDate: Date;
 }
 
+export interface PendingTrxFilter {
+  value: boolean;
+}
+
+export interface DescriptionTrxFilter {
+  searchText: string | null;
+}
+
+export interface TrxFilters {
+  startDate: Date | null;
+  endDate: Date | null;
+  pendingTrxFilter: PendingTrxFilter | null;
+  descriptionTrxFilter: DescriptionTrxFilter | null
+}
+
+export class BasicTrxFilters implements TrxFilters {
+  startDate: Date | null;
+  endDate: Date | null;
+  pendingTrxFilter: PendingTrxFilter | null;
+  descriptionTrxFilter: DescriptionTrxFilter | null;
+}
+
 export interface FinanceAccountRequest {
   accountPeriodId: number;
   pendingSpends: boolean;
   loanSpends: boolean;
   amountTypeId: number;
+  trxFilters: TrxFilters | null
 }
 
 export class SpendViewModel {
@@ -64,6 +88,7 @@ export interface FinanceAccountResponse {
   numPeriodBalance: string;
   numGeneralBalance: string;
   numGeneralBalanceToday: string;
+  trxFilters: TrxFilters | null;
 }
 
 export interface SelectableItem {
@@ -116,6 +141,11 @@ export interface AddTrxRequest {
   isPending: boolean;
   spendDate: Date;
   paymentDate: Date;
+}
+
+export interface GetFinanceReq {
+  accountPeriodId: number;
+  trxFilters: TrxFilters | null | undefined;
 }
 
 export interface AccountNotes {

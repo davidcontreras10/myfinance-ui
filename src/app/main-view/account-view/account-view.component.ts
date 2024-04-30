@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroupAccount, AccountPeriod } from '../models';
 import { MainViewModel } from '../main-view-model';
-import { SpendViewModel } from 'src/app/services/models';
+import { SpendViewModel, TrxFilters } from 'src/app/services/models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
@@ -9,6 +9,9 @@ import { ViewTrxComponent } from '../view-trx/view-trx.component';
 import { TransferViewComponent } from '../transfer-view/transfer-view.component';
 import { saveAs } from "file-saver";
 import { AccountNotesComponent } from '../account-notes/account-notes.component';
+import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
+import { DialogResultModel } from 'src/app/transaction-types/models';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-account-view',
@@ -22,19 +25,47 @@ export class AccountViewComponent implements OnInit {
   selectedAccountPeriod?: AccountPeriod;
   showTraxList = false;
 
-  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal) {
+  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe) {
+  }
+
+  isFilterMode(): boolean {
+    return !!this.acc?.financeData?.trxFilters;
   }
 
   ngOnInit(): void {
     const accountPeriodId = this.mainViewModel.periodIds[this.acc.accountId] ?? this.acc.currentPeriodId;
     this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === accountPeriodId);
-    this.mainViewModel.listenOnPeriodChange(this.acc.accountId).subscribe((accountPeriod) => {
-      this.selectedAccountPeriod = accountPeriod;
-      this.mainViewApiService.loadAccountFinanance([accountPeriod.accountPeriodId], this.mainViewModel.showPendings).subscribe(responses => {
-        this.mainViewModel.updateFinanceInfo(responses);
-      });
+    this.mainViewModel.listenOnPeriodChange(this.acc.accountId).subscribe((accountPeriodArgs) => {
+      this.selectedAccountPeriod = accountPeriodArgs.accountPeriod;
+      const request = {
+        accountPeriodId: accountPeriodArgs.accountPeriod.accountPeriodId,
+        trxFilters: accountPeriodArgs.trxFilters
+      }
+      this.mainViewApiService.loadAccountFinanance(
+        [request],
+        this.mainViewModel.showPendings).subscribe(responses => {
+          this.mainViewModel.updateFinanceInfo(responses);
+        });
     })
   }
+
+  onFilterRemoveClicked() {
+    if (this.selectedAccountPeriod) {
+      this.mainViewModel.notifyPeriodChange(this.selectedAccountPeriod.accountPeriodId);
+    }
+  }
+
+  onFilterClicked() {
+    const modalRef = this.modalService.open(TrxFilterModalComponent, { backdrop: 'static', keyboard: false });
+    modalRef.result.then(res => {
+      const result = <DialogResultModel<TrxFilters>>res;
+      if (result?.value && this.selectedAccountPeriod) {
+        this.showTraxList = true;
+        this.mainViewModel.notifyPeriodChange(this.selectedAccountPeriod.accountPeriodId, result.value);
+      }
+    })
+  }
+
 
   confirmTransaction(trx: SpendViewModel) {
     if (trx.isPending && confirm('Confirm pending transaction?')) {
@@ -112,6 +143,32 @@ export class AccountViewComponent implements OnInit {
       const modalRef = this.modalService.open(TransferViewComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
       modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod?.accountPeriodId;
     }
+  }
+
+  getTrxFilterNames(trxFilters: TrxFilters | undefined | null) {
+    if (!trxFilters) {
+      return '';
+    }
+
+    let message = 'Transactions';
+    if (trxFilters.pendingTrxFilter) {
+      message += ' pending';
+    }
+    if (trxFilters.descriptionTrxFilter) {
+      message += ` with description ${trxFilters.descriptionTrxFilter.searchText}`;
+    }
+
+    if (trxFilters.startDate) {
+      const dateValue = this.datePipe.transform(trxFilters.startDate, 'yyyy/MM/dd HH:mm');
+      message += ` after ${dateValue}`;
+    }
+
+    if (trxFilters.endDate) {
+      const dateValue = this.datePipe.transform(trxFilters.endDate, 'yyyy/MM/dd HH:mm');
+      message += ` before ${dateValue}`;
+    }
+
+    return message;
   }
 
   public openNotesModal(account: AccountGroupAccount) {

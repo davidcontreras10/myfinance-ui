@@ -4,7 +4,7 @@ import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.s
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { ItemModifiedRes } from '../services/models';
+import { GetFinanceReq, ItemModifiedRes } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -49,18 +49,31 @@ export class MainViewComponent implements OnInit {
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateAccountData(this.groups);
-      const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.loadAccountFinanance(perioIds);
+      const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+      this.loadAccountFinananceByIds(periodIds);
     }));
   }
 
   private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[]) {
     const periodIds = modifiedItems.map(md => this.mainViewModel.periodIds[md.accountId]);
-    this.loadAccountFinanance(periodIds);
+    this.loadAccountFinananceByIds(periodIds);
   }
 
-  private loadAccountFinanance(accountPeriodIds: number[]) {
-    this.mainViewApiService.loadAccountFinanance(accountPeriodIds, this.mainViewModel.showPendings).subscribe(res => {
+  private loadAccountFinananceByIds(accountPeriodIds: number[]) {
+    const financeValues = this.mainViewModel.getFinanceAccountData(accountPeriodIds);
+    const request: GetFinanceReq[] = [];
+    accountPeriodIds.forEach(accountPeriodId => {
+      const financeValue = financeValues.find(v => v.accountPeriodId === accountPeriodId);
+      request.push({
+        accountPeriodId,
+        trxFilters: financeValue?.finance?.trxFilters
+      })
+    });
+    this.loadAccountFinanance(request);
+  }
+
+  private loadAccountFinanance(accountPeriods: GetFinanceReq[]) {
+    this.mainViewApiService.loadAccountFinanance(accountPeriods, this.mainViewModel.showPendings).subscribe(res => {
       this.mainViewModel.updateFinanceInfo(res);
       this.loadFinanceSummary();
     });
@@ -86,7 +99,7 @@ export class MainViewComponent implements OnInit {
     }
   }
 
-  private openPreferencesModal(){
+  private openPreferencesModal() {
     this.modalService.open(MainViewPrefsComponent, { backdrop: true, size: 'md' });
   }
 
