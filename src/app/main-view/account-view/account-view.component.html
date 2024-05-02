@@ -21,7 +21,9 @@
 <br />
 <div class="row">
     <div class="col-md-3">
-        <label class="box-title">Period Summary</label>
+        <label *ngIf="!isFilterMode()" class="box-title">Period Summary</label>
+        <button *ngIf="isFilterMode()" type="button" class="btn btn-outline-success"
+            (click)="downloadFilteredExcelFile()">Excel</button>
     </div>
     <div class="col-md-3">
     </div>

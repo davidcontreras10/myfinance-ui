@@ -51,6 +51,43 @@ export class MainViewApiService {
     )
   }
 
+  public getFinanceAccountExcel(requests: GetFinanceReq[], isPending: boolean): Observable<FileResponse | null> {
+    requests.forEach(req => {
+      const request = {
+        accountPeriodId: req.accountPeriodId,
+        amountTypeId: 0,
+        loanSpends: false,
+        pendingSpends: isPending,
+        trxFilters: req.trxFilters
+      };
+
+      requests.push(request);
+    });
+    return this.httpClient.post(`${environment.baseApi}/api/Accounts/finance/excel`, requests, {
+      observe: 'response',
+      responseType: 'blob'
+    }).pipe(
+      map(response => {
+        const contentDisposition = response.headers.get('Content-Disposition');
+        const filename = this.getFilenameFromHeaders(response.headers) || this.getFilenameFromContentDisposition(contentDisposition) || 'excel-file.xlsx';
+        if (filename === 'excel-file.xlsx') {
+          console.warn('File name not read');
+        }
+        const bytes = response.body;
+        if (bytes) {
+          const file = new Blob([response.body], { type: 'application/octet-stream' });
+          const res = {
+            data: file,
+            fileName: filename
+          };
+          return res;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
   private getFilenameFromHeaders(headers: HttpHeaders): string | null {
     const contentTypeHeader = headers.get('Content-Type');
     if (contentTypeHeader) {

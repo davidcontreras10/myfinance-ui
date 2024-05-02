@@ -20,6 +20,7 @@ import { DatePipe } from '@angular/common';
 })
 export class AccountViewComponent implements OnInit {
 
+
   @Input()
   acc: AccountGroupAccount;
   selectedAccountPeriod?: AccountPeriod;
@@ -47,6 +48,20 @@ export class AccountViewComponent implements OnInit {
           this.mainViewModel.updateFinanceInfo(responses);
         });
     })
+  }
+
+  downloadFilteredExcelFile() {
+    if (this.selectedAccountPeriod?.accountPeriodId && this.acc?.financeData?.trxFilters) {
+      const request = {
+        accountPeriodId: this.selectedAccountPeriod?.accountPeriodId,
+        trxFilters: this.acc.financeData.trxFilters
+      }
+      this.mainViewApiService.getFinanceAccountExcel([request], false).subscribe(data => {
+        if (data?.data) {
+          saveAs(data.data, data.fileName);
+        }
+      })
+    }
   }
 
   onFilterRemoveClicked() {

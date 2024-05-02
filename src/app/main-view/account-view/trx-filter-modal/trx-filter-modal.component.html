@@ -27,8 +27,8 @@
                     </label>
                 </div>
                 <div class="form-group">
-                    <input ngModel type="datetime-local" name="startDate" class="basic-input form-control"
-                        [value]="startDate" [disabled]="!startDateEnabled" required />
+                    <input [(ngModel)]="startDate" type="datetime-local" name="startDate"
+                        class="basic-input form-control" [value]="startDate" [disabled]="!startDateEnabled" required />
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group">
                     <input ngModel type="datetime-local" name="endDate" class="basic-input form-control"
-                        [value]="endDate" [disabled]="!endDateEnabled" required />
+                        [(ngModel)]="endDate" [disabled]="!endDateEnabled" required />
                 </div>
             </div>
         </div>
