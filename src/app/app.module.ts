@@ -46,6 +46,8 @@ import { TransactionTypesComponent } from './transaction-types/transaction-types
 import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
 import { NewTransactionTypeComponent } from './transaction-types/new-transaction-type/new-transaction-type.component';
 import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.component';
+import { TrxFilterModalComponent } from './main-view/account-view/trx-filter-modal/trx-filter-modal.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -83,7 +85,8 @@ import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.
     TransactionTypesComponent,
     TransactionTypesTableComponent,
     NewTransactionTypeComponent,
-    TrxTableComponent
+    TrxTableComponent,
+    TrxFilterModalComponent
   ],
   imports: [
     BrowserModule,
@@ -100,6 +103,7 @@ import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.
     DragDropModule
   ],
   providers: [
+    DatePipe,
     MainSpinnerService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },

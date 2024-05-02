@@ -40,6 +40,14 @@ export class TrxTableComponent implements OnInit {
     })
   }
 
+  getSpendViewModels(): SpendViewModel[] | undefined {
+    return this.acc?.financeData?.spendViewModels?.sort((a, b) => {
+      const aDate = new Date(a.spendDate);
+      const bDate = new Date(b.spendDate);
+      return bDate.getTime() - aDate.getTime();
+    })
+  }
+
   onConfirmTransaction(_t13: SpendViewModel) {
     this.confirmTransaction.emit(_t13);
   }
