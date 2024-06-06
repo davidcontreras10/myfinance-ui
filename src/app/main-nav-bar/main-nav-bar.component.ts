@@ -17,7 +17,8 @@ export class MainNavBarComponent implements OnInit {
       {
         isActive: true, name: 'Home', subMenus: [
           { id: 'toggle-summary', name: 'Toggle Summary' },
-          { id: 'main-view-prefs', name: 'Preferences' }
+          { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
+          { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
         ],
         routingLink: '/'
       },

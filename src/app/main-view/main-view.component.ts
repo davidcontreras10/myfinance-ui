@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
-import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
@@ -26,8 +26,14 @@ export class MainViewComponent implements OnInit {
     navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
     });
-    navBarService.getSubMenuEvents('main-view-prefs').subscribe(value => {
-      this.openPreferencesModal();
+    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
+      if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
+        this.openPreferencesModal();
+      }
+      else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
+        const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+        this.loadAccountFinananceByIds(periodIds, new Date('2024/03/25'));
+      }
     })
   }
 
@@ -38,28 +44,28 @@ export class MainViewComponent implements OnInit {
     })
 
     this.mainViewModel.listenAccountsModified().subscribe(modifiedItems => {
-      this.loadModifiedAccountFinanance(modifiedItems);
+      this.loadModifiedAccountFinanance(modifiedItems, undefined);
     });
 
     this.mainViewApiService.getMainViewPrefs().subscribe(response => {
       this.mainViewModel.mainViewPrefs = response;
-    })
+    });
 
     this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateAccountData(this.groups);
       const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.loadAccountFinananceByIds(periodIds);
+      this.loadAccountFinananceByIds(periodIds, undefined);
     }));
   }
 
-  private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[]) {
+  private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {
     const periodIds = modifiedItems.map(md => this.mainViewModel.periodIds[md.accountId]);
-    this.loadAccountFinananceByIds(periodIds);
+    this.loadAccountFinananceByIds(periodIds, expectedDate);
   }
 
-  private loadAccountFinananceByIds(accountPeriodIds: number[]) {
+  private loadAccountFinananceByIds(accountPeriodIds: number[], expectedDate: Date | undefined) {
     const financeValues = this.mainViewModel.getFinanceAccountData(accountPeriodIds);
     const request: GetFinanceReq[] = [];
     accountPeriodIds.forEach(accountPeriodId => {
@@ -69,11 +75,11 @@ export class MainViewComponent implements OnInit {
         trxFilters: financeValue?.finance?.trxFilters
       })
     });
-    this.loadAccountFinanance(request);
+    this.loadAccountFinanance(request, expectedDate);
   }
 
-  private loadAccountFinanance(accountPeriods: GetFinanceReq[]) {
-    this.mainViewApiService.loadAccountFinanance(accountPeriods, this.mainViewModel.showPendings).subscribe(res => {
+  private loadAccountFinanance(accountPeriods: GetFinanceReq[], expectedDate: Date | undefined) {
+    this.mainViewApiService.loadAccountFinanance(accountPeriods, this.mainViewModel.showPendings, expectedDate).subscribe(res => {
       this.mainViewModel.updateFinanceInfo(res);
       this.loadFinanceSummary();
     });

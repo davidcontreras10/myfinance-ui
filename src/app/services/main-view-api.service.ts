@@ -228,7 +228,7 @@ export class MainViewApiService {
     );
   }
 
-  public loadAccountFinanance(requests: GetFinanceReq[], isPending: boolean): Observable<FinanceAccountResponse[]> {
+  public loadAccountFinanance(requests: GetFinanceReq[], isPending: boolean, expectedDate: Date | undefined = undefined): Observable<FinanceAccountResponse[]> {
     requests.forEach(req => {
       const request = {
         accountPeriodId: req.accountPeriodId,
@@ -241,7 +241,11 @@ export class MainViewApiService {
       requests.push(request);
     });
 
-    return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests);
+    let params = new HttpParams();
+    if (expectedDate) {
+      params = new HttpParams().set("expectedDate", Utils.toViewDateFormat(expectedDate))
+    }
+    return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests, { params: params });
   }
 
   public loadAccountFinanceSummary(): Observable<BankGroups[]> {
