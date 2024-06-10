@@ -48,6 +48,7 @@ import { NewTransactionTypeComponent } from './transaction-types/new-transaction
 import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.component';
 import { TrxFilterModalComponent } from './main-view/account-view/trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
+import { SetPeriodDateComponent } from './main-view/set-period-date/set-period-date.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { DatePipe } from '@angular/common';
     TransactionTypesTableComponent,
     NewTransactionTypeComponent,
     TrxTableComponent,
-    TrxFilterModalComponent
+    TrxFilterModalComponent,
+    SetPeriodDateComponent
   ],
   imports: [
     BrowserModule,

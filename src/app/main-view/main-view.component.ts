@@ -4,12 +4,13 @@ import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/n
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { GetFinanceReq, ItemModifiedRes } from '../services/models';
+import { DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserError } from '../error-modal/models';
 import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
+import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
 
 @Component({
   selector: 'app-main-view',
@@ -31,8 +32,14 @@ export class MainViewComponent implements OnInit {
         this.openPreferencesModal();
       }
       else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
-        const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
-        this.loadAccountFinananceByIds(periodIds, new Date('2024/03/25'));
+        const modal = this.modalService.open(SetPeriodDateComponent, { backdrop: true, size: 'lg' });
+        modal.result.then((res) => {
+          const result = <DialogResultModel<Date>>res;
+          if (result.success && result.value) {
+            const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+            this.loadAccountFinananceByIds(periodIds, result.value);
+          }
+        })
       }
     })
   }

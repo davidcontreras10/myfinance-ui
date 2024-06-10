@@ -318,3 +318,8 @@ export interface NewTrxTypeRequest {
 export interface EditTrxTypeRequest extends NewTrxTypeRequest {
   spendTypeId: number;
 }
+
+export interface DialogResultModel<T> {
+  value: T;
+  success: boolean;
+}
