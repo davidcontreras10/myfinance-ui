@@ -42,7 +42,7 @@ export class AccountViewComponent implements OnInit {
       const request = {
         accountPeriodId: accountPeriodArgs.accountPeriod.accountPeriodId,
         trxFilters: accountPeriodArgs.trxFilters
-      }
+      };
       this.mainViewApiService.loadAccountFinanance(
         [request],
         this.mainViewModel.showPendings).subscribe(responses => {

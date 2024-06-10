@@ -61,6 +61,7 @@ export class MainViewModel {
                 if (financeAccount) {
                     acc.financeData = financeAccount;
                     acc.currentPeriodId = financeAccount.accountPeriodId;
+                    this.periodIds[acc.accountId] = acc.currentPeriodId;
                 }
             });
             this.accountsModelChanged$.next(financeAccounts);
