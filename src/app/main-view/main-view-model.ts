@@ -60,6 +60,7 @@ export class MainViewModel {
                 const financeAccount = financeAccounts.find(f => f.accountId === acc.accountId);
                 if (financeAccount) {
                     acc.financeData = financeAccount;
+                    acc.currentPeriodId = financeAccount.accountPeriodId;
                 }
             });
             this.accountsModelChanged$.next(financeAccounts);

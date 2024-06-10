@@ -12,6 +12,7 @@ import { AccountNotesComponent } from '../account-notes/account-notes.component'
 import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
 import { DialogResultModel } from 'src/app/transaction-types/models';
 import { DatePipe } from '@angular/common';
+import { filter, map, pipe } from 'rxjs';
 
 @Component({
   selector: 'app-account-view',

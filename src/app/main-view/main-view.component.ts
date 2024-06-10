@@ -31,7 +31,7 @@ export class MainViewComponent implements OnInit {
         this.openPreferencesModal();
       }
       else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
-        const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+        const periodIds = [this.mainViewModel.getAllSelectedPeriodIds()[0]];
         this.loadAccountFinananceByIds(periodIds, new Date('2024/03/25'));
       }
     })

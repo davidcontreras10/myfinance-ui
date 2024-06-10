@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, filter, map, of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
 import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
@@ -229,6 +229,7 @@ export class MainViewApiService {
   }
 
   public loadAccountFinanance(requests: GetFinanceReq[], isPending: boolean, expectedDate: Date | undefined = undefined): Observable<FinanceAccountResponse[]> {
+    const apiRequests: GetFinanceReq[] = [];
     requests.forEach(req => {
       const request = {
         accountPeriodId: req.accountPeriodId,
@@ -238,14 +239,15 @@ export class MainViewApiService {
         trxFilters: req.trxFilters
       };
 
-      requests.push(request);
+      apiRequests.push(request);
     });
 
+    const body: any = null;
     let params = new HttpParams();
     if (expectedDate) {
       params = new HttpParams().set("expectedDate", Utils.toViewDateFormat(expectedDate))
     }
-    return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, requests, { params: params });
+    return this.httpClient.post<FinanceAccountResponse[]>(`${environment.baseApi}/api/Accounts/finance`, apiRequests, { params: params });
   }
 
   public loadAccountFinanceSummary(): Observable<BankGroups[]> {
