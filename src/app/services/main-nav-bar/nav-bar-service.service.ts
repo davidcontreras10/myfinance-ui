@@ -24,5 +24,7 @@ export class NavBarServiceService {
 export enum NavBarMenusIds {
   ACCOUNT_GROUPS = 'account-groups',
   NEW_ACCOUNT = 'new-account',
-  NEW_TRX_TYPE = 'new-trx-type'
+  NEW_TRX_TYPE = 'new-trx-type',
+  SET_PERIODS_DATE = 'set-periods-date',
+  MAIN_VIEW_PREFS = 'main-view-prefs'
 }

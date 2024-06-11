@@ -52,8 +52,8 @@
     <div class="col-md-5" *ngIf="!acc.financeData?.trxFilters">
         <select class="form-select" [(ngModel)]="mainViewModel.periodIds[acc.accountId]"
             (ngModelChange)="onPeriodChanged($event)" [disabled]="isFilterMode()">
-            <option *ngFor="let accPeriod of orderedPeriods()" [ngValue]="accPeriod.accountPeriodId"
-                [selected]="accPeriod.accountPeriodId == acc.currentPeriodId">{{accPeriod.name}}</option>
+            <option *ngFor="let accPeriod of orderedPeriods()" [ngValue]="accPeriod.accountPeriodId">{{accPeriod.name}}
+            </option>
         </select>
     </div>
     <div class="col-md-5" *ngIf="acc.financeData?.trxFilters">

@@ -25,7 +25,7 @@ export class NewTransactionTypeComponent implements OnInit {
       this.activeModal.close({
         value: res,
         success: true
-      })
+      });
     })
   }
 

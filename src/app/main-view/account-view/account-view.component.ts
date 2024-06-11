@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroupAccount, AccountPeriod } from '../models';
 import { MainViewModel } from '../main-view-model';
-import { SpendViewModel, TrxFilters } from 'src/app/services/models';
+import { DialogResultModel, SpendViewModel, TrxFilters } from 'src/app/services/models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
@@ -10,7 +10,6 @@ import { TransferViewComponent } from '../transfer-view/transfer-view.component'
 import { saveAs } from "file-saver";
 import { AccountNotesComponent } from '../account-notes/account-notes.component';
 import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
-import { DialogResultModel } from 'src/app/transaction-types/models';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -41,7 +40,7 @@ export class AccountViewComponent implements OnInit {
       const request = {
         accountPeriodId: accountPeriodArgs.accountPeriod.accountPeriodId,
         trxFilters: accountPeriodArgs.trxFilters
-      }
+      };
       this.mainViewApiService.loadAccountFinanance(
         [request],
         this.mainViewModel.showPendings).subscribe(responses => {

@@ -148,6 +148,12 @@ export interface GetFinanceReq {
   trxFilters: TrxFilters | null | undefined;
 }
 
+export interface GetFinanceApiReq extends GetFinanceReq {
+  amountTypeId: number;
+  loanSpends: boolean;
+  pendingSpends: boolean;
+}
+
 export interface AccountNotes {
   noteTitle: string;
   noteContent: string;
@@ -311,4 +317,9 @@ export interface NewTrxTypeRequest {
 
 export interface EditTrxTypeRequest extends NewTrxTypeRequest {
   spendTypeId: number;
+}
+
+export interface DialogResultModel<T> {
+  value: T;
+  success: boolean;
 }

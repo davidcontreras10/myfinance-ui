@@ -1,0 +1,21 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">Set the active date</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <input [(ngModel)]="selectedDate" type="date" name="selectedDate" class="basic-input form-control"
+                        required />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">Submit</button>
+    </div>
+</form>
