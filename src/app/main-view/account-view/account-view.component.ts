@@ -11,6 +11,7 @@ import { saveAs } from "file-saver";
 import { AccountNotesComponent } from '../account-notes/account-notes.component';
 import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-account-view',
@@ -46,6 +47,15 @@ export class AccountViewComponent implements OnInit {
         this.mainViewModel.showPendings).subscribe(responses => {
           this.mainViewModel.updateFinanceInfo(responses);
         });
+    });
+    this.mainViewModel.listenAccountsModelChanges().pipe(
+      filter(accounts => accounts.some(acc => acc.accountId === acc.accountId)),
+      map(accounts => accounts.find(acc => acc.accountId === acc.accountId))
+    ).subscribe(account => {
+      if (account) {
+        const accountPeriodId = this.mainViewModel.periodIds[account.accountId] ?? this.acc.currentPeriodId;
+        this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === accountPeriodId);
+      }
     })
   }
 
