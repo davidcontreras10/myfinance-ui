@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from "@angular/core";
-import { AccountGroup, AccountGroupAccount, AccountPeriod, BankGroups, MainViewPrefs } from "./models";
+import { AccountGroup, AccountGroupAccount, AccountPeriod, AccountPeriodEventArg, BankGroups, MainViewPrefs } from "./models";
 import { Observable, Subject, filter, observable, takeLast } from "rxjs";
-import { FinanceAccountResponse, ItemModifiedRes } from "../services/models";
+import { FinanceAccountResponse, ItemModifiedRes, TrxFilters } from "../services/models";
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +15,28 @@ export class MainViewModel {
     public errorNotification$ = new Subject<Error>();
     public mainViewPrefs: MainViewPrefs;
 
-    private periodChangeEvent$ = new Subject<AccountPeriod>();
+    private periodChangeEvent$ = new Subject<AccountPeriodEventArg>();
     private accountsModified$ = new Subject<ItemModifiedRes[]>();
     private accountsModelChanged$ = new Subject<FinanceAccountResponse[]>();
+
+    public getFinanceAccountData(accountPeriodIds: number[]): { finance: FinanceAccountResponse, accountPeriodId: number }[] {
+        const financeAccs: { finance: FinanceAccountResponse, accountPeriodId: number }[] = [];
+        accountPeriodIds.forEach(id => {
+            for (let accg of this.accountGroups) {
+                for (let acc of accg.accounts) {
+                    if (acc.financeData && acc.accountPeriods.some(accp => accp.accountPeriodId === id)) {
+                        financeAccs.push({
+                            accountPeriodId: id,
+                            finance: acc.financeData
+                        });
+                        return;
+                    }
+                }
+            }
+        });
+
+        return financeAccs;
+    }
 
     public listenAccountsModelChanges(): Observable<FinanceAccountResponse[]> {
         return this.accountsModelChanged$.asObservable();
@@ -41,13 +60,15 @@ export class MainViewModel {
                 const financeAccount = financeAccounts.find(f => f.accountId === acc.accountId);
                 if (financeAccount) {
                     acc.financeData = financeAccount;
+                    acc.currentPeriodId = financeAccount.accountPeriodId;
+                    this.periodIds[acc.accountId] = acc.currentPeriodId;
                 }
             });
             this.accountsModelChanged$.next(financeAccounts);
         }
     }
 
-    public getAllSelectedPeriodIds() {
+    public getAllSelectedPeriodIds(): number[] {
         const ids: number[] = [];
         for (const prop in this.periodIds) {
             ids.push(this.periodIds[prop]);
@@ -64,9 +85,12 @@ export class MainViewModel {
         });
     }
 
-    public notifyPeriodChange(accountPeriodId: number): void {
+    public notifyPeriodChange(accountPeriodId: number, trxFilters: TrxFilters | null = null): void {
         const period = this.getAccountPeriodById(accountPeriodId);
-        this.periodChangeEvent$.next(period);
+        this.periodChangeEvent$.next({
+            accountPeriod: period,
+            trxFilters: trxFilters
+        });
     }
 
     public getAccountPeriodById(accountPeriodId: number): AccountPeriod {
@@ -87,9 +111,9 @@ export class MainViewModel {
         return accountPeriod;
     }
 
-    public listenOnPeriodChange(accountId: number): Observable<AccountPeriod> {
+    public listenOnPeriodChange(accountId: number): Observable<AccountPeriodEventArg> {
         return this.periodChangeEvent$.pipe(
-            filter(x => x.accountId === accountId)
+            filter(x => x.accountPeriod.accountId === accountId)
         )
     }
 

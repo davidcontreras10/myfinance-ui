@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
-import { NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
+import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { ItemModifiedRes } from '../services/models';
+import { DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserError } from '../error-modal/models';
 import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
+import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
 
 @Component({
   selector: 'app-main-view',
@@ -26,8 +27,20 @@ export class MainViewComponent implements OnInit {
     navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
       this.handleIncomingNavBarAction(value);
     });
-    navBarService.getSubMenuEvents('main-view-prefs').subscribe(value => {
-      this.openPreferencesModal();
+    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
+      if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
+        this.openPreferencesModal();
+      }
+      else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
+        const modal = this.modalService.open(SetPeriodDateComponent, { backdrop: true, size: 'lg' });
+        modal.result.then((res) => {
+          const result = <DialogResultModel<Date>>res;
+          if (result.success && result.value) {
+            const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+            this.loadAccountFinananceByIds(periodIds, result.value);
+          }
+        })
+      }
     })
   }
 
@@ -38,29 +51,42 @@ export class MainViewComponent implements OnInit {
     })
 
     this.mainViewModel.listenAccountsModified().subscribe(modifiedItems => {
-      this.loadModifiedAccountFinanance(modifiedItems);
+      this.loadModifiedAccountFinanance(modifiedItems, undefined);
     });
 
     this.mainViewApiService.getMainViewPrefs().subscribe(response => {
       this.mainViewModel.mainViewPrefs = response;
-    })
+    });
 
     this.mainViewApiService.loadMainAccountGroups().subscribe((response => {
       this.groups = response.sort((a, b) => a.accountGroupPosition > b.accountGroupPosition ? 1 : -1);
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateAccountData(this.groups);
-      const perioIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.loadAccountFinanance(perioIds);
+      const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+      this.loadAccountFinananceByIds(periodIds, undefined);
     }));
   }
 
-  private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[]) {
+  private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {
     const periodIds = modifiedItems.map(md => this.mainViewModel.periodIds[md.accountId]);
-    this.loadAccountFinanance(periodIds);
+    this.loadAccountFinananceByIds(periodIds, expectedDate);
   }
 
-  private loadAccountFinanance(accountPeriodIds: number[]) {
-    this.mainViewApiService.loadAccountFinanance(accountPeriodIds, this.mainViewModel.showPendings).subscribe(res => {
+  private loadAccountFinananceByIds(accountPeriodIds: number[], expectedDate: Date | undefined) {
+    const financeValues = this.mainViewModel.getFinanceAccountData(accountPeriodIds);
+    const request: GetFinanceReq[] = [];
+    accountPeriodIds.forEach(accountPeriodId => {
+      const financeValue = financeValues.find(v => v.accountPeriodId === accountPeriodId);
+      request.push({
+        accountPeriodId,
+        trxFilters: financeValue?.finance?.trxFilters
+      })
+    });
+    this.loadAccountFinanance(request, expectedDate);
+  }
+
+  private loadAccountFinanance(accountPeriods: GetFinanceReq[], expectedDate: Date | undefined) {
+    this.mainViewApiService.loadAccountFinanance(accountPeriods, this.mainViewModel.showPendings, expectedDate).subscribe(res => {
       this.mainViewModel.updateFinanceInfo(res);
       this.loadFinanceSummary();
     });
@@ -86,7 +112,7 @@ export class MainViewComponent implements OnInit {
     }
   }
 
-  private openPreferencesModal(){
+  private openPreferencesModal() {
     this.modalService.open(MainViewPrefsComponent, { backdrop: true, size: 'md' });
   }
 

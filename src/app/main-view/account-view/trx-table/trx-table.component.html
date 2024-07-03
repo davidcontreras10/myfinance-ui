@@ -39,12 +39,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let trx of acc?.financeData?.spendViewModels" [ngClass]="{'is-pending':trx.isPending}">
+        <tr *ngFor="let trx of getSpendViewModels()" [ngClass]="{'is-pending':trx.isPending}">
             <td>
                 <input type="checkbox" class="form-check-input" [(ngModel)]="trx.vmIsSelected"
                     (change)="toggleSelection(trx)" />
             </td>
-            <td>{{ trx.spendDate | date:"dd/MM/yy" }}</td>
+            <td>{{ trx.spendDate | date:"yy/MM/dd" }}</td>
             <td>
                 <app-trx-amount [account]="acc" [spendViewModel]="trx"></app-trx-amount>
             </td>

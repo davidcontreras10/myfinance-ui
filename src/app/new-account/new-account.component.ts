@@ -30,7 +30,9 @@ export class NewAccountComponent implements OnInit {
     'spendTypeId': 7,
     'financialEntityId': 8,
     'accountIncludes': 9,
-    'accountGroupId': 10
+    'accountGroupId': 10,
+    'defaultCurrencyId': 11,
+    'isDefaultPending': 12
   }
 
   constructor(
@@ -122,6 +124,16 @@ export class NewAccountComponent implements OnInit {
         requestModel.editAccountFields.push(this.accountFiedlds['accountGroupId']);
       }
 
+      if (controls['defaultCurrencyId'].dirty) {
+        requestModel.defaultCurrencyId = this.inputModel.defaultCurrencyId;
+        requestModel.editAccountFields.push(this.accountFiedlds['defaultCurrencyId']);
+      }
+
+      if (controls['isDefaultPending'].dirty) {
+        requestModel.isDefaultPending = this.inputModel.isDefaultPending;
+        requestModel.editAccountFields.push(this.accountFiedlds['isDefaultPending']);
+      }
+
       if (this.isAccountIncludeModified()) {
         requestModel.editAccountFields.push(this.accountFiedlds['accountIncludes']);
         requestModel.accountIncludes = this.readAccountIncludes(viewModel.accountId);
@@ -184,11 +196,23 @@ export class NewAccountComponent implements OnInit {
       model.financialEntityId = Number.parseInt(formValue.financialEntityId);
       model.accountTypeId = Number.parseInt(formValue.accountTypeId);
       model.spendTypeId = Number.parseInt(formValue.spendTypeId);
+      model.defaultCurrencyId = this.toValidId(formValue.defaultCurrencyId);
+      model.isDefaultPending = !!formValue.isDefaultPending;
       model.accountIncludes = this.readAccountIncludes();
 
       return model;
     }
     return null;
+  }
+
+  private toValidId(value: any): number | null {
+    const parsedValue = Number(value);
+
+    if (isNaN(parsedValue) || parsedValue <= 0) {
+      return null;
+    }
+
+    return parsedValue;
   }
 
   private readAccountIncludes(accountId: number = 0): AccountInclude[] {

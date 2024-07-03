@@ -1,3 +1,4 @@
+
 export interface ApiCredentials {
   username: string;
   password: string;
@@ -13,11 +14,34 @@ export interface StoredToken {
   expireDate: Date;
 }
 
+export interface PendingTrxFilter {
+  value: boolean;
+}
+
+export interface DescriptionTrxFilter {
+  searchText: string | null;
+}
+
+export interface TrxFilters {
+  startDate: Date | null;
+  endDate: Date | null;
+  pendingTrxFilter: PendingTrxFilter | null;
+  descriptionTrxFilter: DescriptionTrxFilter | null
+}
+
+export class BasicTrxFilters implements TrxFilters {
+  startDate: Date | null;
+  endDate: Date | null;
+  pendingTrxFilter: PendingTrxFilter | null;
+  descriptionTrxFilter: DescriptionTrxFilter | null;
+}
+
 export interface FinanceAccountRequest {
   accountPeriodId: number;
   pendingSpends: boolean;
   loanSpends: boolean;
   amountTypeId: number;
+  trxFilters: TrxFilters | null
 }
 
 export class SpendViewModel {
@@ -64,6 +88,7 @@ export interface FinanceAccountResponse {
   numPeriodBalance: string;
   numGeneralBalance: string;
   numGeneralBalanceToday: string;
+  trxFilters: TrxFilters | null;
 }
 
 export interface SelectableItem {
@@ -95,6 +120,7 @@ export interface AddTrxResponse {
   initialDate: Date;
   endDate: Date;
   accountName: string;
+  isDefaultPending: boolean | undefined;
 }
 
 export interface AddTransferResponse extends AddTrxResponse {
@@ -115,6 +141,17 @@ export interface AddTrxRequest {
   isPending: boolean;
   spendDate: Date;
   paymentDate: Date;
+}
+
+export interface GetFinanceReq {
+  accountPeriodId: number;
+  trxFilters: TrxFilters | null | undefined;
+}
+
+export interface GetFinanceApiReq extends GetFinanceReq {
+  amountTypeId: number;
+  loanSpends: boolean;
+  pendingSpends: boolean;
 }
 
 export interface AccountNotes {
@@ -217,6 +254,8 @@ export interface AddNewAccountViewModel {
   accountIncludeViewModels: BasicAccountIncluded[];
   currencyViewModels: Currency[];
   accountGroupViewModels: SelectableItem[];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export interface EditAccountViewModel extends AddNewAccountViewModel {
@@ -242,6 +281,8 @@ export class NewAccountRequestModel {
   financialEntityId: number;
   accountGroupId: number;
   accountIncludes: AccountInclude[];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export class EditAccountRequestModel {
@@ -260,6 +301,8 @@ export class EditAccountRequestModel {
   accountGroupId: number;
   accountIncludes: AccountInclude[];
   editAccountFields: number[] = [];
+  defaultCurrencyId: number | null;
+  isDefaultPending: boolean;
 }
 
 export interface TrxTypeViewModel extends SelectableItem {
@@ -274,4 +317,9 @@ export interface NewTrxTypeRequest {
 
 export interface EditTrxTypeRequest extends NewTrxTypeRequest {
   spendTypeId: number;
+}
+
+export interface DialogResultModel<T> {
+  value: T;
+  success: boolean;
 }

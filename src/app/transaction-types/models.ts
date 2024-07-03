@@ -1,4 +1,4 @@
-import { TrxTypeViewModel } from "../services/models";
+import { DialogResultModel, TrxTypeViewModel } from "../services/models";
 
 export interface TrxEventArgs {
     trxType: TrxTypeViewModel;
@@ -9,7 +9,6 @@ export interface TextChangedArgs extends TrxEventArgs {
     isNameField: boolean;
 }
 
-export interface NewTrxTypeDialogResult {
-    value: TrxTypeViewModel;
-    success: boolean;
+
+export interface NewTrxTypeDialogResult extends DialogResultModel<TrxTypeViewModel> {
 }
