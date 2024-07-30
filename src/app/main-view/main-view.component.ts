@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountGroup } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
+import { BankTrxReqResp, DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { UserError } from '../error-modal/models';
 import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
 import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
+import { BankTransactionsComponent } from './bank-transactions/bank-transactions.component';
 
 @Component({
   selector: 'app-main-view',
@@ -19,13 +20,26 @@ import { SetPeriodDateComponent } from './set-period-date/set-period-date.compon
   providers: [AuthGuard]
 })
 export class MainViewComponent implements OnInit {
+  selectedFile: File | null = null;
+
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
   public showBankSummary = true;
   public groups: AccountGroup[] = [];
   public bankSummaryloading = false;
 
-  constructor(private modalService: NgbModal, navBarService: NavBarServiceService, private mainViewApiService: MainViewApiService, public mainViewModel: MainViewModel) {
-    navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
-      this.handleIncomingNavBarAction(value);
+  constructor(
+    navBarService: NavBarServiceService,
+    private modalService: NgbModal,
+    private mainViewApiService: MainViewApiService,
+    public mainViewModel: MainViewModel) {
+    navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_TRX_FILE).subscribe((value) => {
+      if (value === 'toggle-summary') {
+        this.handleIncomingNavBarAction(value);
+      }
+      else if (value === NavBarMenusIds.UPLOAD_TRX_FILE) {
+        this.openBankTrxFileDialog();
+      }
     });
     navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
       if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
@@ -65,6 +79,46 @@ export class MainViewComponent implements OnInit {
       const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.loadAccountFinananceByIds(periodIds, undefined);
     }));
+  }
+
+  openBankTrxFileDialog(): void {
+
+    this.fileInput.nativeElement.click();
+  }
+
+  onBankTrxFileSelected(event: Event): void {
+    console.log('openBankTrxFileDialog event');
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedFile = target.files[0];
+      this.onUploadBankTrxFile();
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  onUploadBankTrxFile(): void {
+    if (this.selectedFile) {
+      this.mainViewApiService.uploadBankTrxFile(this.selectedFile).subscribe({
+        next: (event) => {
+          console.log('uploadBankTrxFile response');
+          if (event.type === HttpEventType.UploadProgress) {
+            // Calculate the progress percentage and display it if needed
+            const progress = Math.round((100 * event.loaded) / (event.total ?? 1));
+            console.log(`File is ${progress}% uploaded.`);
+          } else if (event.type === HttpEventType.Response) {
+
+            const responseBody: BankTrxReqResp[] = event.body!;
+            console.log('opening BankTransactionsComponent modal');
+            const modalRef = this.modalService.open(BankTransactionsComponent, { backdrop: 'static', keyboard: false, size: 'xl' });
+            modalRef.componentInstance.bankTransactions = responseBody;
+            // Handle the response body as needed
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Upload error:', err.message);
+        }
+      });
+    }
   }
 
   private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {
