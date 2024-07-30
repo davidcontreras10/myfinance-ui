@@ -323,3 +323,25 @@ export interface DialogResultModel<T> {
   value: T;
   success: boolean;
 }
+
+export interface FileBankTransaction {
+  transactionId: string;
+  originalAmount: number;
+  transactionDate: Date;
+  description: string;
+  currencyCode: string;
+}
+
+export enum BankTransactionStatus {
+  Unknown = 0,
+  Processed = 1,
+  Ignored = 2,
+  NotExisting = 3,
+  Inserted = 4
+}
+
+export interface BankTrxReqResp {
+  transaction: FileBankTransaction;
+  dbStatus: BankTransactionStatus;
+  currency: Currency;
+}

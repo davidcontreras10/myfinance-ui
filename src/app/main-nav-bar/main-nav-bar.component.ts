@@ -19,6 +19,7 @@ export class MainNavBarComponent implements OnInit {
           { id: 'toggle-summary', name: 'Toggle Summary' },
           { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
           { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
+          { id: NavBarMenusIds.UPLOAD_TRX_FILE, name: 'Upload Scotiabank File' }
         ],
         routingLink: '/'
       },
