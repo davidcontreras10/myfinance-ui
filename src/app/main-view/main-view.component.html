@@ -1,5 +1,4 @@
 <div class="container-fluid">
-    <input type="file" #fileInput (change)="onBankTrxFileSelected($event)" style="display: none;" />
     <app-bank-summary *ngIf="showBankSummary" [bankSummaryloading]="bankSummaryloading"></app-bank-summary>
     <app-accounts-accordeon [groups]="groups"></app-accounts-accordeon>
 </div>
