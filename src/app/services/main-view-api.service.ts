@@ -1,9 +1,9 @@
-import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxReqResp, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -18,21 +18,6 @@ export class MainViewApiService {
       periodsLimit: 12
     };
     return of(defPrefs);
-  }
-
-  uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp[]>> {
-    const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
-    const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/UploadRequest`
-    const req = new HttpRequest('POST', uploadUrl, formData, {
-      headers: new HttpHeaders({
-        'Accept': 'application/json'
-      }),
-      //reportProgress: true,
-      responseType: 'json'
-    });
-
-    return this.httpClient.request<BankTrxReqResp[]>(req);
   }
 
   public updateNotes(accountId: number, notes: AccountNotes): Observable<AccountNotes> {
