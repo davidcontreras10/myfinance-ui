@@ -49,8 +49,8 @@ export class AccountViewComponent implements OnInit {
         });
     });
     this.mainViewModel.listenAccountsModelChanges().pipe(
-      filter(accounts => accounts.some(acc => acc.accountId === acc.accountId)),
-      map(accounts => accounts.find(acc => acc.accountId === acc.accountId))
+      filter(accounts => accounts.some(acc => acc.accountId === this.acc.accountId)),
+      map(accounts => accounts.find(acc => acc.accountId === this.acc.accountId))
     ).subscribe(account => {
       if (account) {
         const accountPeriodId = this.mainViewModel.periodIds[account.accountId] ?? this.acc.currentPeriodId;
