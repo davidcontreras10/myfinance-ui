@@ -23,16 +23,20 @@
                             <td>{{item.current.fileTransaction.description}}</td>
                             <td>{{item.current.fileTransaction.transactionDate | date:"yyyy/MM/dd"}}</td>
                             <td>
-                                <div>
+                                <div *ngIf="item.current.dbStatus !== BankTransactionStatus.Ignored">
                                     <select [(ngModel)]="item.current.singleTrxAccountId" class="form-select"
-                                        [name]="'single-acc-'+item.current.fileTransaction.transactionId ">
+                                        [name]="'single-acc-'+item.current.fileTransaction.transactionId" required>
                                         <option [ngValue]="null">Select an account</option>
                                         <option *ngFor="let item of item.accounts" [value]="item.id">
                                             {{item.name}}</option>
                                     </select>
                                 </div>
+
+                                <div *ngIf="item.current.dbStatus === BankTransactionStatus.Ignored">
+                                    <span>Ignored</span>
+                                </div>
                             </td>
-                            <td>{{item.current.dbStatus}}</td>
+                            <td>{{getStatusName(item.current.dbStatus)}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -64,7 +68,7 @@
                             <div class="basic-input form-control">
                                 <div class="form-check">
                                     <input mdbCheckbox ngModel name="ignoreSelected" class="form-check-input"
-                                        type="checkbox" id="ignore-selected" [checked]="ignoreSelected" />
+                                        type="checkbox" id="ignore-selected" [(ngModel)]="ignoreSelected" />
                                     <label class="form-check-label" for="ignore-selected">
                                         Ignore
                                     </label>
@@ -72,20 +76,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col">
                             <div class="basic-input form-control">
                                 <div class="form-check">
                                     <input mdbCheckbox [(ngModel)]="isMultipleTrx" name="multipleTransactions"
-                                        class="form-check-input" type="checkbox" id="multiple-transactions" />
+                                        class="form-check-input" type="checkbox" id="multiple-transactions"
+                                        [disabled]="ignoreSelected" />
                                     <label class="form-check-label" for="multiple-transactions">
                                         Multiple transactions
                                     </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
+                    </div> -->
+                    <!-- <div class="row">
                         <div class="col" *ngIf="selectedTransaction?.current?.processData?.transactions">
                             <div class="row"
                                 *ngFor="let trxItem of selectedTransaction?.current?.processData?.transactions">
@@ -101,8 +106,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <input type="submit" value="Submit" class="btn btn-primary" style="float: right;"
+                    [disabled]="f.invalid">
             </div>
         </div>
     </form>

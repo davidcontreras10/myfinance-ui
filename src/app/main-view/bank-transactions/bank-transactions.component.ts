@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class BankTransactionsComponent implements OnInit {
 
+  BankTransactionStatus = BankTransactionStatus;
+
   @Input() bankTransactions: BankTrxReqRespPair[];
 
   selectedTransaction: BankTrxReqRespPair;
@@ -28,7 +30,7 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   submit(_t5: NgForm) {
-    throw new Error('Method not implemented.');
+    console.log('Submitting changes', _t5);
   }
 
   selectRow(index: number) {
@@ -36,9 +38,22 @@ export class BankTransactionsComponent implements OnInit {
     this.selectedTransaction = this.bankTransactions[index];
   }
 
+  getEnumText(value: BankTransactionStatus): string {
+    return BankTransactionStatus[value];
+  }
+
+  getStatusName(value: BankTransactionStatus): string {
+    if (value === BankTransactionStatus.Inserted) {
+      return 'New';
+    }
+
+    return this.getEnumText(value);
+  }
+
   set ignoreSelected(value: boolean) {
     if (this.selectedTransaction) {
-      this.selectedTransaction.original.dbStatus = value ? BankTransactionStatus.Ignored : BankTransactionStatus.Processed;
+      this.selectedTransaction.current.dbStatus = value ? BankTransactionStatus.Ignored : BankTransactionStatus.Processed;
+      console.log('new value', this.selectedTransaction.current.dbStatus);
     }
   }
 
