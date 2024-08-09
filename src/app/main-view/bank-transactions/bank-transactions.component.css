@@ -1,0 +1,12 @@
+.selected {
+    background-color: #d9edf7;
+    /* Example color */
+}
+
+.table-selectable {
+    cursor: pointer;
+}
+
+.row {
+    padding-top: 5px;
+}

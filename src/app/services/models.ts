@@ -44,6 +44,19 @@ export interface FinanceAccountRequest {
   trxFilters: TrxFilters | null
 }
 
+export class BankTrxSpendViewModel {
+  accountId: number | null;
+  spendId: number;
+  spendDate: Date;
+  setPaymentDate: Date;
+  spendTypeId: number | null;
+  originalAmount: number | null;
+  amountCurrencyId: number;
+  description: string;
+  convertedAmount: number;
+  accounts: SelectableItem[];
+}
+
 export class SpendViewModel {
   accountId: number;
   spendId: number;
@@ -213,9 +226,12 @@ export interface AccountStyle {
   borderColor: string;
 }
 
-export interface AccountViewModel {
+export interface AccountBasicInfo {
   accountId: number;
   accountName: string;
+}
+
+export interface AccountViewModel extends AccountBasicInfo {
   accountPosition: number;
   currencyId: number;
   currencyName: string;
@@ -340,8 +356,22 @@ export enum BankTransactionStatus {
   Inserted = 4
 }
 
+export interface AccountsByCurrencyViewModel {
+  currencyId: number;
+  accounts: SelectableItem[];
+}
+
 export interface BankTrxReqResp {
-  transaction: FileBankTransaction;
+  accountsPerCurrencies: AccountsByCurrencyViewModel[];
+  bankTransactions: BankTrxItemReqResp[];
+}
+
+export interface BankTrxItemReqResp {
+  fileTransaction: FileBankTransaction;
   dbStatus: BankTransactionStatus;
   currency: Currency;
+  singleTrxAccountId: number | null;
+  processData: {
+    transactions: BankTrxSpendViewModel[]
+  }
 }

@@ -7,4 +7,8 @@ export class Utils {
         const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes and pad with leading zeros
         return `${year}-${month}-${day}T${hours}:${minutes}`; // concatenate the values into a string with the desired format
     }
+
+    public static deepClone<T>(object: T): T {
+        return JSON.parse(JSON.stringify(object));
+    }
 }

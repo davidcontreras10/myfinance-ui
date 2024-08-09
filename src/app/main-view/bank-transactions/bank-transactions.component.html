@@ -1,37 +1,109 @@
-<form #f="ngForm" (ngSubmit)="submit(f)">
-    <div>
-        <button type="button" class="btn-close" aria-label="Close"
-            (click)="activeModal.dismiss('Cross click')"></button>
-        <h4 class="modal-title">Bank Transactions</h4>
-    </div>
-    <div class="modal-body">
+<div class="container">
+
+    <form #f="ngForm" (ngSubmit)="submit(f)">
         <div class="row" *ngIf="bankTransactions">
-            <div class="col-md-12">
-                <table class="table table-bordered table-low-margin">
+            <div class="col-md-9">
+                <table class="table table-bordered table-low-margin table-selectable">
                     <thead>
                         <tr>
                             <th data-field="Reference">Reference</th>
                             <th data-field="Amount">Amount</th>
                             <th data-field="Description">Description</th>
                             <th data-field="Date">Date</th>
+                            <th data-field="Account">Account</th>
                             <th data-field="Status">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let item of bankTransactions">
-                            <td>{{item.transaction.transactionId}}</td>
-                            <td>{{item.transaction.originalAmount | currencyAmount: item.currency.symbol}}</td>
-                            <td>{{item.transaction.description}}</td>
-                            <td>{{item.transaction.transactionDate | date:"yy/MM/dd"}}</td>
-                            <td>{{item.dbStatus}}</td>
+                        <tr *ngFor="let item of bankTransactions; let i = index" (click)="selectRow(i)"
+                            [class.selected]="selectedRowIndex === i" class=" table-selectable">
+                            <td>{{item.current.fileTransaction.transactionId}}</td>
+                            <td>{{item.current.fileTransaction.originalAmount | currencyAmount:
+                                item.current.currency.symbol}}</td>
+                            <td>{{item.current.fileTransaction.description}}</td>
+                            <td>{{item.current.fileTransaction.transactionDate | date:"yyyy/MM/dd"}}</td>
+                            <td>
+                                <div>
+                                    <select [(ngModel)]="item.current.singleTrxAccountId" class="form-select"
+                                        [name]="'single-acc-'+item.current.fileTransaction.transactionId ">
+                                        <option [ngValue]="null">Select an account</option>
+                                        <option *ngFor="let item of item.accounts" [value]="item.id">
+                                            {{item.name}}</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>{{item.current.dbStatus}}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div class="col-md-3" *ngIf="selectedTransaction">
+                <form #f="ngForm" (ngSubmit)="submit(f)">
+                    <div class="row">
+                        <div class="col">
+                            <ul>
+                                <li><strong>Reference:</strong>
+                                    {{selectedTransaction.current.fileTransaction.transactionId}}</li>
+                                <li><strong>Total amount:</strong>
+                                    {{selectedTransaction.current.fileTransaction.originalAmount |
+                                    currencyAmount:
+                                    selectedTransaction.current.currency.symbol}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <input [(ngModel)]="selectedTransaction.current.fileTransaction.description" type="text"
+                                    name="description" class="basic-input form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="basic-input form-control">
+                                <div class="form-check">
+                                    <input mdbCheckbox ngModel name="ignoreSelected" class="form-check-input"
+                                        type="checkbox" id="ignore-selected" [checked]="ignoreSelected" />
+                                    <label class="form-check-label" for="ignore-selected">
+                                        Ignore
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="basic-input form-control">
+                                <div class="form-check">
+                                    <input mdbCheckbox [(ngModel)]="isMultipleTrx" name="multipleTransactions"
+                                        class="form-check-input" type="checkbox" id="multiple-transactions" />
+                                    <label class="form-check-label" for="multiple-transactions">
+                                        Multiple transactions
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" *ngIf="selectedTransaction?.current?.processData?.transactions">
+                            <div class="row"
+                                *ngFor="let trxItem of selectedTransaction?.current?.processData?.transactions">
+                                <div class="col-md-4">
+                                    <input type="number" [name]="'amount-' + trxItem.spendId"
+                                        [(ngModel)]="trxItem.originalAmount">
+                                </div>
+                                <div class="col-md-4">
+
+                                </div>
+                                <div class="col-md-4">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-        <button type="submit" class="btn btn-outline-dark">Submit</button>
-    </div>
-</form>
+    </form>
+</div>

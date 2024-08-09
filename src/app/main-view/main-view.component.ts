@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
-import { AccountGroup } from './models';
+import { AccountGroup, BankTrxReqRespPair } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { BankTrxReqResp, DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
+import { BankTrxItemReqResp, BankTrxReqResp, BankTrxSpendViewModel, DialogResultModel, GetFinanceReq, ItemModifiedRes, SelectableItem } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
@@ -12,6 +12,8 @@ import { UserError } from '../error-modal/models';
 import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
 import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
 import { BankTransactionsComponent } from './bank-transactions/bank-transactions.component';
+import { Utils } from '../utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-view',
@@ -32,7 +34,8 @@ export class MainViewComponent implements OnInit {
     navBarService: NavBarServiceService,
     private modalService: NgbModal,
     private mainViewApiService: MainViewApiService,
-    public mainViewModel: MainViewModel) {
+    public mainViewModel: MainViewModel,
+    private router: Router) {
     navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_TRX_FILE).subscribe((value) => {
       if (value === 'toggle-summary') {
         this.handleIncomingNavBarAction(value);
@@ -107,11 +110,13 @@ export class MainViewComponent implements OnInit {
             console.log(`File is ${progress}% uploaded.`);
           } else if (event.type === HttpEventType.Response) {
 
-            const responseBody: BankTrxReqResp[] = event.body!;
-            console.log('opening BankTransactionsComponent modal');
-            const modalRef = this.modalService.open(BankTransactionsComponent, { backdrop: 'static', keyboard: false, size: 'xl' });
-            modalRef.componentInstance.bankTransactions = responseBody;
-            // Handle the response body as needed
+            const responseBody: BankTrxReqResp = event.body!;
+            const viewModel = this.transformBankTrxUploadResponse(responseBody);
+            if (viewModel) {
+              // const modalRef = this.modalService.open(BankTransactionsComponent, { backdrop: 'static', keyboard: false, size: 'xl' });
+              // modalRef.componentInstance.bankTransactions = pairs;
+              this.router.navigate(['/bank-trx'], { state: { bankTransactions: viewModel } })
+            }
           }
         },
         error: (err: HttpErrorResponse) => {
@@ -119,6 +124,66 @@ export class MainViewComponent implements OnInit {
         }
       });
     }
+  }
+
+  private transformBankTrxUploadResponse(responseBody: BankTrxReqResp): BankTrxReqRespPair[] | null {
+    if (responseBody?.bankTransactions && responseBody.bankTransactions.length > 0) {
+      const pairs = responseBody.bankTransactions.map(trx => {
+        if (trx.processData.transactions?.length === 1) {
+          trx.singleTrxAccountId = trx.processData.transactions[0].accountId;
+        }
+        else {
+          trx.singleTrxAccountId = null;
+        }
+        const copy = Utils.deepClone(trx);
+        const matched = responseBody.accountsPerCurrencies.find(a => a.currencyId === trx.currency.id);
+        if (!matched) {
+          throw new Error("No accounts found");
+        }
+        const pair: BankTrxReqRespPair = {
+          original: copy,
+          current: trx,
+          multipleTrxReq: false,
+          accounts: matched.accounts
+        };
+
+        if (!pair.current.processData?.transactions || pair.current.processData.transactions.length < 1) {
+          if (!pair.current.processData?.transactions) {
+            pair.current.processData = {
+              transactions: []
+            };
+          }
+
+          pair.current.processData.transactions.push(this.createBankTrxItemReqResp(trx));
+        }
+        if (pair.current.processData?.transactions) {
+          pair.current.processData.transactions.forEach((pTrx) => {
+            pTrx.accounts = matched.accounts;
+          });
+        }
+
+        return pair;
+      });
+
+      return pairs;
+    }
+
+    return null;
+  }
+
+  private createBankTrxItemReqResp(bankTrxItemReqResp: BankTrxItemReqResp): BankTrxSpendViewModel {
+    return {
+      accountId: null,
+      accounts: [],
+      amountCurrencyId: bankTrxItemReqResp.currency.id,
+      convertedAmount: bankTrxItemReqResp.fileTransaction.originalAmount,
+      description: bankTrxItemReqResp.fileTransaction.description,
+      originalAmount: bankTrxItemReqResp.fileTransaction.originalAmount,
+      spendDate: bankTrxItemReqResp.fileTransaction.transactionDate,
+      spendId: 0,
+      spendTypeId: null,
+      setPaymentDate: bankTrxItemReqResp.fileTransaction.transactionDate
+    };
   }
 
   private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxReqResp, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxItemReqResp, BankTrxReqResp, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class MainViewApiService {
     return of(defPrefs);
   }
 
-  uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp[]>> {
+  uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp>> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
     const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/UploadRequest`
@@ -32,7 +32,7 @@ export class MainViewApiService {
       responseType: 'json'
     });
 
-    return this.httpClient.request<BankTrxReqResp[]>(req);
+    return this.httpClient.request<BankTrxReqResp>(req);
   }
 
   public updateNotes(accountId: number, notes: AccountNotes): Observable<AccountNotes> {
