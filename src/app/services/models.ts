@@ -76,6 +76,7 @@ export class SpendViewModel {
   isPending: boolean;
   convertedAmount: number;
   vmIsSelected: boolean = false;
+  hasBankTrx: boolean | null = null;
 }
 
 export interface FinanceAccountResponse {

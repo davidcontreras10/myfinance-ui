@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, ClientBankItemRequest, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, SelectableItem } from 'src/app/services/models';
 import { BankTrxReqRespPair } from '../models';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { Utils } from 'src/app/utils';
+import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-bank-transactions',
@@ -13,18 +14,22 @@ import { Utils } from 'src/app/utils';
 })
 export class BankTransactionsComponent implements OnInit {
 
+  @ViewChild('fileInput', { static: true }) fileInput!: ElementRef;
+  @Input() bankTransactions: BankTrxReqRespPair[];
+  selectedFile: File | null = null;
+
   BankTransactionStatus = BankTransactionStatus;
 
-  @Input() bankTransactions: BankTrxReqRespPair[];
-
-  selectedTransaction: BankTrxReqRespPair;
+  selectedTransaction: BankTrxReqRespPair | null = null;
   selectedRowIndex: number | null = null;
   transactionTypes: SelectableItem[] = [];
 
-  constructor(private router: Router, private mainViewApiService: MainViewApiService) {
+  constructor(private router: Router,
+    private mainViewApiService: MainViewApiService,
+    private activatedRoute: ActivatedRoute) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state?.['bankTransactions']) {
-      this.bankTransactions = navigation?.extras?.state?.['bankTransactions'];
+    if (navigation?.extras?.state?.['uploadedFile']) {
+      this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
     }
   }
 
@@ -32,6 +37,26 @@ export class BankTransactionsComponent implements OnInit {
     this.mainViewApiService.getUserTransactionTypes().subscribe(response => {
       this.transactionTypes = response;
     });
+
+    if (this.selectedFile) {
+      this.onUploadBankTrxFile();
+    }
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      const trxId = params['trxId'];
+      if (trxId) {
+        this.mainViewApiService.getBankTransactionsByAppTrxIds([trxId]).subscribe({
+          next: (event) => {
+            console.log('by trx response');
+            this.processBankTrxReqResp(event);
+          },
+          error: (err: HttpErrorResponse) => {
+            console.error('Upload error:', err.message);
+          }
+        });
+      }
+    });
+
   }
 
   submit(_t5: NgForm) {
@@ -47,8 +72,14 @@ export class BankTransactionsComponent implements OnInit {
     });
   }
 
+  clearTransactions() {
+    this.bankTransactions = [];
+    this.selectRow(null);
+    this.router.navigate(['/bank-trx']);
+  }
+
   requestReset() {
-    if (confirm('Are you sure you want to reset this transaction?')) {
+    if (confirm('Are you sure you want to reset this transaction?') && this.selectedTransaction) {
       this.mainViewApiService.resetBankTrx(this.selectedTransaction.current.fileTransaction.transactionId,
         this.selectedTransaction.current.financialEntityId).subscribe(response => {
           this.processBankTrxProcessResponse(response);
@@ -56,8 +87,62 @@ export class BankTransactionsComponent implements OnInit {
     }
   }
 
-  selectRow(index: number) {
+  onBankTrxFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedFile = target.files[0];
+      this.onUploadBankTrxFile();
+    }
+  }
+
+  onUploadBankTrxFile(): void {
+    if (this.selectedFile) {
+      const uploadedFile = this.selectedFile;
+      this.selectedFile = null;
+      this.fileInput.nativeElement.value = '';
+      this.mainViewApiService.uploadBankTrxFile(uploadedFile).subscribe({
+        next: (event) => {
+          console.log('uploadBankTrxFile response');
+          this.processHttpBankTrxReqResp(event);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Upload error:', err.message);
+        }
+      });
+    }
+  }
+
+  processHttpBankTrxReqResp(event: HttpEvent<BankTrxReqResp>): void {
+    switch (event.type) {
+      case HttpEventType.UploadProgress:
+        // Calculate the progress percentage and display it if needed
+        const progress = Math.round((100 * event.loaded) / (event.total ?? 1));
+        console.log(`File is ${progress}% uploaded.`);
+        break;
+      case HttpEventType.Response:
+        const responseBody: BankTrxReqResp = event.body!;
+        this.processBankTrxReqResp(responseBody);
+        break;
+    }
+  }
+
+  processBankTrxReqResp(responseBody: BankTrxReqResp): void {
+    const viewModel = this.transformBankTrxUploadResponse(responseBody);
+    if (viewModel) {
+      this.bankTransactions = viewModel;
+    }
+  }
+
+  openBankTrxFileDialog(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  selectRow(index: number | null): void {
     this.selectedRowIndex = index;
+    if (index === null) {
+      this.selectedTransaction;
+      return;
+    }
     this.selectedTransaction = this.bankTransactions[index];
   }
 
@@ -138,6 +223,74 @@ export class BankTransactionsComponent implements OnInit {
     });
   }
 
+
+  private transformBankTrxUploadResponse(responseBody: BankTrxReqResp): BankTrxReqRespPair[] | null {
+    if (responseBody?.bankTransactions && responseBody.bankTransactions.length > 0) {
+      const pairs = responseBody.bankTransactions.map(trx => {
+        //BankTrxItemReqResp
+        if (trx.processData.transactions?.length === 1) {
+          trx.singleTrxAccountId = trx.processData.transactions[0].accountId;
+          trx.singleTrxTypeId = trx.processData.transactions[0].spendTypeId;
+          trx.singleTrxIsPending = trx.processData.transactions[0].isPending;
+        }
+        else {
+          trx.singleTrxAccountId = null;
+          trx.singleTrxTypeId = 1;
+          trx.singleTrxIsPending = false;
+        }
+        const copy = Utils.deepClone(trx);
+        const matched = responseBody.accountsPerCurrencies.find(a => a.currencyId === trx.currency.id);
+        if (!matched) {
+          throw new Error("No accounts found");
+        }
+        const pair: BankTrxReqRespPair = {
+          original: copy,
+          current: trx,
+          multipleTrxReq: false,
+          accounts: matched.accounts,
+          resetRequested: false
+        };
+
+        if (!pair.current.processData?.transactions || pair.current.processData.transactions.length < 1) {
+          if (!pair.current.processData?.transactions) {
+            pair.current.processData = {
+              transactions: []
+            };
+          }
+
+          pair.current.processData.transactions.push(this.createBankTrxItemReqResp(trx));
+        }
+        if (pair.current.processData?.transactions) {
+          pair.current.processData.transactions.forEach((pTrx) => {
+            pTrx.accounts = matched.accounts;
+          });
+        }
+
+        return pair;
+      });
+
+      return pairs;
+    }
+
+    return null;
+  }
+
+  private createBankTrxItemReqResp(bankTrxItemReqResp: BankTrxItemReqResp): BankTrxSpendViewModel {
+    return {
+      accountId: null,
+      accounts: [],
+      amountCurrencyId: bankTrxItemReqResp.currency.id,
+      convertedAmount: bankTrxItemReqResp.fileTransaction.originalAmount,
+      description: bankTrxItemReqResp.fileTransaction.description,
+      originalAmount: bankTrxItemReqResp.fileTransaction.originalAmount,
+      spendDate: bankTrxItemReqResp.fileTransaction.transactionDate,
+      spendId: 0,
+      spendTypeId: null,
+      isPending: bankTrxItemReqResp.singleTrxIsPending ?? false,
+      setPaymentDate: bankTrxItemReqResp.fileTransaction.transactionDate
+    };
+  }
+
   private createIgnoreRequest(trx: BankTrxReqRespPair): ClientBankItemRequest {
     const current = trx.current;
     return {
@@ -168,6 +321,9 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   get ignoreSelected(): boolean {
+    if (!this.selectedTransaction) {
+      return false;
+    }
     return this.selectedTransaction?.current.fileTransaction
       && this.selectedTransaction.current.dbStatus === BankTransactionStatus.Ignored;
   }
@@ -179,8 +335,13 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   get isMultipleTrx(): boolean {
+    if (!this.selectedTransaction) {
+      return false;
+    }
     return this.selectedTransaction && (this.selectedTransaction.multipleTrxReq || (this.selectedTransaction.current?.processData?.transactions?.length > 1))
   }
 
-
+  get anyNew(): boolean {
+    return this.bankTransactions.some(trx => trx.current.dbStatus === BankTransactionStatus.Inserted);
+  }
 }

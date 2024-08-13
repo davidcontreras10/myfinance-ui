@@ -12,6 +12,7 @@ import { AccountNotesComponent } from '../account-notes/account-notes.component'
 import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
 import { filter, map } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account-view',
@@ -26,7 +27,7 @@ export class AccountViewComponent implements OnInit {
   selectedAccountPeriod?: AccountPeriod;
   showTraxList = false;
 
-  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe) {
+  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe, private router: Router) {
   }
 
   isFilterMode(): boolean {
@@ -117,6 +118,12 @@ export class AccountViewComponent implements OnInit {
       const modalRef = this.modalService.open(ViewTrxComponent, { backdrop: 'static', keyboard: false });
       modalRef.componentInstance.accountPeriodId = this.selectedAccountPeriod.accountPeriodId;
       modalRef.componentInstance.spendId = trx.spendId;
+    }
+  }
+
+  onBankTrxView(trx: SpendViewModel) {
+    if (trx) {
+      this.router.navigate(['/bank-trx'], { queryParams: { trxId: trx.spendId } });
     }
   }
 

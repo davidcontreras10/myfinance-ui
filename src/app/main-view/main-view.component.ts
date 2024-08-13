@@ -42,6 +42,7 @@ export class MainViewComponent implements OnInit {
       }
       else if (value === NavBarMenusIds.UPLOAD_TRX_FILE) {
         this.openBankTrxFileDialog();
+        //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
       }
     });
     navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
@@ -85,7 +86,6 @@ export class MainViewComponent implements OnInit {
   }
 
   openBankTrxFileDialog(): void {
-
     this.fileInput.nativeElement.click();
   }
 
@@ -94,34 +94,37 @@ export class MainViewComponent implements OnInit {
     if (target.files && target.files.length > 0) {
       this.selectedFile = target.files[0];
       this.onUploadBankTrxFile();
-      this.fileInput.nativeElement.value = '';
     }
   }
 
   onUploadBankTrxFile(): void {
     if (this.selectedFile) {
-      this.mainViewApiService.uploadBankTrxFile(this.selectedFile).subscribe({
-        next: (event) => {
-          console.log('uploadBankTrxFile response');
-          if (event.type === HttpEventType.UploadProgress) {
-            // Calculate the progress percentage and display it if needed
-            const progress = Math.round((100 * event.loaded) / (event.total ?? 1));
-            console.log(`File is ${progress}% uploaded.`);
-          } else if (event.type === HttpEventType.Response) {
+      const uploadedFile = this.selectedFile;
+      this.selectedFile = null;
+      this.fileInput.nativeElement.value = '';
+      this.router.navigate(['/bank-trx'], { state: { uploadedFile: uploadedFile } });
+      // this.mainViewApiService.uploadBankTrxFile(this.selectedFile).subscribe({
+      //   next: (event) => {
+      //     console.log('uploadBankTrxFile response');
+      //     if (event.type === HttpEventType.UploadProgress) {
+      //       // Calculate the progress percentage and display it if needed
+      //       const progress = Math.round((100 * event.loaded) / (event.total ?? 1));
+      //       console.log(`File is ${progress}% uploaded.`);
+      //     } else if (event.type === HttpEventType.Response) {
 
-            const responseBody: BankTrxReqResp = event.body!;
-            const viewModel = this.transformBankTrxUploadResponse(responseBody);
-            if (viewModel) {
-              // const modalRef = this.modalService.open(BankTransactionsComponent, { backdrop: 'static', keyboard: false, size: 'xl' });
-              // modalRef.componentInstance.bankTransactions = pairs;
-              this.router.navigate(['/bank-trx'], { state: { bankTransactions: viewModel } })
-            }
-          }
-        },
-        error: (err: HttpErrorResponse) => {
-          console.error('Upload error:', err.message);
-        }
-      });
+      //       const responseBody: BankTrxReqResp = event.body!;
+      //       const viewModel = this.transformBankTrxUploadResponse(responseBody);
+      //       if (viewModel) {
+      //         // const modalRef = this.modalService.open(BankTransactionsComponent, { backdrop: 'static', keyboard: false, size: 'xl' });
+      //         // modalRef.componentInstance.bankTransactions = pairs;
+      //         this.router.navigate(['/bank-trx'], { state: { bankTransactions: viewModel } })
+      //       }
+      //     }
+      //   },
+      //   error: (err: HttpErrorResponse) => {
+      //     console.error('Upload error:', err.message);
+      //   }
+      // });
     }
   }
 

@@ -1,7 +1,15 @@
+<input type="file" #fileInput (change)="onBankTrxFileSelected($event)" style="display: none;" />
 <div class="container">
-
     <form #f="ngForm" (ngSubmit)="submit(f)">
-        <div class="row" *ngIf="bankTransactions">
+        <div class="row" *ngIf="!bankTransactions || bankTransactions.length < 1">
+            <button type="button" class="btn btn-primary" (click)="fileInput.click()">Upload bank transactions</button>
+        </div>
+        <div class="row" *ngIf="bankTransactions && bankTransactions.length > 0">
+            <div class="col">
+                <button type="button" class="btn btn-primary" (click)="clearTransactions()">Clear Transactions</button>
+            </div>
+        </div>
+        <div class="row" *ngIf="bankTransactions && bankTransactions.length > 0">
             <div class="col-md-9">
                 <table class="table table-bordered table-low-margin table-selectable">
                     <thead>
@@ -146,7 +154,7 @@
         </div>
         <div class="row">
             <div class="col-md-9">
-                <input *ngIf="bankTransactions && bankTransactions.length > 0" type="submit" value="Submit"
+                <input *ngIf="bankTransactions && bankTransactions.length > 0 && anyNew" type="submit" value="Submit"
                     class="btn btn-primary" style="float: right;" [disabled]="f.invalid">
             </div>
         </div>
