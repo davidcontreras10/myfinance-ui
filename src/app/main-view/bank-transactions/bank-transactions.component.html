@@ -50,7 +50,8 @@
                             <td>
                                 <div *ngIf="item.current.dbStatus !== BankTransactionStatus.Ignored">
                                     <select [(ngModel)]="item.current.singleTrxTypeId" class="form-select"
-                                        [name]="'trxType[' + i + ']'" required>
+                                        [name]="'trxType[' + i + ']'"
+                                        [disabled]="item.current.dbStatus === BankTransactionStatus.Processed" required>
                                         <option [ngValue]="null">Select a type</option>
                                         <option *ngFor="let item of transactionTypes" [value]="item.id">
                                             {{item.name}}</option>
@@ -94,7 +95,8 @@
                         <div class="col">
                             <div class="form-group">
                                 <input [(ngModel)]="selectedTransaction.current.fileTransaction.description" type="text"
-                                    name="description" class="basic-input form-control" required />
+                                    name="description" class="basic-input form-control" required
+                                    [disabled]="selectedTransaction.current.dbStatus === BankTransactionStatus.Processed" />
                             </div>
                         </div>
                     </div>
