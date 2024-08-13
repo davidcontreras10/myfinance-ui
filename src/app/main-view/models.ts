@@ -83,5 +83,6 @@ export interface BankTrxReqRespPair {
     original: BankTrxItemReqResp;
     current: BankTrxItemReqResp;
     multipleTrxReq: boolean;
+    resetRequested: boolean;
     accounts: SelectableItem[];
 }

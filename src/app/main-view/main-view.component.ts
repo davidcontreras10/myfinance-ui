@@ -90,7 +90,6 @@ export class MainViewComponent implements OnInit {
   }
 
   onBankTrxFileSelected(event: Event): void {
-    console.log('openBankTrxFileDialog event');
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       this.selectedFile = target.files[0];
@@ -129,11 +128,16 @@ export class MainViewComponent implements OnInit {
   private transformBankTrxUploadResponse(responseBody: BankTrxReqResp): BankTrxReqRespPair[] | null {
     if (responseBody?.bankTransactions && responseBody.bankTransactions.length > 0) {
       const pairs = responseBody.bankTransactions.map(trx => {
+        //BankTrxItemReqResp
         if (trx.processData.transactions?.length === 1) {
           trx.singleTrxAccountId = trx.processData.transactions[0].accountId;
+          trx.singleTrxTypeId = trx.processData.transactions[0].spendTypeId;
+          trx.singleTrxIsPending = trx.processData.transactions[0].isPending;
         }
         else {
           trx.singleTrxAccountId = null;
+          trx.singleTrxTypeId = 1;
+          trx.singleTrxIsPending = false;
         }
         const copy = Utils.deepClone(trx);
         const matched = responseBody.accountsPerCurrencies.find(a => a.currencyId === trx.currency.id);
@@ -144,7 +148,8 @@ export class MainViewComponent implements OnInit {
           original: copy,
           current: trx,
           multipleTrxReq: false,
-          accounts: matched.accounts
+          accounts: matched.accounts,
+          resetRequested: false
         };
 
         if (!pair.current.processData?.transactions || pair.current.processData.transactions.length < 1) {
@@ -182,6 +187,7 @@ export class MainViewComponent implements OnInit {
       spendDate: bankTrxItemReqResp.fileTransaction.transactionDate,
       spendId: 0,
       spendTypeId: null,
+      isPending: bankTrxItemReqResp.singleTrxIsPending ?? false,
       setPaymentDate: bankTrxItemReqResp.fileTransaction.transactionDate
     };
   }

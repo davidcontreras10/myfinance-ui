@@ -55,6 +55,7 @@ export class BankTrxSpendViewModel {
   description: string;
   convertedAmount: number;
   accounts: SelectableItem[];
+  isPending: boolean;
 }
 
 export class SpendViewModel {
@@ -367,11 +368,39 @@ export interface BankTrxReqResp {
 }
 
 export interface BankTrxItemReqResp {
+  financialEntityId: number;
   fileTransaction: FileBankTransaction;
   dbStatus: BankTransactionStatus;
   currency: Currency;
   singleTrxAccountId: number | null;
+  singleTrxTypeId: number | null;
+  singleTrxIsPending: boolean | null;
   processData: {
     transactions: BankTrxSpendViewModel[]
   }
+}
+
+export interface ClientBankTrxRequest {
+  amount: number;
+  isPending: boolean;
+  spendTypeId: number;
+  accountId: number;
+  description: string;
+}
+
+export interface ClientBankItemRequest {
+  transactionId: string;
+  financialEntityId: number;
+  requestIgnore: boolean;
+  description: string | null;
+  isMultipleTrx: boolean | null;
+  accountId: number | null;
+  spendTypeId: number | null;
+  isPending: boolean | null;
+  transactions: ClientBankTrxRequest[] | null;
+}
+
+export interface BankTrxProcessResponse {
+  bankTransactions: BankTrxItemReqResp[];
+  itemModifieds: ItemModifiedRes[];
 }

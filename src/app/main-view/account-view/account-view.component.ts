@@ -122,8 +122,19 @@ export class AccountViewComponent implements OnInit {
 
   onTrxDelete(trx: SpendViewModel) {
     if (confirm('Are you sure you want to delete this item?')) {
-      this.mainViewApiService.deleteTrx(trx.spendId).subscribe(items => {
-        this.mainViewModel.notifyAccountsModified(items);
+      this.mainViewApiService.deleteTrx(trx.spendId).subscribe({
+        next: items => {
+          this.mainViewModel.notifyAccountsModified(items);
+        },
+        error: error => {
+          if (error.error?.errorCode === 1001) {
+            alert('Cannot delete transaction when it has bank transactions associated. Please reset the bank transactions first');
+          }
+          else {
+            console.error(error);
+            alert('Error deleting transaction');
+          }
+        }
       })
     }
   }

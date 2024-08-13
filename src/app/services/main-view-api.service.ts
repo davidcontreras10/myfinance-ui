@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxItemReqResp, BankTrxReqResp, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, ClientBankItemRequest, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -18,6 +18,19 @@ export class MainViewApiService {
       periodsLimit: 12
     };
     return of(defPrefs);
+  }
+
+  resetBankTrx(transactionId: string, financialEntityId: number): Observable<BankTrxProcessResponse> {
+    return this.httpClient.delete<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`);
+  }
+
+  submitBankTrxChanges(requests: ClientBankItemRequest[]): Observable<BankTrxProcessResponse> {
+    return this.httpClient.post<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/ProcessRequest`, requests);
+  }
+
+  getUserTransactionTypes(): Observable<SelectableItem[]> {
+    const params = new HttpParams().set('includeAll', false);
+    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params });
   }
 
   uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp>> {

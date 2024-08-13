@@ -11,6 +11,8 @@
                             <th data-field="Description">Description</th>
                             <th data-field="Date">Date</th>
                             <th data-field="Account">Account</th>
+                            <th data-field="TrxType">Transaction Type</th>
+                            <th data-field="TrxType">Pending</th>
                             <th data-field="Status">Status</th>
                         </tr>
                     </thead>
@@ -25,7 +27,8 @@
                             <td>
                                 <div *ngIf="item.current.dbStatus !== BankTransactionStatus.Ignored">
                                     <select [(ngModel)]="item.current.singleTrxAccountId" class="form-select"
-                                        [name]="'single-acc-'+item.current.fileTransaction.transactionId" required>
+                                        [name]="'singleAcc[' + i + ']'"
+                                        [disabled]="item.current.dbStatus === BankTransactionStatus.Processed" required>
                                         <option [ngValue]="null">Select an account</option>
                                         <option *ngFor="let item of item.accounts" [value]="item.id">
                                             {{item.name}}</option>
@@ -33,7 +36,31 @@
                                 </div>
 
                                 <div *ngIf="item.current.dbStatus === BankTransactionStatus.Ignored">
-                                    <span>Ignored</span>
+                                    <span>--</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div *ngIf="item.current.dbStatus !== BankTransactionStatus.Ignored">
+                                    <select [(ngModel)]="item.current.singleTrxTypeId" class="form-select"
+                                        [name]="'trxType[' + i + ']'" required>
+                                        <option [ngValue]="null">Select a type</option>
+                                        <option *ngFor="let item of transactionTypes" [value]="item.id">
+                                            {{item.name}}</option>
+                                    </select>
+                                </div>
+
+                                <div *ngIf="item.current.dbStatus === BankTransactionStatus.Ignored">
+                                    <span>--</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check" *ngIf="item.current.dbStatus !== BankTransactionStatus.Ignored">
+                                    <input mdbCheckbox ngModel [name]="'is-pending[' + i + ']'" class="form-check-input"
+                                        type="checkbox" [(ngModel)]="item.current.singleTrxIsPending"
+                                        [disabled]="item.current.dbStatus === BankTransactionStatus.Processed" />
+                                </div>
+                                <div *ngIf="item.current.dbStatus === BankTransactionStatus.Ignored">
+                                    <span>--</span>
                                 </div>
                             </td>
                             <td>{{getStatusName(item.current.dbStatus)}}</td>
@@ -68,12 +95,19 @@
                             <div class="basic-input form-control">
                                 <div class="form-check">
                                     <input mdbCheckbox ngModel name="ignoreSelected" class="form-check-input"
-                                        type="checkbox" id="ignore-selected" [(ngModel)]="ignoreSelected" />
+                                        type="checkbox" id="ignore-selected" [(ngModel)]="ignoreSelected"
+                                        [disabled]="selectedTransaction.current.dbStatus !== BankTransactionStatus.Inserted" />
                                     <label class="form-check-label" for="ignore-selected">
                                         Ignore
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="selectedTransaction.current.dbStatus !== BankTransactionStatus.Inserted">
+                        <div class="col">
+                            <button type="button" class="btn btn-outline-warning btn-block"
+                                (click)="requestReset()">Reset</button>
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -112,8 +146,8 @@
         </div>
         <div class="row">
             <div class="col-md-9">
-                <input type="submit" value="Submit" class="btn btn-primary" style="float: right;"
-                    [disabled]="f.invalid">
+                <input *ngIf="bankTransactions && bankTransactions.length > 0" type="submit" value="Submit"
+                    class="btn btn-primary" style="float: right;" [disabled]="f.invalid">
             </div>
         </div>
     </form>
