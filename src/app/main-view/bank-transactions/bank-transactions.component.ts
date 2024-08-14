@@ -221,6 +221,8 @@ export class BankTransactionsComponent implements OnInit {
       trx.resetRequested = false;
       trx.multipleTrxReq = false;
     });
+
+    this.bankTransactions.sort(this.sortBankTrxReqRespPairs);
   }
 
 
@@ -269,7 +271,7 @@ export class BankTransactionsComponent implements OnInit {
         return pair;
       });
 
-      return pairs;
+      return pairs.sort(this.sortBankTrxReqRespPairs);
     }
 
     return null;
@@ -289,6 +291,10 @@ export class BankTransactionsComponent implements OnInit {
       isPending: bankTrxItemReqResp.singleTrxIsPending ?? false,
       setPaymentDate: bankTrxItemReqResp.fileTransaction.transactionDate
     };
+  }
+
+  private sortBankTrxReqRespPairs(a: BankTrxReqRespPair, b: BankTrxReqRespPair): number {
+    return b.current.dbStatus - a.current.dbStatus
   }
 
   private createIgnoreRequest(trx: BankTrxReqRespPair): ClientBankItemRequest {
