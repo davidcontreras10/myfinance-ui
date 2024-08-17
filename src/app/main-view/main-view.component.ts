@@ -36,11 +36,11 @@ export class MainViewComponent implements OnInit {
     private mainViewApiService: MainViewApiService,
     public mainViewModel: MainViewModel,
     private router: Router) {
-    navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_TRX_FILE).subscribe((value) => {
+    navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_SCOT_TRX_FILE).subscribe((value) => {
       if (value === 'toggle-summary') {
         this.handleIncomingNavBarAction(value);
       }
-      else if (value === NavBarMenusIds.UPLOAD_TRX_FILE) {
+      else if (value === NavBarMenusIds.UPLOAD_SCOT_TRX_FILE) {
         this.openBankTrxFileDialog();
         //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
       }

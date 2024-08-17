@@ -1,4 +1,4 @@
-import { BankTrxItemReqResp, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
+import { AccountWithTrxTypeId, BankTrxItemReqResp, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
 
 export interface MainViewPrefs {
     periodsLimit: number;
@@ -74,6 +74,7 @@ export interface TransactionViewModel {
     accountName: string;
     isPending: boolean;
     trxTypeId: number;
+    hasBankTrx: boolean;
 }
 export enum BalanceTypes {
     Invalid = 0, Custom = 1, AccountPeriodBalance = 2, AccountOverallBalance = 3
@@ -84,5 +85,5 @@ export interface BankTrxReqRespPair {
     current: BankTrxItemReqResp;
     multipleTrxReq: boolean;
     resetRequested: boolean;
-    accounts: SelectableItem[];
+    accounts: AccountWithTrxTypeId[];
 }

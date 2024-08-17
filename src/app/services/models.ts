@@ -209,6 +209,7 @@ export interface TransactionViewResponse {
     description: string;
     isPending: boolean;
     amountTypeId: number;
+    hasBankTrx: boolean;
   };
 
   supportedCurrencies: Currency[];
@@ -358,9 +359,13 @@ export enum BankTransactionStatus {
   Inserted = 4
 }
 
+export interface AccountWithTrxTypeId extends SelectableItem {
+  trxTypeId: number | null;
+}
+
 export interface AccountsByCurrencyViewModel {
   currencyId: number;
-  accounts: SelectableItem[];
+  accounts: AccountWithTrxTypeId[];
 }
 
 export interface BankTrxReqResp {

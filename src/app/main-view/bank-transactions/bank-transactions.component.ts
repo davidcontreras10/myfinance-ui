@@ -33,6 +33,21 @@ export class BankTransactionsComponent implements OnInit {
     }
   }
 
+  onAccountChange($event: Event, bankTrxReqRespPair: BankTrxReqRespPair) {
+    const strSeletedAccountId = bankTrxReqRespPair.current.singleTrxAccountId as any;
+    const seletedAccountId = parseInt(strSeletedAccountId);
+    if (!seletedAccountId) {
+      return;
+    }
+
+    const selectedAccount = bankTrxReqRespPair.accounts.find(a => a.id === seletedAccountId);
+    if (!selectedAccount) {
+      return;
+    }
+
+    bankTrxReqRespPair.current.singleTrxTypeId = selectedAccount.trxTypeId ?? 1;
+  }
+
   ngOnInit(): void {
     this.mainViewApiService.getUserTransactionTypes().subscribe(response => {
       this.transactionTypes = response;
@@ -67,6 +82,7 @@ export class BankTransactionsComponent implements OnInit {
       return;
     }
 
+    this.selectRow(null);
     this.mainViewApiService.submitBankTrxChanges(submitValues).subscribe(response => {
       this.processBankTrxProcessResponse(response);
     });
@@ -76,6 +92,21 @@ export class BankTransactionsComponent implements OnInit {
     this.bankTransactions = [];
     this.selectRow(null);
     this.router.navigate(['/bank-trx']);
+  }
+
+  requestDelete() {
+    if (confirm('Are you sure you want to delete this transaction?') && this.selectedTransaction) {
+      this.mainViewApiService.deleteBankTrx(this.selectedTransaction.current.fileTransaction.transactionId,
+        this.selectedTransaction.current.financialEntityId).subscribe(response => {
+          if (this.selectedTransaction && response.ok) {
+            const index = this.bankTransactions.indexOf(this.selectedTransaction);
+            if (index > -1) {
+              this.bankTransactions.splice(index, 1);
+              this.selectRow(null);
+            }
+          }
+        });
+    }
   }
 
   requestReset() {
@@ -102,7 +133,6 @@ export class BankTransactionsComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
       this.mainViewApiService.uploadBankTrxFile(uploadedFile).subscribe({
         next: (event) => {
-          console.log('uploadBankTrxFile response');
           this.processHttpBankTrxReqResp(event);
         },
         error: (err: HttpErrorResponse) => {
@@ -140,7 +170,7 @@ export class BankTransactionsComponent implements OnInit {
   selectRow(index: number | null): void {
     this.selectedRowIndex = index;
     if (index === null) {
-      this.selectedTransaction;
+      this.selectedTransaction = null;
       return;
     }
     this.selectedTransaction = this.bankTransactions[index];
@@ -230,7 +260,7 @@ export class BankTransactionsComponent implements OnInit {
     if (responseBody?.bankTransactions && responseBody.bankTransactions.length > 0) {
       const pairs = responseBody.bankTransactions.map(trx => {
         //BankTrxItemReqResp
-        if (trx.processData.transactions?.length === 1) {
+        if (trx.processData?.transactions?.length === 1) {
           trx.singleTrxAccountId = trx.processData.transactions[0].accountId;
           trx.singleTrxTypeId = trx.processData.transactions[0].spendTypeId;
           trx.singleTrxIsPending = trx.processData.transactions[0].isPending;
@@ -320,6 +350,11 @@ export class BankTransactionsComponent implements OnInit {
     return item.current.dbStatus === BankTransactionStatus.Ignored;
   }
 
+  toggleAllPending(): void {
+    const newValue = !this.allPending;
+    this.allPending = newValue;
+  }
+
   set ignoreSelected(value: boolean) {
     if (this.selectedTransaction) {
       this.selectedTransaction.current.dbStatus = value ? BankTransactionStatus.Ignored : BankTransactionStatus.Inserted;
@@ -348,6 +383,20 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   get anyNew(): boolean {
-    return this.bankTransactions.some(trx => trx.current.dbStatus === BankTransactionStatus.Inserted);
+    return this.bankTransactions.some(trx => trx.original.dbStatus === BankTransactionStatus.Inserted);
   }
+
+  set allPending(value: boolean) {
+    this.bankTransactions.forEach(trx => {
+      if (trx.current.dbStatus === BankTransactionStatus.Inserted) {
+        trx.current.singleTrxIsPending = value;
+      }
+    });
+  }
+
+  get allPending(): boolean {
+    const newTrxs = this.bankTransactions.filter(trx => trx.current.dbStatus === BankTransactionStatus.Inserted);
+    return newTrxs?.length > 0 && newTrxs.every(trx => trx.current.singleTrxIsPending);
+  }
+
 }

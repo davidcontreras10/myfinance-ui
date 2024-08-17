@@ -20,6 +20,11 @@ export class MainViewApiService {
     return of(defPrefs);
   }
 
+
+  deleteBankTrx(transactionId: string, financialEntityId: number): Observable<HttpResponse<any>> {
+    return this.httpClient.delete<HttpResponse<any>>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`);
+  }
+
   public getBankTransactionsByAppTrxIds(appTrxIds: number[]): Observable<BankTrxReqResp> {
     let params = new HttpParams();
     for (let trxId of appTrxIds) {
@@ -29,7 +34,7 @@ export class MainViewApiService {
   }
 
   resetBankTrx(transactionId: string, financialEntityId: number): Observable<BankTrxProcessResponse> {
-    return this.httpClient.delete<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`);
+    return this.httpClient.put<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`, {});
   }
 
   submitBankTrxChanges(requests: ClientBankItemRequest[]): Observable<BankTrxProcessResponse> {
@@ -231,7 +236,8 @@ export class MainViewApiService {
             setPaymentDate: item.spendInfo.setPaymentDate,
             description: item.spendInfo.description,
             isPending: item.spendInfo.isPending,
-            trxTypeId: item.spendInfo.amountTypeId
+            trxTypeId: item.spendInfo.amountTypeId,
+            hasBankTrx: item.spendInfo.hasBankTrx
           };
 
           return response;
