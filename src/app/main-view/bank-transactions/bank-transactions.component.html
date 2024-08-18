@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="row" *ngIf="bankTransactions && bankTransactions.length > 0">
-            <div class="col-md-10" style="max-height: 80vh; overflow-y: auto;">
+            <div class="col-md-9" style="max-height: 80vh; overflow-y: auto;">
                 <table class="table table-bordered table-low-margin">
                     <thead>
                         <tr>
@@ -100,87 +100,97 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-2" *ngIf="selectedTransaction">
-                <form #f="ngForm" (ngSubmit)="submit(f)">
-                    <div class="row">
-                        <div class="col">
-                            <ul>
-                                <li><strong>Reference:</strong>
-                                    {{selectedTransaction.current.fileTransaction.transactionId}}</li>
-                                <li><strong>Total amount:</strong>
-                                    {{selectedTransaction.current.fileTransaction.originalAmount |
-                                    currencyAmount:
-                                    selectedTransaction.current.currency.symbol}}</li>
-                            </ul>
-                        </div>
+            <div class="col-md-3" *ngIf="selectedTransaction">
+                <div class="row">
+                    <div class="col">
+                        <ul>
+                            <li><strong>Reference:</strong>
+                                {{selectedTransaction.current.fileTransaction.transactionId}}</li>
+                            <li><strong>Total amount:</strong>
+                                {{selectedTransaction.current.fileTransaction.originalAmount |
+                                currencyAmount:
+                                selectedTransaction.current.currency.symbol}}</li>
+                        </ul>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <input [(ngModel)]="selectedTransaction.current.fileTransaction.description" type="text"
-                                    name="description" class="basic-input form-control" required
-                                    [disabled]="selectedTransaction.current.dbStatus === BankTransactionStatus.Processed" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="basic-input form-control">
-                                <div class="form-check">
-                                    <input mdbCheckbox ngModel name="ignoreSelected" class="form-check-input"
-                                        type="checkbox" id="ignore-selected" [(ngModel)]="selectedTransaction.isIgnored"
-                                        [disabled]="selectedTransaction.original.dbStatus !== BankTransactionStatus.Inserted" />
-                                    <label class="form-check-label" for="ignore-selected">
-                                        Ignored
-                                    </label>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input [(ngModel)]="selectedTransaction.current.fileTransaction.description"
+                                        type="text" name="description" class="basic-input form-control" required
+                                        [disabled]="selectedTransaction.current.dbStatus === BankTransactionStatus.Processed" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row" *ngIf="selectedTransaction.original.dbStatus !== BankTransactionStatus.Inserted">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-outline-warning btn-block"
-                                (click)="requestReset()">Reset</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-outline-danger btn-block"
-                                (click)="requestDelete()">Delete</button>
-                        </div>
-                    </div>
-                    <!-- <div class="row">
-                        <div class="col">
-                            <div class="basic-input form-control">
-                                <div class="form-check">
-                                    <input mdbCheckbox [(ngModel)]="isMultipleTrx" name="multipleTransactions"
-                                        class="form-check-input" type="checkbox" id="multiple-transactions"
-                                        [disabled]="ignoreSelected" />
-                                    <label class="form-check-label" for="multiple-transactions">
-                                        Multiple transactions
-                                    </label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="basic-input form-control">
+                                    <div class="form-check">
+                                        <input mdbCheckbox ngModel name="ignoreSelected" class="form-check-input"
+                                            type="checkbox" id="ignore-selected"
+                                            [(ngModel)]="selectedTransaction.isIgnored"
+                                            [disabled]="selectedTransaction.original.dbStatus !== BankTransactionStatus.Inserted" />
+                                        <label class="form-check-label" for="ignore-selected">
+                                            Ignored
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
-                    <!-- <div class="row">
-                        <div class="col" *ngIf="selectedTransaction?.current?.processData?.transactions">
-                            <div class="row"
-                                *ngFor="let trxItem of selectedTransaction?.current?.processData?.transactions">
-                                <div class="col-md-4">
-                                    <input type="number" [name]="'amount-' + trxItem.spendId"
-                                        [(ngModel)]="trxItem.originalAmount">
-                                </div>
-                                <div class="col-md-4">
-
-                                </div>
-                                <div class="col-md-4">
-
-                                </div>
+                        <div class="row"
+                            *ngIf="selectedTransaction.original.dbStatus !== BankTransactionStatus.Inserted">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-outline-warning btn-block"
+                                    (click)="requestReset()">Reset</button>
                             </div>
                         </div>
-                    </div> -->
-                </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-outline-danger btn-block"
+                                    (click)="requestDelete()">Delete</button>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                                <div class="col">
+                                    <div class="basic-input form-control">
+                                        <div class="form-check">
+                                            <input mdbCheckbox [(ngModel)]="isMultipleTrx" name="multipleTransactions"
+                                                class="form-check-input" type="checkbox" id="multiple-transactions"
+                                                [disabled]="ignoreSelected" />
+                                            <label class="form-check-label" for="multiple-transactions">
+                                                Multiple transactions
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        <!-- <div class="row">
+                                <div class="col" *ngIf="selectedTransaction?.current?.processData?.transactions">
+                                    <div class="row"
+                                        *ngFor="let trxItem of selectedTransaction?.current?.processData?.transactions">
+                                        <div class="col-md-4">
+                                            <input type="number" [name]="'amount-' + trxItem.spendId"
+                                                [(ngModel)]="trxItem.originalAmount">
+                                        </div>
+                                        <div class="col-md-4">
+        
+                                        </div>
+                                        <div class="col-md-4">
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <app-bank-trx-multiple [selectedTransaction]="selectedTransaction"
+                            [transactionTypes]="transactionTypes"></app-bank-trx-multiple>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">

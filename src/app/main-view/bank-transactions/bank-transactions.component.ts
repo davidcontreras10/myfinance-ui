@@ -322,7 +322,7 @@ export class BankTransactionsComponent implements OnInit {
       description: bankTrxItemReqResp.fileTransaction.description,
       originalAmount: bankTrxItemReqResp.fileTransaction.originalAmount,
       spendDate: bankTrxItemReqResp.fileTransaction.transactionDate,
-      spendId: 0,
+      spendId: 1,
       spendTypeId: null,
       isPending: bankTrxItemReqResp.singleTrxIsPending ?? false,
       setPaymentDate: bankTrxItemReqResp.fileTransaction.transactionDate

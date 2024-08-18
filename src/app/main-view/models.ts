@@ -87,6 +87,14 @@ export class BankTrxReqRespPair {
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
 
+    canModifyTrxs(): boolean {
+        return this.current.dbStatus === BankTransactionStatus.Inserted;
+    }
+
+    multipleTrxMode(): boolean {
+        return this.multipleTrxReq || this.current.processData?.transactions?.length > 0;
+    }
+
     getAccountTooltip(): string {
         const account = this.accounts.find(a => a.id === this.current.singleTrxAccountId);
         if (account) {

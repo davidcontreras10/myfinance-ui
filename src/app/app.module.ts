@@ -51,6 +51,7 @@ import { DatePipe } from '@angular/common';
 import { SetPeriodDateComponent } from './main-view/set-period-date/set-period-date.component';
 import { BankTransactionsComponent } from './main-view/bank-transactions/bank-transactions.component';
 import { BankTransactionsModalComponent } from './main-view/bank-transactions/bank-transactions-modal/bank-transactions-modal.component';
+import { BankTrxMultipleComponent } from './main-view/bank-transactions/bank-trx-multiple/bank-trx-multiple.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { BankTransactionsModalComponent } from './main-view/bank-transactions/ba
     TrxFilterModalComponent,
     SetPeriodDateComponent,
     BankTransactionsComponent,
-    BankTransactionsModalComponent
+    BankTransactionsModalComponent,
+    BankTrxMultipleComponent
   ],
   imports: [
     BrowserModule,
