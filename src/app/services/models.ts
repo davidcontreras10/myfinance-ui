@@ -383,7 +383,7 @@ export interface BankTrxItemReqResp {
   singleTrxIsPending: boolean | null;
   processData: {
     transactions: BankTrxSpendViewModel[]
-  }
+  };
 }
 
 export interface ClientBankTrxRequest {

@@ -21,8 +21,15 @@ export class BankTransactionsComponent implements OnInit {
   BankTransactionStatus = BankTransactionStatus;
 
   selectedTransaction: BankTrxReqRespPair | null = null;
-  selectedRowIndex: number | null = null;
   transactionTypes: SelectableItem[] = [];
+
+  public myProperty: { [key in number]: number } = {
+    [BankTransactionStatus.Inserted]: 1,
+    [BankTransactionStatus.Processed]: 2,
+    [BankTransactionStatus.Ignored]: 3,
+    [BankTransactionStatus.NotExisting]: 4,
+    [BankTransactionStatus.Unknown]: 5
+  };
 
   constructor(private router: Router,
     private mainViewApiService: MainViewApiService,
@@ -98,7 +105,7 @@ export class BankTransactionsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this transaction?') && this.selectedTransaction) {
       this.mainViewApiService.deleteBankTrx(this.selectedTransaction.current.fileTransaction.transactionId,
         this.selectedTransaction.current.financialEntityId).subscribe(response => {
-          if (this.selectedTransaction && response.ok) {
+          if (this.selectedTransaction) {
             const index = this.bankTransactions.indexOf(this.selectedTransaction);
             if (index > -1) {
               this.bankTransactions.splice(index, 1);
@@ -167,13 +174,8 @@ export class BankTransactionsComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  selectRow(index: number | null): void {
-    this.selectedRowIndex = index;
-    if (index === null) {
-      this.selectedTransaction = null;
-      return;
-    }
-    this.selectedTransaction = this.bankTransactions[index];
+  selectRow(row: BankTrxReqRespPair | null): void {
+    this.selectedTransaction = row;
   }
 
   getEnumText(value: BankTransactionStatus): string {
@@ -192,6 +194,9 @@ export class BankTransactionsComponent implements OnInit {
     const values: ClientBankItemRequest[] = [];
     this.bankTransactions.forEach(trx => {
       if (this.isIgnoreRequested(trx)) {
+        if (trx.original.dbStatus === BankTransactionStatus.Ignored) {
+          return;
+        }
         values.push(this.createIgnoreRequest(trx));
         return;
       }
@@ -229,6 +234,7 @@ export class BankTransactionsComponent implements OnInit {
 
   private processBankTrxProcessResponse(response: BankTrxProcessResponse): void {
     const newBankTransactions = response.bankTransactions;
+    this.selectRow(null);
     this.bankTransactions.forEach(trx => {
       const newTrx = newBankTransactions.find(t => t.fileTransaction.transactionId === trx.current.fileTransaction.transactionId);
       if (!newTrx) {
@@ -252,7 +258,7 @@ export class BankTransactionsComponent implements OnInit {
       trx.multipleTrxReq = false;
     });
 
-    this.bankTransactions.sort(this.sortBankTrxReqRespPairs);
+    this.bankTransactions;
   }
 
 
@@ -275,13 +281,13 @@ export class BankTransactionsComponent implements OnInit {
         if (!matched) {
           throw new Error("No accounts found");
         }
-        const pair: BankTrxReqRespPair = {
-          original: copy,
-          current: trx,
-          multipleTrxReq: false,
-          accounts: matched.accounts,
-          resetRequested: false
-        };
+
+        const pair: BankTrxReqRespPair = new BankTrxReqRespPair();
+        pair.original = copy;
+        pair.current = trx;
+        pair.multipleTrxReq = false;
+        pair.accounts = matched.accounts;
+        pair.resetRequested = false;
 
         if (!pair.current.processData?.transactions || pair.current.processData.transactions.length < 1) {
           if (!pair.current.processData?.transactions) {
@@ -301,7 +307,7 @@ export class BankTransactionsComponent implements OnInit {
         return pair;
       });
 
-      return pairs.sort(this.sortBankTrxReqRespPairs);
+      return pairs;
     }
 
     return null;
@@ -323,9 +329,11 @@ export class BankTransactionsComponent implements OnInit {
     };
   }
 
-  private sortBankTrxReqRespPairs(a: BankTrxReqRespPair, b: BankTrxReqRespPair): number {
-    return b.current.dbStatus - a.current.dbStatus
-  }
+  public sortBankTrxReqRespPairs = (a: BankTrxReqRespPair, b: BankTrxReqRespPair): number => {
+    const aValue = this.myProperty[a.original.dbStatus];
+    const bValue = this.myProperty[b.original.dbStatus];
+    return aValue - bValue;
+  };
 
   private createIgnoreRequest(trx: BankTrxReqRespPair): ClientBankItemRequest {
     const current = trx.current;

@@ -1,4 +1,4 @@
-import { AccountWithTrxTypeId, BankTrxItemReqResp, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
+import { AccountWithTrxTypeId, BankTransactionStatus, BankTrxItemReqResp, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
 
 export interface MainViewPrefs {
     periodsLimit: number;
@@ -80,10 +80,36 @@ export enum BalanceTypes {
     Invalid = 0, Custom = 1, AccountPeriodBalance = 2, AccountOverallBalance = 3
 }
 
-export interface BankTrxReqRespPair {
+export class BankTrxReqRespPair {
     original: BankTrxItemReqResp;
     current: BankTrxItemReqResp;
     multipleTrxReq: boolean;
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
+
+    getAccountTooltip(): string {
+        const account = this.accounts.find(a => a.id === this.current.singleTrxAccountId);
+        if (account) {
+            return account.name;
+        } else {
+            return '';
+        }
+    }
+
+    getHashedId(): string {
+        return `${this.current.financialEntityId}-${this.current.fileTransaction.transactionId}`;
+    }
+
+    get isIgnored(): boolean {
+        return this.current.dbStatus === BankTransactionStatus.Ignored;
+    }
+
+    set isIgnored(value: boolean) {
+        if (value) {
+            this.current.dbStatus = BankTransactionStatus.Ignored;
+        }
+        else {
+            this.current.dbStatus = this.original.dbStatus === BankTransactionStatus.Ignored ? BankTransactionStatus.Inserted : this.original.dbStatus;
+        }
+    }
 }

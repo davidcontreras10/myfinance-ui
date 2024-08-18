@@ -147,13 +147,12 @@ export class MainViewComponent implements OnInit {
         if (!matched) {
           throw new Error("No accounts found");
         }
-        const pair: BankTrxReqRespPair = {
-          original: copy,
-          current: trx,
-          multipleTrxReq: false,
-          accounts: matched.accounts,
-          resetRequested: false
-        };
+        const pair: BankTrxReqRespPair = new BankTrxReqRespPair();
+        pair.original = copy;
+        pair.current = trx;
+        pair.multipleTrxReq = false;
+        pair.accounts = matched.accounts;
+        pair.resetRequested = false;
 
         if (!pair.current.processData?.transactions || pair.current.processData.transactions.length < 1) {
           if (!pair.current.processData?.transactions) {
