@@ -40,6 +40,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let trx of getSpendViewModels()" [ngClass]="{'is-pending':trx.isPending}">
+            <div class="debug-data">trxId: {{trx.spendId}}</div>
             <td>
                 <input type="checkbox" class="form-check-input" [(ngModel)]="trx.vmIsSelected"
                     (change)="toggleSelection(trx)" />

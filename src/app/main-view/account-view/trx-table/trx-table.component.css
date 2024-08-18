@@ -69,3 +69,7 @@ button {
 .is-pending {
     background-color: lavenderblush;
 }
+
+.debug-data {
+    display: none;
+}
