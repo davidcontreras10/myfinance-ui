@@ -48,7 +48,7 @@ export class BankTrxSpendViewModel {
   accountId: number | null;
   spendId: number;
   spendDate: Date;
-  setPaymentDate: Date;
+  setPaymentDate: Date | null;
   spendTypeId: number | null;
   originalAmount: number | null;
   amountCurrencyId: number;

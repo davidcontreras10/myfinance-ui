@@ -377,33 +377,24 @@ export class BankTransactionsComponent implements OnInit {
       && this.selectedTransaction.current.dbStatus === BankTransactionStatus.Ignored;
   }
 
-  set isMultipleTrx(value: boolean) {
-    if (this.selectedTransaction) {
-      this.selectedTransaction.multipleTrxReq = value;
-    }
-  }
-
-  get isMultipleTrx(): boolean {
-    if (!this.selectedTransaction) {
-      return false;
-    }
-    return this.selectedTransaction && (this.selectedTransaction.multipleTrxReq || (this.selectedTransaction.current?.processData?.transactions?.length > 1))
-  }
-
   get anyNew(): boolean {
     return this.bankTransactions.some(trx => trx.original.dbStatus === BankTransactionStatus.Inserted);
   }
 
+  get anyMarkableAsPending(): boolean {
+    return this.bankTransactions.some(trx => trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx);
+  }
+
   set allPending(value: boolean) {
     this.bankTransactions.forEach(trx => {
-      if (trx.current.dbStatus === BankTransactionStatus.Inserted) {
+      if (trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx) {
         trx.current.singleTrxIsPending = value;
       }
     });
   }
 
   get allPending(): boolean {
-    const newTrxs = this.bankTransactions.filter(trx => trx.current.dbStatus === BankTransactionStatus.Inserted);
+    const newTrxs = this.bankTransactions.filter(trx => trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx);
     return newTrxs?.length > 0 && newTrxs.every(trx => trx.current.singleTrxIsPending);
   }
 

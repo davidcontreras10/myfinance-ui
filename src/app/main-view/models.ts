@@ -1,4 +1,4 @@
-import { AccountWithTrxTypeId, BankTransactionStatus, BankTrxItemReqResp, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
+import { AccountWithTrxTypeId, BankTransactionStatus, BankTrxItemReqResp, BankTrxSpendViewModel, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
 
 export interface MainViewPrefs {
     periodsLimit: number;
@@ -91,10 +91,6 @@ export class BankTrxReqRespPair {
         return this.current.dbStatus === BankTransactionStatus.Inserted;
     }
 
-    multipleTrxMode(): boolean {
-        return this.multipleTrxReq || this.current.processData?.transactions?.length > 0;
-    }
-
     getAccountTooltip(): string {
         const account = this.accounts.find(a => a.id === this.current.singleTrxAccountId);
         if (account) {
@@ -108,6 +104,22 @@ export class BankTrxReqRespPair {
         return `${this.current.financialEntityId}-${this.current.fileTransaction.transactionId}`;
     }
 
+    createAppTransactionTemplate(id: number): BankTrxSpendViewModel {
+        return {
+            accountId: this.current.singleTrxAccountId,
+            spendId: id,
+            spendDate: this.current.fileTransaction.transactionDate,
+            description: this.current.fileTransaction.description,
+            spendTypeId: this.current.singleTrxTypeId,
+            originalAmount: null,
+            isPending: this.current.singleTrxIsPending ?? false,
+            accounts: [],
+            amountCurrencyId: 0,
+            convertedAmount: 0,
+            setPaymentDate: null,
+        };
+    }
+
     get isIgnored(): boolean {
         return this.current.dbStatus === BankTransactionStatus.Ignored;
     }
@@ -119,5 +131,19 @@ export class BankTrxReqRespPair {
         else {
             this.current.dbStatus = this.original.dbStatus === BankTransactionStatus.Ignored ? BankTransactionStatus.Inserted : this.original.dbStatus;
         }
+    }
+
+    set isMultipleTrx(value: boolean) {
+        this.multipleTrxReq = value;
+        if (!value) {
+            this.current.processData.transactions = [];
+        }
+        else {
+            this.current.processData.transactions = [this.createAppTransactionTemplate(0), this.createAppTransactionTemplate(1)];
+        }
+    }
+
+    get isMultipleTrx(): boolean {
+        return this.multipleTrxReq || (this.current?.processData?.transactions?.length > 1)
     }
 }
