@@ -45,7 +45,9 @@
                                     (click)="selectRow(item)" [class.selected]="selectedTransaction === item"
                                     class="table-selectable">
                                     <td>{{item.current.fileTransaction.transactionId}}</td>
-                                    <td>{{item.current.fileTransaction.originalAmount | currencyAmount:
+                                    <td
+                                        [ngClass]="item.areTrxsAmountsValid || item === selectedTransaction ? 'trx-amount-good' : 'trx-amount-bad'">
+                                        {{item.current.fileTransaction.originalAmount | currencyAmount:
                                         item.current.currency.symbol}}</td>
                                     <td>{{item.current.fileTransaction.description}}</td>
                                     <td>{{item.current.fileTransaction.transactionDate | date:"yyyy/MM/dd"}}</td>

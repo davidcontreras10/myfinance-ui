@@ -87,6 +87,29 @@ export class BankTrxReqRespPair {
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
 
+    get areTrxsValid(): boolean {
+        return true;
+    }
+
+    get areTrxsAmountsValid(): boolean {
+        if (!this.isMultipleTrx) {
+            return true;
+        }
+
+        return this.totalTrxsAmount === this.current.fileTransaction.originalAmount;
+    }
+
+    get totalTrxsAmount(): number {
+        let total = 0;
+        if (this.current.processData.transactions) {
+            this.current.processData.transactions.forEach(t => {
+                total += t.originalAmount ?? 0;
+            });
+        }
+
+        return total;
+    }
+
     canModifyTrxs(): boolean {
         return this.current.dbStatus === BankTransactionStatus.Inserted;
     }

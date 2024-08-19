@@ -18,3 +18,12 @@
 .btn-block {
     width: 100%;
 }
+
+.trx-amount-good {
+    color: default;
+}
+
+.trx-amount-bad {
+    color: red;
+    font-weight: bold;
+}
