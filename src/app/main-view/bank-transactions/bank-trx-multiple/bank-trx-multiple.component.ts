@@ -8,9 +8,6 @@ import { BankTransactionStatus, BankTrxSpendViewModel, SelectableItem } from 'sr
   styleUrls: ['./bank-trx-multiple.component.css']
 })
 export class BankTrxMultipleComponent implements OnInit {
-  removeTransaction(_t9: BankTrxSpendViewModel, arg1: BankTrxReqRespPair) {
-    throw new Error('Method not implemented.');
-  }
   BankTransactionStatus = BankTransactionStatus;
 
   @Input() transactionTypes: SelectableItem[] = [];
@@ -18,10 +15,31 @@ export class BankTrxMultipleComponent implements OnInit {
 
   constructor() { }
 
+  removeTransaction(_t9: BankTrxSpendViewModel, arg1: BankTrxReqRespPair) {
+    if (this.selectedTransaction) {
+      this.selectedTransaction.removeTrx(_t9);
+    }
+  }
+
+  addAppTrx() {
+    if (this.selectedTransaction) {
+      this.selectedTransaction.addTrx();
+    }
+  }
+
   ngOnInit(): void {
   }
 
-  onAccountChange($event: Event, _t9: BankTrxSpendViewModel) {
-    //throw new Error('Method not implemented.');
+  onAccountChange($event: Event, bankTrx: BankTrxSpendViewModel) {
+    if (!this.selectedTransaction) {
+      return;
+    }
+
+    const target = $event.target as HTMLSelectElement;
+    const accountId = Number(target.value);
+    const account = this.selectedTransaction.accounts.find(a => a.id === accountId);
+    if (account && account.trxTypeId) {
+      bankTrx.spendTypeId = account.trxTypeId;
+    }
   }
 }

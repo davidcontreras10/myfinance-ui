@@ -87,6 +87,18 @@ export class BankTrxReqRespPair {
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
 
+    removeTrx(trx: BankTrxSpendViewModel) {
+        const index = this.current.processData.transactions.indexOf(trx);
+        if (index > -1) {
+            this.current.processData.transactions.splice(index, 1);
+        }
+    }
+
+    addTrx() {
+        const maxSpendId = Math.max(...this.current.processData.transactions.map(t => t.spendId));
+        this.current.processData.transactions.push(this.createAppTransactionTemplate(maxSpendId + 1));
+    }
+
     get areTrxsValid(): boolean {
         return true;
     }
@@ -153,6 +165,7 @@ export class BankTrxReqRespPair {
         }
         else {
             this.current.dbStatus = this.original.dbStatus === BankTransactionStatus.Ignored ? BankTransactionStatus.Inserted : this.original.dbStatus;
+            this.current.processData.transactions = [];
         }
     }
 
@@ -167,6 +180,6 @@ export class BankTrxReqRespPair {
     }
 
     get isMultipleTrx(): boolean {
-        return this.multipleTrxReq || (this.current?.processData?.transactions?.length > 1)
+        return !this.isIgnored && (this.multipleTrxReq || (this.current?.processData?.transactions?.length > 1));
     }
 }

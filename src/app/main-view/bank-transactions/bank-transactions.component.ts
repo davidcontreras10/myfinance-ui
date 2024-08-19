@@ -203,7 +203,7 @@ export class BankTransactionsComponent implements OnInit {
       if (this.isAlreadyProcessed(trx)) {
         return;
       }
-      if (trx.multipleTrxReq) {
+      if (trx.isMultipleTrx) {
         values.push(this.createMultipleTrxRequest(trx));
         return;
       }
@@ -255,7 +255,6 @@ export class BankTransactionsComponent implements OnInit {
       trx.current = newTrx;
       trx.original = copy;
       trx.resetRequested = false;
-      trx.multipleTrxReq = false;
     });
 
     this.bankTransactions;
@@ -285,7 +284,6 @@ export class BankTransactionsComponent implements OnInit {
         const pair: BankTrxReqRespPair = new BankTrxReqRespPair();
         pair.original = copy;
         pair.current = trx;
-        pair.multipleTrxReq = false;
         pair.accounts = matched.accounts;
         pair.resetRequested = false;
 
