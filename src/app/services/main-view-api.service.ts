@@ -20,6 +20,23 @@ export class MainViewApiService {
     return of(defPrefs);
   }
 
+  getTrxByDate(date: Date): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('date', Utils.toViewDateFormat(date));
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
+
+  getTrxByDescription(description: string): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('description', description);
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
+
+  getTrxByRefNumber(refNumber: string): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('refNumber', refNumber);
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
 
   deleteBankTrx(transactionId: string, financialEntityId: number): Observable<HttpResponse<any>> {
     return this.httpClient.delete<HttpResponse<any>>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`);

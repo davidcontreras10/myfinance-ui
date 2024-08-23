@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, SelectableItem } from 'src/app/services/models';
 import { BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
@@ -20,8 +20,15 @@ export class BankTransactionsComponent implements OnInit {
 
   BankTransactionStatus = BankTransactionStatus;
 
+  searchCriteriaId: any | null = '1';
+  searchCriteriaTextValue: string = '';
+  searchCriteariaDateValue: any | null = null;
   selectedTransaction: BankTrxReqRespPair | null = null;
+  searchOptions: SelectableItem[] = this.getSearchOptions();
+  searchCriteriaDateValue: string | null = null;
+
   transactionTypes: SelectableItem[] = [];
+
 
   public myProperty: { [key in number]: number } = {
     [BankTransactionStatus.Inserted]: 1,
@@ -38,6 +45,57 @@ export class BankTransactionsComponent implements OnInit {
     if (navigation?.extras?.state?.['uploadedFile']) {
       this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
     }
+  }
+
+  search() {
+    if (this.searchCriteriaId === '1' && this.searchCriteriaTextValue) {
+      this.mainViewApiService.getTrxByRefNumber(this.searchCriteriaTextValue).subscribe({
+        next: (response) => {
+          this.handleSearchResponse(response);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Upload error:', err.message);
+        }
+      });
+    }
+    else if (this.searchCriteriaId === '2') {
+      if (this.searchCriteriaDateValue) {
+        const [year, month, day] = this.searchCriteriaDateValue.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        this.mainViewApiService.getTrxByDate(date).subscribe({
+          next: (response) => {
+            this.handleSearchResponse(response);
+          },
+          error: (err: HttpErrorResponse) => {
+            console.error('Upload error:', err.message);
+          }
+        });
+      }
+      else {
+        // handle error
+      }
+    }
+    else if (this.searchCriteriaId === '3' && this.searchCriteriaTextValue) {
+      this.mainViewApiService.getTrxByDescription(this.searchCriteriaTextValue).subscribe({
+        next: (response) => {
+          this.handleSearchResponse(response);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Upload error:', err.message);
+        }
+      });
+    }
+  }
+
+  private handleSearchResponse(response: BankTrxReqResp): void {
+    this.resetSearchControls();
+    this.processBankTrxReqResp(response);
+  }
+
+  resetSearchControls() {
+    this.searchCriteriaId = '1';
+    this.searchCriteriaTextValue = '';
+    this.searchCriteriaDateValue = null;
   }
 
   onAccountChange($event: Event, bankTrxReqRespPair: BankTrxReqRespPair) {
@@ -69,7 +127,6 @@ export class BankTransactionsComponent implements OnInit {
       if (trxId) {
         this.mainViewApiService.getBankTransactionsByAppTrxIds([trxId]).subscribe({
           next: (event) => {
-            console.log('by trx response');
             this.processBankTrxReqResp(event);
           },
           error: (err: HttpErrorResponse) => {
@@ -82,9 +139,7 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   submit(_t5: NgForm) {
-    console.log('Submitting changes', _t5);
     const submitValues = this.getClientBankItemRequests();
-    console.log('submitValues', submitValues);
     if (submitValues.length === 0) {
       return;
     }
@@ -93,6 +148,14 @@ export class BankTransactionsComponent implements OnInit {
     this.mainViewApiService.submitBankTrxChanges(submitValues).subscribe(response => {
       this.processBankTrxProcessResponse(response);
     });
+  }
+
+  getSearchOptions(): SelectableItem[] {
+    return [
+      { id: 1, name: 'Reference Number', isSelected: false, isDefault: false },
+      { id: 2, name: 'Date', isSelected: false, isDefault: false },
+      { id: 3, name: 'Description', isSelected: false, isDefault: false }
+    ];
   }
 
   clearTransactions() {
@@ -229,7 +292,33 @@ export class BankTransactionsComponent implements OnInit {
     }
   }
   createMultipleTrxRequest(trx: BankTrxReqRespPair): ClientBankItemRequest {
-    throw new Error('Method not implemented.');
+    const current = trx.current;
+    if (current.processData?.transactions?.length < 2) {
+      throw new Error("No transactions found");
+    }
+
+    const transactions: ClientBankTrxRequest[] = current.processData.transactions.map(t => {
+      return {
+        amount: Utils.validateNumber(t.originalAmount),
+        isPending: t.isPending,
+        spendTypeId: Utils.validateId(t.spendTypeId),
+        accountId: Utils.validateId(t.accountId),
+        description: t.description
+      }
+    });
+    const bankTrx: ClientBankItemRequest = {
+      accountId: null,
+      description: current.fileTransaction.description,
+      financialEntityId: current.financialEntityId,
+      isMultipleTrx: true,
+      isPending: null,
+      requestIgnore: false,
+      spendTypeId: null,
+      transactionId: current.fileTransaction.transactionId,
+      transactions: transactions
+    };
+
+    return bankTrx;
   }
 
   private processBankTrxProcessResponse(response: BankTrxProcessResponse): void {

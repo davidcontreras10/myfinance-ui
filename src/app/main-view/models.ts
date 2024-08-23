@@ -83,7 +83,6 @@ export enum BalanceTypes {
 export class BankTrxReqRespPair {
     original: BankTrxItemReqResp;
     current: BankTrxItemReqResp;
-    multipleTrxReq: boolean;
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
 
@@ -170,7 +169,6 @@ export class BankTrxReqRespPair {
     }
 
     set isMultipleTrx(value: boolean) {
-        this.multipleTrxReq = value;
         if (!value) {
             this.current.processData.transactions = [];
         }
@@ -180,6 +178,6 @@ export class BankTrxReqRespPair {
     }
 
     get isMultipleTrx(): boolean {
-        return !this.isIgnored && (this.multipleTrxReq || (this.current?.processData?.transactions?.length > 1));
+        return !this.isIgnored && this.current?.processData?.transactions?.length > 1;
     }
 }
