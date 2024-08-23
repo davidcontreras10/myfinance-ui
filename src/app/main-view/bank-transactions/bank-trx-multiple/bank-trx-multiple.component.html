@@ -79,7 +79,8 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <button type="button" style="width: 100%;" class="btn btn-outline-danger btn-block"
+                                <button type="button" style="width: 100%; font-weight: bold;"
+                                    class="btn btn-outline-danger btn-block"
                                     (click)="removeTransaction(trx, selectedTransaction)"
                                     [disabled]="!selectedTransaction.canModifyTrxs() || selectedTransaction.current.processData.transactions.length < 3">
                                     X
@@ -94,8 +95,8 @@
     </div>
     <div class="row" style="padding-top: 15px;">
         <div class="col-md-12">
-            <button class="btn btn-outline-success" [disabled]="!selectedTransaction.canModifyTrxs()"
-                (click)="addAppTrx()">Add</button>
+            <button style="float: right; font-size: 15px; font-weight: bold;" class="btn btn-outline-success"
+                [disabled]="!selectedTransaction.canModifyTrxs()" (click)="addAppTrx()">&#65291;</button>
         </div>
     </div>
 </div>
