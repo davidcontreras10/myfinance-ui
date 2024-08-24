@@ -343,7 +343,7 @@ export interface DialogResultModel<T> {
   success: boolean;
 }
 
-export interface FileBankTransaction {
+export class FileBankTransaction {
   transactionId: string;
   originalAmount: number;
   transactionDate: Date;
@@ -404,6 +404,7 @@ export interface ClientBankItemRequest {
   spendTypeId: number | null;
   isPending: boolean | null;
   transactions: ClientBankTrxRequest[] | null;
+  transactionDate: Date | null;
 }
 
 export interface BankTrxProcessResponse {

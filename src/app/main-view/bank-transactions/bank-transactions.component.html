@@ -159,12 +159,19 @@
                 </div>
                 <div class="row">
                     <div class="col-md-8">
+                        <input [(ngModel)]="selectedTransaction.current.fileTransaction.transactionDate"
+                            type="datetime-local" name="transactionDate" class="basic-input form-control" required
+                            [disabled]="selectedTransaction.current.dbStatus !== BankTransactionStatus.Inserted" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input [(ngModel)]="selectedTransaction.current.fileTransaction.description"
                                         type="text" name="description" class="basic-input form-control" required
-                                        [disabled]="selectedTransaction.current.dbStatus === BankTransactionStatus.Processed" />
+                                        [disabled]="selectedTransaction.current.dbStatus !== BankTransactionStatus.Inserted" />
                                 </div>
                             </div>
                         </div>

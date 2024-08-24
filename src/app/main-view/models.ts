@@ -86,6 +86,14 @@ export class BankTrxReqRespPair {
     resetRequested: boolean;
     accounts: AccountWithTrxTypeId[];
 
+    getTrxDate(): Date | null {
+        if (this.current.fileTransaction.transactionDate === this.original.fileTransaction.transactionDate) {
+            return null;
+        }
+
+        return this.current.fileTransaction.transactionDate;
+    }
+
     removeTrx(trx: BankTrxSpendViewModel) {
         const index = this.current.processData.transactions.indexOf(trx);
         if (index > -1) {

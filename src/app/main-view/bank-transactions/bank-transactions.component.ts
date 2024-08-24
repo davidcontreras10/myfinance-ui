@@ -288,7 +288,8 @@ export class BankTransactionsComponent implements OnInit {
       accountId: current.singleTrxAccountId,
       spendTypeId: current.singleTrxTypeId,
       isPending: current.singleTrxIsPending,
-      transactions: []
+      transactions: [],
+      transactionDate: trx.getTrxDate()
     }
   }
   createMultipleTrxRequest(trx: BankTrxReqRespPair): ClientBankItemRequest {
@@ -315,7 +316,8 @@ export class BankTransactionsComponent implements OnInit {
       requestIgnore: false,
       spendTypeId: null,
       transactionId: current.fileTransaction.transactionId,
-      transactions: transactions
+      transactions: transactions,
+      transactionDate: trx.getTrxDate()
     };
 
     return bankTrx;
@@ -433,7 +435,8 @@ export class BankTransactionsComponent implements OnInit {
       accountId: null,
       spendTypeId: null,
       isPending: null,
-      transactions: []
+      transactions: [],
+      transactionDate: null
     }
   }
 
