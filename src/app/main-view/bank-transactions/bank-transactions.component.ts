@@ -30,7 +30,7 @@ export class BankTransactionsComponent implements OnInit {
   transactionTypes: SelectableItem[] = [];
 
 
-  public myProperty: { [key in number]: number } = {
+  public statusOrder: { [key in number]: number } = {
     [BankTransactionStatus.Inserted]: 1,
     [BankTransactionStatus.Processed]: 2,
     [BankTransactionStatus.Ignored]: 3,
@@ -250,6 +250,9 @@ export class BankTransactionsComponent implements OnInit {
       return 'New';
     }
 
+    if (value === BankTransactionStatus.NotExisting) {
+      value = BankTransactionStatus.Inserted;
+    }
     return this.getEnumText(value);
   }
 
@@ -419,8 +422,8 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   public sortBankTrxReqRespPairs = (a: BankTrxReqRespPair, b: BankTrxReqRespPair): number => {
-    const aValue = this.myProperty[a.original.dbStatus];
-    const bValue = this.myProperty[b.original.dbStatus];
+    const aValue = this.statusOrder[a.original.dbStatus];
+    const bValue = this.statusOrder[b.original.dbStatus];
     return aValue - bValue;
   };
 
@@ -468,23 +471,26 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   get anyNew(): boolean {
-    return this.bankTransactions.some(trx => trx.original.dbStatus === BankTransactionStatus.Inserted);
+    return this.bankTransactions.some(trx => trx.original.dbStatus === BankTransactionStatus.Inserted || trx.original.dbStatus === BankTransactionStatus.NotExisting);
   }
 
   get anyMarkableAsPending(): boolean {
-    return this.bankTransactions.some(trx => trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx);
+    const acceptedStatus = [BankTransactionStatus.Inserted, BankTransactionStatus.NotExisting];
+    return this.bankTransactions.some(trx => acceptedStatus.includes(trx.current.dbStatus) && !trx.isMultipleTrx);
   }
 
   set allPending(value: boolean) {
+    const acceptedStatus = [BankTransactionStatus.Inserted, BankTransactionStatus.NotExisting];
     this.bankTransactions.forEach(trx => {
-      if (trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx) {
+      if (acceptedStatus.includes(trx.current.dbStatus) && !trx.isMultipleTrx) {
         trx.current.singleTrxIsPending = value;
       }
     });
   }
 
   get allPending(): boolean {
-    const newTrxs = this.bankTransactions.filter(trx => trx.current.dbStatus === BankTransactionStatus.Inserted && !trx.isMultipleTrx);
+    const acceptedStatus = [BankTransactionStatus.Inserted, BankTransactionStatus.NotExisting];
+    const newTrxs = this.bankTransactions.filter(trx => acceptedStatus.includes(trx.current.dbStatus) && !trx.isMultipleTrx);
     return newTrxs?.length > 0 && newTrxs.every(trx => trx.current.singleTrxIsPending);
   }
 
