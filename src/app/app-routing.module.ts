@@ -9,6 +9,7 @@ import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.compo
 import { NewScheduledTaskComponent } from './automatic-tasks/new-scheduled-task/new-scheduled-task.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
+import { BankTransactionsComponent } from './main-view/bank-transactions/bank-transactions.component';
 
 const routes: Routes = [
   { path: '', component: MainViewComponent, canActivate: [AuthGuard] },
@@ -39,6 +40,11 @@ const routes: Routes = [
     component: TransactionTypesComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'bank-trx',
+    component: BankTransactionsComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({

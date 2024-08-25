@@ -12,6 +12,7 @@ import { AccountNotesComponent } from '../account-notes/account-notes.component'
 import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
 import { filter, map } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account-view',
@@ -26,7 +27,7 @@ export class AccountViewComponent implements OnInit {
   selectedAccountPeriod?: AccountPeriod;
   showTraxList = false;
 
-  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe) {
+  constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe, private router: Router) {
   }
 
   isFilterMode(): boolean {
@@ -120,10 +121,27 @@ export class AccountViewComponent implements OnInit {
     }
   }
 
+  onBankTrxView(trx: SpendViewModel) {
+    if (trx) {
+      this.router.navigate(['/bank-trx'], { queryParams: { trxId: trx.spendId } });
+    }
+  }
+
   onTrxDelete(trx: SpendViewModel) {
     if (confirm('Are you sure you want to delete this item?')) {
-      this.mainViewApiService.deleteTrx(trx.spendId).subscribe(items => {
-        this.mainViewModel.notifyAccountsModified(items);
+      this.mainViewApiService.deleteTrx(trx.spendId).subscribe({
+        next: items => {
+          this.mainViewModel.notifyAccountsModified(items);
+        },
+        error: error => {
+          if (error.error?.errorCode === 1001) {
+            alert('Cannot delete transaction when it has bank transactions associated. Please reset the bank transactions first');
+          }
+          else {
+            console.error(error);
+            alert('Error deleting transaction');
+          }
+        }
       })
     }
   }

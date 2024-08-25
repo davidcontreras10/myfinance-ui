@@ -1,0 +1,12 @@
+<div>
+    <!-- <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button> -->
+    <h4 class="modal-title">Bank Transactions</h4>
+</div>
+<div class="modal-body">
+    <app-bank-transactions [bankTransactions]="bankTransactions"></app-bank-transactions>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+    <button type="submit" class="btn btn-outline-dark">Submit</button>
+</div>

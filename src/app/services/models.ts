@@ -44,6 +44,20 @@ export interface FinanceAccountRequest {
   trxFilters: TrxFilters | null
 }
 
+export class BankTrxSpendViewModel {
+  accountId: number | null;
+  spendId: number;
+  spendDate: Date;
+  setPaymentDate: Date | null;
+  spendTypeId: number | null;
+  originalAmount: number | null;
+  amountCurrencyId: number;
+  description: string;
+  convertedAmount: number;
+  accounts: SelectableItem[];
+  isPending: boolean;
+}
+
 export class SpendViewModel {
   accountId: number;
   spendId: number;
@@ -62,6 +76,7 @@ export class SpendViewModel {
   isPending: boolean;
   convertedAmount: number;
   vmIsSelected: boolean = false;
+  hasBankTrx: boolean | null = null;
 }
 
 export interface FinanceAccountResponse {
@@ -194,6 +209,7 @@ export interface TransactionViewResponse {
     description: string;
     isPending: boolean;
     amountTypeId: number;
+    hasBankTrx: boolean;
   };
 
   supportedCurrencies: Currency[];
@@ -213,9 +229,12 @@ export interface AccountStyle {
   borderColor: string;
 }
 
-export interface AccountViewModel {
+export interface AccountBasicInfo {
   accountId: number;
   accountName: string;
+}
+
+export interface AccountViewModel extends AccountBasicInfo {
   accountPosition: number;
   currencyId: number;
   currencyName: string;
@@ -322,4 +341,73 @@ export interface EditTrxTypeRequest extends NewTrxTypeRequest {
 export interface DialogResultModel<T> {
   value: T;
   success: boolean;
+}
+
+export class FileBankTransaction {
+  transactionId: string;
+  originalAmount: number;
+  transactionDate: Date;
+  description: string;
+  currencyCode: string;
+}
+
+export enum BankTransactionStatus {
+  Unknown = 0,
+  Processed = 1,
+  Ignored = 2,
+  NotExisting = 3,
+  Inserted = 4
+}
+
+export interface AccountWithTrxTypeId extends SelectableItem {
+  trxTypeId: number | null;
+}
+
+export interface AccountsByCurrencyViewModel {
+  currencyId: number;
+  accounts: AccountWithTrxTypeId[];
+}
+
+export interface BankTrxReqResp {
+  accountsPerCurrencies: AccountsByCurrencyViewModel[];
+  bankTransactions: BankTrxItemReqResp[];
+}
+
+export interface BankTrxItemReqResp {
+  financialEntityId: number;
+  fileTransaction: FileBankTransaction;
+  dbStatus: BankTransactionStatus;
+  currency: Currency;
+  singleTrxAccountId: number | null;
+  singleTrxTypeId: number | null;
+  singleTrxIsPending: boolean | null;
+  processData: {
+    transactions: BankTrxSpendViewModel[]
+  };
+}
+
+export interface ClientBankTrxRequest {
+  amount: number;
+  isPending: boolean;
+  spendTypeId: number;
+  accountId: number;
+  description: string;
+}
+
+export interface ClientBankItemRequest {
+  transactionId: string;
+  financialEntityId: number;
+  requestIgnore: boolean;
+  description: string | null;
+  isMultipleTrx: boolean | null;
+  accountId: number | null;
+  spendTypeId: number | null;
+  isPending: boolean | null;
+  transactions: ClientBankTrxRequest[] | null;
+  transactionDate: Date | null;
+}
+
+export interface BankTrxProcessResponse {
+  bankTransactions: BankTrxItemReqResp[];
+  itemModifieds: ItemModifiedRes[];
 }

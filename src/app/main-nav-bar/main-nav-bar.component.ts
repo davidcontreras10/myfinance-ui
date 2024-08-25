@@ -19,6 +19,7 @@ export class MainNavBarComponent implements OnInit {
           { id: 'toggle-summary', name: 'Toggle Summary' },
           { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
           { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
+          { id: NavBarMenusIds.UPLOAD_SCOT_TRX_FILE, name: 'Upload Scotiabank File' }
         ],
         routingLink: '/'
       },
@@ -30,10 +31,11 @@ export class MainNavBarComponent implements OnInit {
         routingRegexPattern: /^\/accounts(\?.*)?$/
       },
       { isActive: false, name: 'Scheduled Tasks', routingLink: '/scheduled-tasks' },
+      { isActive: false, name: 'Bank Transactions', routingLink: '/bank-trx', routingRegexPattern: /^\/bank-trx(\?.*)?$/ },
       {
         isActive: false, name: 'Transaction Types', routingLink: '/transaction-types', subMenus: [
           { id: NavBarMenusIds.NEW_TRX_TYPE, name: 'New Transaction type...' }
-        ]
+        ],
       }
     ];
 

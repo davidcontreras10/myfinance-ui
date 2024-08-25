@@ -1,0 +1,29 @@
+.selected {
+    background-color: #d9edf7;
+    /* Example color */
+}
+
+.table-selectable {
+    cursor: pointer;
+}
+
+.row {
+    padding-top: 5px;
+}
+
+.form-control.ng-invalid.ng-touched {
+    border: 2px solid red;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.trx-amount-good {
+    color: default;
+}
+
+.trx-amount-bad {
+    color: red;
+    font-weight: bold;
+}

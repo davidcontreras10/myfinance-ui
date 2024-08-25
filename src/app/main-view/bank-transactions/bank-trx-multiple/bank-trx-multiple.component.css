@@ -1,0 +1,31 @@
+.trx-item {
+    padding: 10px;
+    /* margin: 5px; */
+}
+
+.row {
+    margin-top: 5px;
+}
+
+.total-trx-amount-good {
+    color: green;
+    font-weight: bold;
+}
+
+.total-trx-amount-bad {
+    color: red;
+    font-weight: bold;
+}
+
+.bank-trx-amount-good {
+    color: green;
+    font-weight: bold;
+}
+
+.bank-trx-amount-bad {
+    color: default;
+}
+
+.summary-trx-amout {
+    font-size: 1em;
+}

@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
-import { AccountGroup } from './models';
+import { AccountGroup, BankTrxReqRespPair } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { DialogResultModel, GetFinanceReq, ItemModifiedRes } from '../services/models';
+import { BankTrxItemReqResp, BankTrxReqResp, BankTrxSpendViewModel, DialogResultModel, GetFinanceReq, ItemModifiedRes, SelectableItem } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { UserError } from '../error-modal/models';
 import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.component';
 import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
+import { BankTransactionsComponent } from './bank-transactions/bank-transactions.component';
+import { Utils } from '../utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-view',
@@ -19,13 +22,28 @@ import { SetPeriodDateComponent } from './set-period-date/set-period-date.compon
   providers: [AuthGuard]
 })
 export class MainViewComponent implements OnInit {
+  selectedFile: File | null = null;
+
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
   public showBankSummary = true;
   public groups: AccountGroup[] = [];
   public bankSummaryloading = false;
 
-  constructor(private modalService: NgbModal, navBarService: NavBarServiceService, private mainViewApiService: MainViewApiService, public mainViewModel: MainViewModel) {
-    navBarService.getSubMenuEvents('toggle-summary').subscribe((value) => {
-      this.handleIncomingNavBarAction(value);
+  constructor(
+    navBarService: NavBarServiceService,
+    private modalService: NgbModal,
+    private mainViewApiService: MainViewApiService,
+    public mainViewModel: MainViewModel,
+    private router: Router) {
+    navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_SCOT_TRX_FILE).subscribe((value) => {
+      if (value === 'toggle-summary') {
+        this.handleIncomingNavBarAction(value);
+      }
+      else if (value === NavBarMenusIds.UPLOAD_SCOT_TRX_FILE) {
+        this.openBankTrxFileDialog();
+        //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
+      }
     });
     navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
       if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
@@ -65,6 +83,27 @@ export class MainViewComponent implements OnInit {
       const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.loadAccountFinananceByIds(periodIds, undefined);
     }));
+  }
+
+  openBankTrxFileDialog(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  onBankTrxFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedFile = target.files[0];
+      this.onUploadBankTrxFile();
+    }
+  }
+
+  onUploadBankTrxFile(): void {
+    if (this.selectedFile) {
+      const uploadedFile = this.selectedFile;
+      this.selectedFile = null;
+      this.fileInput.nativeElement.value = '';
+      this.router.navigate(['/bank-trx'], { state: { uploadedFile: uploadedFile } });
+    }
   }
 
   private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {

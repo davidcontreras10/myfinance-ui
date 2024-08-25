@@ -11,6 +11,9 @@ import { MainViewModel } from '../../main-view-model';
 export class TrxTableComponent implements OnInit {
 
   @Output()
+  bankTrxView = new EventEmitter<SpendViewModel>();
+
+  @Output()
   confirmTransaction = new EventEmitter<SpendViewModel>();
 
   @Output()
@@ -46,6 +49,10 @@ export class TrxTableComponent implements OnInit {
       const bDate = new Date(b.spendDate);
       return bDate.getTime() - aDate.getTime();
     })
+  }
+
+  onBankTrxView(_t13: SpendViewModel) {
+    this.bankTrxView.emit(_t13);
   }
 
   onConfirmTransaction(_t13: SpendViewModel) {
