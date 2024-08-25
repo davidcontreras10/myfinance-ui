@@ -30,7 +30,7 @@ export class BankTransactionsComponent implements OnInit {
   transactionTypes: SelectableItem[] = [];
 
 
-  public statusOrder: { [key in number]: number } = {
+  statusOrder: { [key in number]: number } = {
     [BankTransactionStatus.Inserted]: 1,
     [BankTransactionStatus.Processed]: 2,
     [BankTransactionStatus.Ignored]: 3,
