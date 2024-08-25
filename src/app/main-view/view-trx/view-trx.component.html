@@ -5,21 +5,23 @@
             (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <div class="row">
+        <div class="row" *ngIf="trxViewModel">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Transaction type:</label>
                     <div class="radio">
                         <label for="amount-spend-type">
                             <input required [(ngModel)]="selectedtrxType" type="radio" id="amount-spend-type"
-                                name="trxType" [value]="1" [checked]="trxViewModel?.trxTypeId === 1">
+                                name="trxType" [value]="1" [checked]="trxViewModel.trxTypeId === 1"
+                                [disabled]="trxViewModel.hasBankTrx">
                             Expense
                         </label>
                     </div>
                     <div class="radio">
                         <label for="amount-income-type">
                             <input required [(ngModel)]="selectedtrxType" type="radio" id="amount-income-type"
-                                name="trxType" [value]="2" [checked]="trxViewModel?.trxTypeId === 2">
+                                name="trxType" [value]="2" [checked]="trxViewModel.trxTypeId === 2"
+                                [disabled]="trxViewModel.hasBankTrx">
                             Income
                         </label>
                     </div>

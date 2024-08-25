@@ -1,0 +1,102 @@
+<div *ngIf="selectedTransaction && selectedTransaction.isMultipleTrx">
+    <div class="row">
+        <div class="col-md-6">
+            <span style="font-size: 1.3em;">Transactions:</span>
+        </div>
+        <div class="col-md-6">
+            <span class="summary-trx-amout"
+                [ngClass]="selectedTransaction.areTrxsAmountsValid ? 'total-trx-amount-good' : 'total-trx-amount-bad'">
+                {{selectedTransaction.totalTrxsAmount | currencyAmount:selectedTransaction.current.currency.symbol}}
+            </span>/
+            <span class="summary-trx-amout"
+                [ngClass]="selectedTransaction.areTrxsAmountsValid ? 'bank-trx-amount-good' : 'bank-trx-amount-bad'">
+                {{selectedTransaction.current.fileTransaction.originalAmount |
+                currencyAmount:selectedTransaction.current.currency.symbol}}
+            </span>
+        </div>
+    </div>
+    <div class="row" *ngFor="let trx of selectedTransaction.current.processData.transactions">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="border trx-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input [(ngModel)]="trx.originalAmount" required
+                                    [name]="'app-trx-amount-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                    type="number" id="add-trx-amount" class="basic-input form-control"
+                                    placeholder="Amount" pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$"
+                                    placeholder="Amount" [disabled]="!selectedTransaction.canModifyTrxs()" />
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select [(ngModel)]="trx.accountId" class="form-select"
+                                        (change)="onAccountChange($event, trx)"
+                                        [name]="'app-trx-account-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                        [disabled]="!selectedTransaction.canModifyTrxs()" required
+                                        [ngbTooltip]="selectedTransaction.getAccountTooltip()">
+                                        <option [ngValue]="null">Select an account</option>
+                                        <option *ngFor="let item of selectedTransaction.accounts" [value]="item.id">
+                                            {{item.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <select [(ngModel)]="trx.spendTypeId" class="form-select"
+                                    [name]="'app-trx-trx-type-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                    [disabled]="!selectedTransaction.canModifyTrxs()" required>
+                                    <option [ngValue]="null">Select a type</option>
+                                    <option *ngFor="let item of transactionTypes" [value]="item.id">
+                                        {{item.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="basic-input form-control">
+                                    <div class="form-check">
+                                        <input mdbCheckbox [(ngModel)]="trx.isPending"
+                                            [name]="'app-trx-pending-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                            [id]="'app-trx-pending-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                            [disabled]="!selectedTransaction.canModifyTrxs()" class="form-check-input"
+                                            type="checkbox" id="new-trx-pending" />
+                                        <label class="form-check-label"
+                                            [htmlFor]="'app-trx-pending-' + trx.spendId + '-' + selectedTransaction.getHashedId()">
+                                            Pending
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <input
+                                        [name]="'app-trx-description-' + trx.spendId + '-' + selectedTransaction.getHashedId()"
+                                        [(ngModel)]="trx.description" [minlength]="3" [maxlength]="100"
+                                        class="form-control" type="text" placeholder="Description"
+                                        [disabled]="!selectedTransaction.canModifyTrxs()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" style="width: 100%; font-weight: bold;"
+                                    class="btn btn-outline-danger btn-block"
+                                    (click)="removeTransaction(trx, selectedTransaction)"
+                                    [disabled]="!selectedTransaction.canModifyTrxs() || selectedTransaction.current.processData.transactions.length < 3">
+                                    X
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 15px;">
+        <div class="col-md-12">
+            <button style="float: right; font-size: 15px; font-weight: bold;" class="btn btn-outline-success"
+                [disabled]="!selectedTransaction.canModifyTrxs()" (click)="addAppTrx()">&#65291;</button>
+        </div>
+    </div>
+</div>

@@ -49,6 +49,9 @@ import { TrxTableComponent } from './main-view/account-view/trx-table/trx-table.
 import { TrxFilterModalComponent } from './main-view/account-view/trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
 import { SetPeriodDateComponent } from './main-view/set-period-date/set-period-date.component';
+import { BankTransactionsComponent } from './main-view/bank-transactions/bank-transactions.component';
+import { BankTransactionsModalComponent } from './main-view/bank-transactions/bank-transactions-modal/bank-transactions-modal.component';
+import { BankTrxMultipleComponent } from './main-view/bank-transactions/bank-trx-multiple/bank-trx-multiple.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +91,10 @@ import { SetPeriodDateComponent } from './main-view/set-period-date/set-period-d
     NewTransactionTypeComponent,
     TrxTableComponent,
     TrxFilterModalComponent,
-    SetPeriodDateComponent
+    SetPeriodDateComponent,
+    BankTransactionsComponent,
+    BankTransactionsModalComponent,
+    BankTrxMultipleComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, ClientBankItemRequest, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -18,6 +18,79 @@ export class MainViewApiService {
       periodsLimit: 12
     };
     return of(defPrefs);
+  }
+
+  getTrxByDate(date: Date): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('date', Utils.toViewDateFormat(date));
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
+
+  getTrxByDescription(description: string): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('description', description);
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
+
+  getTrxByRefNumber(refNumber: string): Observable<BankTrxReqResp> {
+    const params = new HttpParams()
+      .set('refNumber', refNumber);
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles`, { params });
+  }
+
+  deleteBankTrx(transactionId: string, financialEntityId: number): Observable<HttpResponse<any>> {
+    return this.httpClient.delete<HttpResponse<any>>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`);
+  }
+
+  public getBankTransactionsByAppTrxIds(appTrxIds: number[]): Observable<BankTrxReqResp> {
+    let params = new HttpParams();
+    for (let trxId of appTrxIds) {
+      params = params.append('transactionId', trxId);
+    }
+    return this.httpClient.get<BankTrxReqResp>(`${environment.baseApi}/api/BankTransactionsFiles/app-transactions`, { params });
+  }
+
+  resetBankTrx(transactionId: string, financialEntityId: number): Observable<BankTrxProcessResponse> {
+    return this.httpClient.put<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/${transactionId}/${financialEntityId}`, {});
+  }
+
+  submitBankTrxChanges(requests: ClientBankItemRequest[]): Observable<BankTrxProcessResponse> {
+    return this.httpClient.post<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/ProcessRequest`, requests);
+  }
+
+  getUserTransactionTypes(): Observable<SelectableItem[]> {
+    const params = new HttpParams().set('includeAll', false);
+    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params });
+  }
+
+  uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp>> {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/UploadRequest`
+    const req = new HttpRequest('POST', uploadUrl, formData, {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      }),
+      //reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.httpClient.request<BankTrxReqResp>(req);
+  }
+
+  uploadScotiabankBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp>> {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/files/scotiabank`
+    const req = new HttpRequest('POST', uploadUrl, formData, {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      }),
+      //reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.httpClient.request<BankTrxReqResp>(req);
   }
 
   public updateNotes(accountId: number, notes: AccountNotes): Observable<AccountNotes> {
@@ -180,7 +253,8 @@ export class MainViewApiService {
             setPaymentDate: item.spendInfo.setPaymentDate,
             description: item.spendInfo.description,
             isPending: item.spendInfo.isPending,
-            trxTypeId: item.spendInfo.amountTypeId
+            trxTypeId: item.spendInfo.amountTypeId,
+            hasBankTrx: item.spendInfo.hasBankTrx
           };
 
           return response;
