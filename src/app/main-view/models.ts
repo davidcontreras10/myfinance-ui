@@ -75,6 +75,10 @@ export interface TransactionViewModel {
     isPending: boolean;
     trxTypeId: number;
     hasBankTrx: boolean;
+    transferInfo: {
+        sourceAccountName: string,
+        destinationAccountName: string,
+    } | null;
 }
 export enum BalanceTypes {
     Invalid = 0, Custom = 1, AccountPeriodBalance = 2, AccountOverallBalance = 3
