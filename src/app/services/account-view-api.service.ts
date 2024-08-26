@@ -39,6 +39,12 @@ export class AccountViewApiService {
       );
   }
 
+  public deleteAccount(accountId: number): Observable<void> {
+    return this.httpClient.delete<void>(
+      `${environment.baseApi}/api/Accounts/${accountId}`
+    );
+  }
+
   public editAccount(model: EditAccountRequestModel): Observable<void> {
     return this.httpClient.patch<void>(`${environment.baseApi}/api/Accounts`,
       model);
