@@ -254,7 +254,8 @@ export class MainViewApiService {
             description: item.spendInfo.description,
             isPending: item.spendInfo.isPending,
             trxTypeId: item.spendInfo.amountTypeId,
-            hasBankTrx: item.spendInfo.hasBankTrx
+            hasBankTrx: item.spendInfo.hasBankTrx,
+            transferInfo: item.transferInfo
           };
 
           return response;

@@ -106,6 +106,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
     console.log('Item Clicked', item);
   }
 
+  onDeleteClick(accountId: number) {
+    if (confirm('Are you sure you want to delete this item?')) {
+      this.apiService.deleteAccount(accountId).subscribe((res) => {
+        this.loadMainData(this.accountGroupId);
+      });
+    }
+  }
+
   onEditClick(accountId: number) {
     this.router.navigate([`accounts/edit/${accountId}`]);
   }

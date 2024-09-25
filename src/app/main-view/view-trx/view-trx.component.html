@@ -103,6 +103,13 @@
                 </div>
             </div>
         </div>
+        <div class="row" *ngIf="trxViewModel?.transferInfo">
+            <div class="col">
+                <h6>Transfer info:</h6>
+                <span><strong>From:</strong> {{trxViewModel?.transferInfo?.sourceAccountName}}</span><br />
+                <span><strong>To:</strong> {{trxViewModel?.transferInfo?.destinationAccountName}}</span><br />
+            </div>
+        </div>
         <!-- <span>Form Value: {{f.value | json}}</span> -->
     </div>
     <div class="modal-footer">

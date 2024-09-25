@@ -217,6 +217,10 @@ export interface TransactionViewResponse {
   spendTypeViewModels: SelectableItem[];
   accountName: string;
   amountTypeId: number;
+  transferInfo: {
+    sourceAccountName: string,
+    destinationAccountName: string,
+  } | null;
 }
 
 export interface FileResponse {

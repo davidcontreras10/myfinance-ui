@@ -29,7 +29,8 @@
                     <span style="font-weight: bold;">{{item.name}} </span><br />
                     <button style="margin: 5px;" type="button" class="btn btn-outline-secondary"
                         (click)="onEditClick(item.id)">Edit</button>
-                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                    <button type="button" class="btn btn-outline-danger"
+                        (click)="onDeleteClick(item.id)">Delete</button>
                 </ng-template>
             </app-draggable-grid>
         </div>
