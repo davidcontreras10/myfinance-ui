@@ -77,6 +77,7 @@ export class SpendViewModel {
   convertedAmount: number;
   vmIsSelected: boolean = false;
   hasBankTrx: boolean | null = null;
+  utcRecordDate: string;
 }
 
 export interface FinanceAccountResponse {
