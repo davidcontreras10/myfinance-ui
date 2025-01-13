@@ -52,6 +52,8 @@ import { SetPeriodDateComponent } from './main-view/set-period-date/set-period-d
 import { BankTransactionsComponent } from './main-view/bank-transactions/bank-transactions.component';
 import { BankTransactionsModalComponent } from './main-view/bank-transactions/bank-transactions-modal/bank-transactions-modal.component';
 import { BankTrxMultipleComponent } from './main-view/bank-transactions/bank-trx-multiple/bank-trx-multiple.component';
+import { DebtManagerComponent } from './debt-manager/debt-manager.component';
+import { DebtManagerModalComponent } from './debt-manager/debt-manager-modal/debt-manager-modal.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,9 @@ import { BankTrxMultipleComponent } from './main-view/bank-transactions/bank-trx
     SetPeriodDateComponent,
     BankTransactionsComponent,
     BankTransactionsModalComponent,
-    BankTrxMultipleComponent
+    BankTrxMultipleComponent,
+    DebtManagerComponent,
+    DebtManagerModalComponent
   ],
   imports: [
     BrowserModule,

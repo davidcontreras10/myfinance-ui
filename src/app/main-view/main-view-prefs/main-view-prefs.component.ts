@@ -19,13 +19,13 @@ export class MainViewPrefsComponent implements OnInit {
     this.periodsLimit = this.mainViewModel.mainViewPrefs.periodsLimit;
   }
 
-  periodsLimitLeft(){
-    if(this.periodsLimit != this.mainViewModel.mainViewPrefs.periodsLimit){
-      if(this.periodsLimit >= this.periodsLimitMin && this.periodsLimit <= this.periodsLimitMax){
-          console.log('Should save new value', this.periodsLimit);
-          this.mainViewModel.mainViewPrefs.periodsLimit = this.periodsLimit;
+  periodsLimitLeft() {
+    if (this.periodsLimit != this.mainViewModel.mainViewPrefs.periodsLimit) {
+      if (this.periodsLimit >= this.periodsLimitMin && this.periodsLimit <= this.periodsLimitMax) {
+        console.log('Should save new value', this.periodsLimit);
+        this.mainViewModel.mainViewPrefs.periodsLimit = this.periodsLimit;
       }
-      else{
+      else {
         this.periodsLimit = this.mainViewModel.mainViewPrefs.periodsLimit;
       }
     }

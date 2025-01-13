@@ -14,6 +14,7 @@ import { SetPeriodDateComponent } from './set-period-date/set-period-date.compon
 import { BankTransactionsComponent } from './bank-transactions/bank-transactions.component';
 import { Utils } from '../utils';
 import { Router } from '@angular/router';
+import { DebtManagerModalComponent } from '../debt-manager/debt-manager-modal/debt-manager-modal.component';
 
 @Component({
   selector: 'app-main-view',
@@ -45,7 +46,7 @@ export class MainViewComponent implements OnInit {
         //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
       }
     });
-    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE).subscribe(value => {
+    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE, NavBarMenusIds.DEBT_MANAGER).subscribe(value => {
       if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
         this.openPreferencesModal();
       }
@@ -58,6 +59,10 @@ export class MainViewComponent implements OnInit {
             this.loadAccountFinananceByIds(periodIds, result.value);
           }
         })
+      }
+      else if (value === NavBarMenusIds.DEBT_MANAGER) {
+        // const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
+        this.router.navigate(['/debt-manager']);
       }
     })
   }

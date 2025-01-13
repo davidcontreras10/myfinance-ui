@@ -28,5 +28,6 @@ export enum NavBarMenusIds {
   SET_PERIODS_DATE = 'set-periods-date',
   MAIN_VIEW_PREFS = 'main-view-prefs',
   UPLOAD_SCOT_TRX_FILE = 'upload-trx-file',
-  BANK_TRX_FILE = 'bank-trx-file'
+  BANK_TRX_FILE = 'bank-trx-file',
+  DEBT_MANAGER = 'debt-manager'
 }
