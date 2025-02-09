@@ -1,0 +1,54 @@
+<form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="add-debt-req-amount" class="form-label">Amount</label>
+                <input ngModel required name="amount" type="number" id="add-debt-req-amount"
+                    class="basic-input form-control" placeholder="Amount"
+                    pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
+            </div>
+            <div class="col-sm-6">
+                <label for="add-debt-req-currency" class="form-label">Currency</label>
+                <select id="add-debt-req-currency" class="basic-input form-control" [(ngModel)]="selectedCurrencyId"
+                    name="currencyId" required>
+                    <option *ngFor="let currency of supportedCurrencies" [value]="currency.id">
+                        {{currency.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="add-debt-req-debtor" class="form-label">Debtor</label>
+                <select id="add-debt-req-debtor" class="basic-input form-control" [(ngModel)]="selectedDebtorId"
+                    name="debtorId" required>
+                    <option *ngFor="let user of supportedUsers" [value]="user.userId">{{user.name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <label for="add-debt-req-date">Event Date</label>
+                <input ngModel required name="eventDate" type="date" id="add-debt-req-date"
+                    class="basic-input form-control" placeholder="Event Date" [(ngModel)]="eventDate" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="add-debt-req-name">Event Name</label>
+                <input ngModel required name="name" type="text" id="add-debt-req-name" class="basic-input form-control"
+                    placeholder="Event Name" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="add-debt-req-description" class="form-label">Description</label>
+                <textarea ngModel name="description" id="add-debt-req-description" class="basic-input form-control"
+                    placeholder="Description"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-end">
+                <button type="button" class="btn btn-outline-dark me-2" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-outline-dark" [disabled]="!f.valid">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>

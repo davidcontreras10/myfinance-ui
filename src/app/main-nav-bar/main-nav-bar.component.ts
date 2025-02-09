@@ -37,7 +37,8 @@ export class MainNavBarComponent implements OnInit {
         isActive: false, name: 'Transaction Types', routingLink: '/transaction-types', subMenus: [
           { id: NavBarMenusIds.NEW_TRX_TYPE, name: 'New Transaction type...' }
         ],
-      }
+      },
+      { isActive: false, name: 'Debt Manager', routingLink: '/debt-manager' },
     ];
 
     router.events.subscribe(value => {

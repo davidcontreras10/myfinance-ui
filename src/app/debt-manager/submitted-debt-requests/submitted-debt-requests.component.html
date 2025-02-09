@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col">
+        <div class="form-check">
+            <input mdbCheckbox class="form-check-input" type="checkbox" id="show-archived" [(ngModel)]="showArchived" />
+            <label class="form-check-label" for="show-archived">
+                Show Archived
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input mdbCheckbox class="form-check-input" type="checkbox" id="show-paid" [(ngModel)]="showPaid" />
+            <label class="form-check-label" for="show-paid">
+                Show Paid
+            </label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <table *ngIf="debtRequests" class="table table-bordered table-low-margin">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="form-check-input" [(ngModel)]="isAllSelected"
+                            (change)="toggleAllSelection()" /></th>
+                    <th data-field="Date">Debtor</th>
+                    <th data-field="Date">Event Date</th>
+                    <th data-field="Amount">Amount</th>
+                    <th data-field="Type">Event Name</th>
+                    <th data-field="Type">Status</th>
+                    <th data-field="Actions">
+                        <div>
+                            Actions
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let debtReq of filteredDebtRequests">
+                    <div class="debug-data">trxId: {{debtReq.id}}</div>
+                    <td>
+                        <input type="checkbox" class="form-check-input" [(ngModel)]="debtReq.isSelected"
+                            (change)="toggleSelection(debtReq)" />
+                    </td>
+                    <td>{{ debtReq.debtor.name }}</td>
+                    <td>{{ debtReq.eventDate | date:"yyyy/MM/dd" }}</td>
+                    <td>
+                        {{debtReq.amount| currencyAmount:debtReq.currency.symbol }}
+                    </td>
+                    <td>{{debtReq.eventName}}</td>
+                    <td>{{getStatusText(debtReq.creditor.status)}}</td>
+                    <td>
+                        <app-creditor-actions [debtRequest]="debtReq"
+                            (statusChanged)="onDebtRequestStatusChanged($event)"></app-creditor-actions>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

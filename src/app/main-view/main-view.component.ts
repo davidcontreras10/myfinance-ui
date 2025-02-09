@@ -61,8 +61,8 @@ export class MainViewComponent implements OnInit {
         })
       }
       else if (value === NavBarMenusIds.DEBT_MANAGER) {
-        // const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
-        this.router.navigate(['/debt-manager']);
+        const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
+        // this.router.navigate(['/debt-manager']);
       }
     })
   }

@@ -415,3 +415,56 @@ export interface BankTrxProcessResponse {
   bankTransactions: BankTrxItemReqResp[];
   itemModifieds: ItemModifiedRes[];
 }
+
+export interface AppUser {
+  userId: string;
+  username: string;
+  name: string;
+  primaryEmail: string;
+}
+
+export interface DebtMngrUser extends AppUser {
+  status: number;
+}
+
+export const DebtorRequestStatus = {
+  Undefined: 0,
+  Pending: 1,
+  Paid: 2,
+  Rejected: 3
+} as const;
+
+export const CreditorRequestStatus = {
+  Undefined: 0,
+  Pending: 1,
+  Paid: 2,
+  Archived: 3
+} as const;
+
+export interface DebtRequestVm {
+  id: number;
+  eventName: string;
+  eventDescription: string;
+  eventDate: Date;
+  createdDate: Date;
+  amount: number;
+  currency: Currency;
+  creditor: DebtMngrUser;
+  debtor: DebtMngrUser;
+  createdByMe: boolean;
+  isSelected: boolean;
+}
+
+export interface AddDebtRequestVm {
+  supportedCurrencies: Currency[];
+  supportedUsers: AppUser[];
+}
+
+export interface NewDebtRequest {
+  targetUserId: string;
+  amount: number;
+  currencyId: number;
+  eventDate: Date;
+  eventName: string;
+  eventDescription: string;
+}
