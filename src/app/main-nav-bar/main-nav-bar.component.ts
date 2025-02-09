@@ -14,15 +14,16 @@ export class MainNavBarComponent implements OnInit {
   isMainCollapsed = true;
   constructor(private router: Router, private authService: AuthService) {
     this.items = [
+      { isActive: false, name: 'Home', routingLink: '/' },
       {
-        isActive: true, name: 'Home', subMenus: [
+        isActive: false, name: 'Finance', subMenus: [
           { id: 'toggle-summary', name: 'Toggle Summary' },
           { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
           { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
           { id: NavBarMenusIds.UPLOAD_SCOT_TRX_FILE, name: 'Upload Scotiabank File' },
           { id: NavBarMenusIds.DEBT_MANAGER, name: 'Debt Manager' }
         ],
-        routingLink: '/'
+        routingLink: '/finance'
       },
       {
         isActive: false, name: 'Accounts', routingLink: '/accounts', subMenus: [

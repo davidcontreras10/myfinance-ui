@@ -11,9 +11,11 @@ import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 import { BankTransactionsComponent } from './main-view/bank-transactions/bank-transactions.component';
 import { DebtManagerComponent } from './debt-manager/debt-manager.component';
+import { MenuPageComponent } from './menu-page/menu-page.component';
 
 const routes: Routes = [
-  { path: '', component: MainViewComponent, canActivate: [AuthGuard] },
+  { path: '', component: MenuPageComponent, canActivate: [AuthGuard] },
+  { path: 'finance', component: MainViewComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard] },
   {

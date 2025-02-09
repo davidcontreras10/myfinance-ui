@@ -59,6 +59,7 @@ import { NewDebtRequestComponent } from './debt-manager/new-debt-request/new-deb
 import { ActionsComponent } from './debt-manager/submitted-debt-requests/actions/actions.component';
 import { ReceivedRequestsComponent } from './debt-manager/received-requests/received-requests.component';
 import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
+import { MenuPageComponent } from './menu-page/menu-page.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { DebtorActionsComponent } from './debt-manager/received-requests/actions
     NewDebtRequestComponent,
     ActionsComponent,
     ReceivedRequestsComponent,
-    DebtorActionsComponent
+    DebtorActionsComponent,
+    MenuPageComponent
   ],
   imports: [
     BrowserModule,
