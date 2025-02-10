@@ -1,39 +1,46 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <a href="/finance" class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/finance" class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('finance')">
                 <h1>Finance Page</h1>
-            </a>
+            </div>
         </div>
         <div class="col">
-            <a href="/debt-manager" class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/debt-manager" class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('debt-manager')">
                 <h1>Debts Manager</h1>
-            </a>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <a href="/scheduled-tasks" class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/scheduled-tasks"
+                class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('scheduled-tasks')">
                 <h1>Scheduled Tasks</h1>
-            </a>
+            </div>
         </div>
         <div class="col">
-            <a href="/bank-trx" class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/bank-trx" class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('bank-trx')">
                 <h1>Bank Transactions</h1>
-            </a>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <a href="/accounts" class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/accounts" class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('accounts')">
                 <h1>Accounts</h1>
-            </a>
+            </div>
         </div>
         <div class="col">
-            <a href="/transaction-types"
-                class="d-flex justify-content-center align-items-center page-menu btn btn-light">
+            <div href="/transaction-types"
+                class="d-flex justify-content-center align-items-center page-menu btn btn-light"
+                (click)="onMenuClick('transaction-types')">
                 <h1>Transaction Types</h1>
-            </a>
+            </div>
         </div>
     </div>
 
