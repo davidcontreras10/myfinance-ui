@@ -1,0 +1,27 @@
+<div class="container">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <li [ngbNavItem]="1">
+            <button ngbNavLink>Submitted Requests</button>
+            <ng-template ngbNavContent>
+                <app-submitted-debt-requests [debtRequests]="submittedDebtRequests"
+                    (statusChanged)="onCreditorDebtRequestStatusChanged($event)"></app-submitted-debt-requests>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+            <button ngbNavLink>Received Requests</button>
+            <ng-template ngbNavContent>
+                <app-received-requests [debtRequests]="receivedDebtRequests"
+                    (statusChanged)="onDebtorDebtRequestStatusChanged($event)"></app-received-requests>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+            <button ngbNavLink>New Request...</button>
+            <ng-template ngbNavContent>
+                <app-new-debt-request (cancelRequested)="onAddRequestCancellationRequested()"
+                    (debtRequestSubmitted)="onAddRequestSubmitted($event)"></app-new-debt-request>
+            </ng-template>
+        </li>
+    </ul>
+
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>
