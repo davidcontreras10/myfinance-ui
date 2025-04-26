@@ -70,6 +70,10 @@ button {
     background-color: lavenderblush;
 }
 
+.is-pending {
+    background: lavenderblush;
+}
+
 .debug-data {
     display: none;
 }

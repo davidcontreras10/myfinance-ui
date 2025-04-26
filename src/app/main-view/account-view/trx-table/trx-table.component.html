@@ -41,16 +41,16 @@
     <tbody>
         <tr *ngFor="let trx of getSpendViewModels()" [ngClass]="{'is-pending':trx.isPending}">
             <div class="debug-data">trxId: {{trx.spendId}}</div>
-            <td>
+            <td [ngClass]="{'is-pending':trx.isPending}">
                 <input type="checkbox" class="form-check-input" [(ngModel)]="trx.vmIsSelected"
                     (change)="toggleSelection(trx)" />
             </td>
-            <td>{{ trx.spendDate | date:"yyyy/MM/dd" }}</td>
-            <td>
+            <td [ngClass]="{'is-pending':trx.isPending}">{{ trx.spendDate | date:"yyyy/MM/dd" }}</td>
+            <td [ngClass]="{'is-pending':trx.isPending}">
                 <app-trx-amount [account]="acc" [spendViewModel]="trx"></app-trx-amount>
             </td>
-            <td>{{trx.spendTypeName}}</td>
-            <td>
+            <td [ngClass]="{'is-pending':trx.isPending}">{{trx.spendTypeName}}</td>
+            <td [ngClass]="{'is-pending':trx.isPending}">
                 <app-bs-icon (click)="onTrxEdit(trx)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen"
                         viewBox="0 0 16 16">
