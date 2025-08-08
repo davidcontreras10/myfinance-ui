@@ -4,7 +4,7 @@ import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/n
 import { AccountGroup, BankTrxReqRespPair } from './models';
 import { MainViewApiService } from '../services/main-view-api.service';
 import { MainViewModel } from './main-view-model';
-import { BankTrxItemReqResp, BankTrxReqResp, BankTrxSpendViewModel, DialogResultModel, GetFinanceReq, ItemModifiedRes, SelectableItem } from '../services/models';
+import { BankTrxItemReqResp, BankTrxReqResp, BankTrxSpendViewModel, DialogResultModel, FinancialEntityFile, GetFinanceReq, ItemModifiedRes, SelectableItem } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
@@ -107,7 +107,7 @@ export class MainViewComponent implements OnInit {
       const uploadedFile = this.selectedFile;
       this.selectedFile = null;
       this.fileInput.nativeElement.value = '';
-      this.router.navigate(['/bank-trx'], { state: { uploadedFile: uploadedFile } });
+      this.router.navigate(['/bank-trx'], { state: { uploadedFile: uploadedFile, financialEntityFile: FinancialEntityFile.Scotiabank } });
     }
   }
 

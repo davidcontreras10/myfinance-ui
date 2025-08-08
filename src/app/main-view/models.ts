@@ -193,3 +193,10 @@ export class BankTrxReqRespPair {
         return !this.isIgnored && this.current?.processData?.transactions?.length > 1;
     }
 }
+
+export interface AIClassifiedBankTrx {
+    id: string;
+    trxTypeId: number;
+    accountId: number;
+}
+

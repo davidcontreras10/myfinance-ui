@@ -375,6 +375,8 @@ export interface AccountsByCurrencyViewModel {
 export interface BankTrxReqResp {
   accountsPerCurrencies: AccountsByCurrencyViewModel[];
   bankTransactions: BankTrxItemReqResp[];
+  financialEntityFile: FinancialEntityFile;
+  financialEntityId: number | null;
 }
 
 export interface BankTrxItemReqResp {
@@ -467,4 +469,11 @@ export interface NewDebtRequest {
   eventDate: Date;
   eventName: string;
   eventDescription: string;
+}
+
+export enum FinancialEntityFile {
+  None = 0,
+  Scotiabank = 1,
+  Promerica = 2,
+  BacSanJose = 3
 }
