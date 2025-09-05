@@ -1,9 +1,9 @@
 import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
-import { AccountGroup, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
+import { AccountGroup, AIClassifiedBankTrx, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, ClientBankItemRequest, FileResponse, FinanceAccountRequest, FinanceAccountResponse, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 @Injectable({
@@ -18,6 +18,15 @@ export class MainViewApiService {
       periodsLimit: 12
     };
     return of(defPrefs);
+  }
+
+  classifyBankTrxs(ids: string[], financialEntityId: number): Observable<AIClassifiedBankTrx[]> {
+    const url = `${environment.baseApi}/api/BankTransactions/ai-classification`;
+    const body = {
+      bankTrxIds: ids,
+      financialEntityId: financialEntityId
+    };
+    return this.httpClient.post<AIClassifiedBankTrx[]>(url, body);
   }
 
   getTrxByDate(date: Date): Observable<BankTrxReqResp> {
@@ -63,10 +72,10 @@ export class MainViewApiService {
     return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params });
   }
 
-  uploadBankTrxFile(file: File): Observable<HttpEvent<BankTrxReqResp>> {
+  uploadBankTrxFile(file: File, financialEntityFile: FinancialEntityFile): Observable<HttpEvent<BankTrxReqResp>> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/UploadRequest`
+    const uploadUrl = `${environment.baseApi}/api/BankTransactionsFiles/${financialEntityFile}/UploadRequest`
     const req = new HttpRequest('POST', uploadUrl, formData, {
       headers: new HttpHeaders({
         'Accept': 'application/json'

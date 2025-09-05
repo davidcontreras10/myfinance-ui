@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, SelectableItem } from 'src/app/services/models';
-import { BankTrxReqRespPair } from '../models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
+import { AIClassifiedBankTrx, BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { Utils } from 'src/app/utils';
@@ -13,6 +13,8 @@ import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/htt
   styleUrls: ['./bank-transactions.component.css']
 })
 export class BankTransactionsComponent implements OnInit {
+
+  FinancialEntityFile = FinancialEntityFile;
 
   @ViewChild('fileInput', { static: true }) fileInput!: ElementRef;
   @Input() bankTransactions: BankTrxReqRespPair[];
@@ -26,6 +28,8 @@ export class BankTransactionsComponent implements OnInit {
   selectedTransaction: BankTrxReqRespPair | null = null;
   searchOptions: SelectableItem[] = this.getSearchOptions();
   searchCriteriaDateValue: string | null = null;
+  respFinancialEntityFile: FinancialEntityFile = FinancialEntityFile.None;
+  respFinancialEntityId: number | null = null;
 
   transactionTypes: SelectableItem[] = [];
 
@@ -42,8 +46,10 @@ export class BankTransactionsComponent implements OnInit {
     private mainViewApiService: MainViewApiService,
     private activatedRoute: ActivatedRoute) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state?.['uploadedFile']) {
+    if (navigation?.extras?.state?.['uploadedFile'] && navigation?.extras?.state?.['financialEntityFile']) {
       this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
+      this.respFinancialEntityFile = navigation?.extras?.state?.['financialEntityFile'];
+      console.log('File uploaded Financial Entity:', this.respFinancialEntityFile);
     }
   }
 
@@ -98,6 +104,52 @@ export class BankTransactionsComponent implements OnInit {
     this.searchCriteriaDateValue = null;
   }
 
+  get IAClassificationEnabled(): boolean {
+    if (this.respFinancialEntityFile && this.bankTransactions && this.bankTransactions.length > 0) {
+      if (this.bankTransactions.some(t => this.isBankTransactionsIAClassificationEnabled(t))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isBankTransactionsIAClassificationEnabled(bankTrx: BankTrxReqRespPair): boolean {
+    if (bankTrx.current.dbStatus === BankTransactionStatus.Inserted) {
+      if (!(bankTrx.current.singleTrxAccountId || bankTrx.current.singleTrxTypeId) &&
+        !(bankTrx.current.processData?.transactions && bankTrx.current.processData.transactions.length > 1)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  AIClassification(): void {
+    if (this.respFinancialEntityId) {
+      const toClassifyBankTrxs = this.bankTransactions.filter(t => this.isBankTransactionsIAClassificationEnabled(t));
+      if (toClassifyBankTrxs.length === 0) {
+        return;
+      }
+
+      const ids = toClassifyBankTrxs.map(t => t.original.fileTransaction.transactionId);
+      this.mainViewApiService.classifyBankTrxs(ids, this.respFinancialEntityId).subscribe({
+        next: (response) => {
+          this.handleAIClassificationResponse(response);
+        }
+      });
+    }
+  }
+
+  private handleAIClassificationResponse(response: AIClassifiedBankTrx[]): void {
+    console.log('AIClassification response:', response);
+    response.forEach(classifiedTrx => {
+      const trx = this.bankTransactions.find(t => t.original.fileTransaction.transactionId === classifiedTrx.id);
+      if (trx) {
+        trx.current.singleTrxTypeId = classifiedTrx.trxTypeId;
+        trx.current.singleTrxAccountId = classifiedTrx.accountId;
+      }
+    });
+  }
+
   onAccountChange($event: Event, bankTrxReqRespPair: BankTrxReqRespPair) {
     const strSeletedAccountId = bankTrxReqRespPair.current.singleTrxAccountId as any;
     const seletedAccountId = parseInt(strSeletedAccountId);
@@ -118,7 +170,7 @@ export class BankTransactionsComponent implements OnInit {
       this.transactionTypes = response;
     });
 
-    if (this.selectedFile) {
+    if (this.selectedFile && this.respFinancialEntityFile) {
       this.onUploadBankTrxFile();
     }
 
@@ -162,6 +214,8 @@ export class BankTransactionsComponent implements OnInit {
     this.bankTransactions = [];
     this.selectRow(null);
     this.router.navigate(['/bank-trx']);
+    this.respFinancialEntityFile = FinancialEntityFile.None;
+    this.respFinancialEntityId = null;
   }
 
   requestDelete() {
@@ -196,12 +250,19 @@ export class BankTransactionsComponent implements OnInit {
     }
   }
 
+  bankOnUploadBankTrxFile(financialEntityFile: FinancialEntityFile): void {
+    this.respFinancialEntityFile = financialEntityFile;
+    this.fileInput.nativeElement.click();
+  }
+
   onUploadBankTrxFile(): void {
-    if (this.selectedFile) {
+    if (this.selectedFile && this.respFinancialEntityFile) {
       const uploadedFile = this.selectedFile;
       this.selectedFile = null;
       this.fileInput.nativeElement.value = '';
-      this.mainViewApiService.uploadBankTrxFile(uploadedFile).subscribe({
+      const financialEntityFile = this.respFinancialEntityFile;
+      this.respFinancialEntityFile = FinancialEntityFile.None; // Reset after upload
+      this.mainViewApiService.uploadBankTrxFile(uploadedFile, financialEntityFile).subscribe({
         next: (event) => {
           this.processHttpBankTrxReqResp(event);
         },
@@ -357,8 +418,9 @@ export class BankTransactionsComponent implements OnInit {
 
   private transformBankTrxUploadResponse(responseBody: BankTrxReqResp): BankTrxReqRespPair[] | null {
     if (responseBody?.bankTransactions && responseBody.bankTransactions.length > 0) {
+      this.respFinancialEntityFile = responseBody.financialEntityFile;
+      this.respFinancialEntityId = responseBody.financialEntityId;
       const pairs = responseBody.bankTransactions.map(trx => {
-        //BankTrxItemReqResp
         if (trx.processData?.transactions?.length === 1) {
           trx.singleTrxAccountId = trx.processData.transactions[0].accountId;
           trx.singleTrxTypeId = trx.processData.transactions[0].spendTypeId;
@@ -366,7 +428,7 @@ export class BankTransactionsComponent implements OnInit {
         }
         else {
           trx.singleTrxAccountId = null;
-          trx.singleTrxTypeId = 1;
+          trx.singleTrxTypeId = null;
           trx.singleTrxIsPending = false;
         }
         const copy = Utils.deepClone(trx);
