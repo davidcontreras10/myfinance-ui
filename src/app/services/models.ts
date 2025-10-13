@@ -457,6 +457,10 @@ export interface DebtRequestVm {
   isSelected: boolean;
 }
 
+export interface DebtRequestAppTrx {
+
+}
+
 export interface AddDebtRequestVm {
   supportedCurrencies: Currency[];
   supportedUsers: AppUser[];

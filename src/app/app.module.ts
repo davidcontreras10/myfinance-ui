@@ -60,6 +60,7 @@ import { ActionsComponent } from './debt-manager/submitted-debt-requests/actions
 import { ReceivedRequestsComponent } from './debt-manager/received-requests/received-requests.component';
 import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
 import { MenuPageComponent } from './menu-page/menu-page.component';
+import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-request-trxs.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +111,8 @@ import { MenuPageComponent } from './menu-page/menu-page.component';
     ActionsComponent,
     ReceivedRequestsComponent,
     DebtorActionsComponent,
-    MenuPageComponent
+    MenuPageComponent,
+    DebtRequestTrxsComponent
   ],
   imports: [
     BrowserModule,

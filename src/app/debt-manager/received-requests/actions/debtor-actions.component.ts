@@ -13,6 +13,9 @@ export class DebtorActionsComponent {
   @Output()
   statusChanged: EventEmitter<{ debtRequest: DebtRequestVm, status: number }> = new EventEmitter();
 
+  @Output()
+  transactionsClicked: EventEmitter<DebtRequestVm> = new EventEmitter();
+
 
   get rejectBtnEnabled(): boolean {
     if (this.debtRequest?.creditor === null || this.debtRequest?.debtor === null)
@@ -45,5 +48,11 @@ export class DebtorActionsComponent {
 
   onResetBtnClick() {
     this.statusChanged.emit({ debtRequest: this.debtRequest!, status: DebtorRequestStatus.Pending });
+  }
+
+  onTransactionsBtnClick() {
+    if (this.debtRequest) {
+      this.transactionsClicked.emit(this.debtRequest);
+    }
   }
 }

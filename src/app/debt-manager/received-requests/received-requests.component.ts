@@ -9,6 +9,9 @@ import { DebtorRequestStatus, DebtRequestVm } from 'src/app/services/models';
 export class ReceivedRequestsComponent {
 
   @Output()
+  transactionsClicked: EventEmitter<DebtRequestVm> = new EventEmitter();
+
+  @Output()
   statusChanged: EventEmitter<{ debtRequest: DebtRequestVm, status: number }> = new EventEmitter();
 
   @Input()

@@ -67,11 +67,6 @@ export class MainViewApiService {
     return this.httpClient.post<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/ProcessRequest`, requests);
   }
 
-  getUserTransactionTypes(): Observable<SelectableItem[]> {
-    const params = new HttpParams().set('includeAll', false);
-    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params });
-  }
-
   uploadBankTrxFile(file: File, financialEntityFile: FinancialEntityFile): Observable<HttpEvent<BankTrxReqResp>> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DebtManagerApiService } from '../services/debt-manager-api.service';
 import { DebtRequestVm } from '../services/models';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DebtRequestTrxsComponent } from './debt-request-trxs/debt-request-trxs.component';
 
 // possible states for the active tab
 
@@ -22,7 +24,7 @@ export class DebtManagerComponent implements OnInit {
 
   private _debtRequests: DebtRequestVm[] = [];
 
-  constructor(private service: DebtManagerApiService, private route: ActivatedRoute) { }
+  constructor(private service: DebtManagerApiService, private route: ActivatedRoute, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -61,6 +63,11 @@ export class DebtManagerComponent implements OnInit {
     });
 
     this.updateDebtRequest(debtRequest);
+  }
+
+  onTransactionsClicked(debtRequest: DebtRequestVm) {
+    const modalRef = this.modalService.open(DebtRequestTrxsComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
+    modalRef.componentInstance.debtRequestVm = debtRequest;
   }
 
   onDebtorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {

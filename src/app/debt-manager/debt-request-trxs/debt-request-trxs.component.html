@@ -1,0 +1,85 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">{{ modalTitle }}</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="debtRequestVm && transactions">
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <span>Transactions:</span>
+                        </div>
+                        <div class="col-md-2 text-end mb-3">
+                            <button type="button" class="btn btn-outline-success" (click)="addTransaction()">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngFor="let trx of transactions; let i = index" class="card mb-3">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{{ debtRequestVm.currency.symbol }}</span>
+                                        <input [(ngModel)]="trx.amount" required name="amount-{{i}}" type="number"
+                                            id="add-trx-amount-{{i}}" class="basic-input form-control"
+                                            placeholder="Amount"
+                                            pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="input-group">
+                                        <label class="input-group-text" for="account-{{i}}">Accounts</label>
+                                        <select [(ngModel)]="trx.accountId" required name="account-{{i}}"
+                                            id="account-{{i}}" class="form-select">
+                                            <option *ngFor="let account of accounts" [value]="account.id">{{
+                                                account.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select id="add-trx-type-{{i}}" [(ngModel)]="trx.trxTypeId"
+                                        class="basic-input form-control" name="trxTypeId-{{i}}">
+                                        <option *ngFor="let trxType of trxTypes" [value]="trxType.id">
+                                            {{trxType.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <input [(ngModel)]="trx.description" name="description-{{i}}" type="text"
+                                        id="description-{{i}}" class="basic-input form-control"
+                                        placeholder="Description" />
+                                </div>
+                                <div class="col-md-1 d-flex align-items-center justify-content-center py-1 px-0">
+                                    <div [ngStyle]="{
+                                        'width': '60%',
+                                        'height': '90%',
+                                        'border-radius': '5px',
+                                        'background-color': debtRequestVm.createdByMe ? '#94c193' : '#c19393'
+                                        }" [title]="debtRequestVm.createdByMe ? 'Income' : 'Expense'"></div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger" (click)="removeTransaction(i)"
+                                        [disabled]="transactions.length <= 1">
+                                        &times;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">Submit</button>
+    </div>
+</form>

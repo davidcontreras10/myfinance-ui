@@ -11,7 +11,8 @@
             <button ngbNavLink>Received Requests</button>
             <ng-template ngbNavContent>
                 <app-received-requests [debtRequests]="receivedDebtRequests"
-                    (statusChanged)="onDebtorDebtRequestStatusChanged($event)"></app-received-requests>
+                    (statusChanged)="onDebtorDebtRequestStatusChanged($event)"
+                    (transactionsClicked)="onTransactionsClicked($event)"></app-received-requests>
             </ng-template>
         </li>
         <li [ngbNavItem]="3">
