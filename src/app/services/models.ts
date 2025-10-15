@@ -457,10 +457,6 @@ export interface DebtRequestVm {
   isSelected: boolean;
 }
 
-export interface DebtRequestAppTrx {
-
-}
-
 export interface AddDebtRequestVm {
   supportedCurrencies: Currency[];
   supportedUsers: AppUser[];
@@ -480,4 +476,12 @@ export enum FinancialEntityFile {
   Scotiabank = 1,
   Promerica = 2,
   BacSanJose = 3
+}
+
+
+export interface DebtRequestAppTrx {
+  amount: number;
+  accountId: number | null;
+  description: string;
+  trxTypeId: number;
 }

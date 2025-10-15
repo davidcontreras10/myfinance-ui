@@ -8,12 +8,18 @@
         <div *ngIf="debtRequestVm && transactions">
             <div class="row">
                 <div class="col">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <span>Transactions:</span>
+                    <div class="row mb-3">
+                        <div class="col-md-9">
+                            <span style="font-size: 1.3em;">Transactions:</span>
                         </div>
-                        <div class="col-md-2 text-end mb-3">
-                            <button type="button" class="btn btn-outline-success" (click)="addTransaction()">
+                        <div class="col-md-3 text-end">
+                            <button *ngIf="hasTrxCreated" type="button" class="btn btn-outline-danger"
+                                (click)="resetTransactions()">
+                                Remove All
+                            </button>
+                            <span class="mx-2"></span>
+                            <button type="button" class="btn btn-outline-success" (click)="addTransaction()"
+                                [disabled]="!hasTrxCreated">
                                 +
                             </button>
                         </div>
@@ -27,14 +33,15 @@
                                         <input [(ngModel)]="trx.amount" required name="amount-{{i}}" type="number"
                                             id="add-trx-amount-{{i}}" class="basic-input form-control"
                                             placeholder="Amount"
-                                            pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
+                                            pattern="^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$"
+                                            [disabled]="hasTrxCreated" />
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="input-group">
                                         <label class="input-group-text" for="account-{{i}}">Accounts</label>
                                         <select [(ngModel)]="trx.accountId" required name="account-{{i}}"
-                                            id="account-{{i}}" class="form-select">
+                                            id="account-{{i}}" class="form-select" [disabled]="hasTrxCreated">
                                             <option *ngFor="let account of accounts" [value]="account.id">{{
                                                 account.name }}
                                             </option>
@@ -43,7 +50,8 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <select id="add-trx-type-{{i}}" [(ngModel)]="trx.trxTypeId"
-                                        class="basic-input form-control" name="trxTypeId-{{i}}">
+                                        class="basic-input form-control" name="trxTypeId-{{i}}"
+                                        [disabled]="hasTrxCreated" required>
                                         <option *ngFor="let trxType of trxTypes" [value]="trxType.id">
                                             {{trxType.name}}
                                         </option>
@@ -54,7 +62,7 @@
                                 <div class="col-md-10">
                                     <input [(ngModel)]="trx.description" name="description-{{i}}" type="text"
                                         id="description-{{i}}" class="basic-input form-control"
-                                        placeholder="Description" />
+                                        placeholder="Description" [disabled]="hasTrxCreated" />
                                 </div>
                                 <div class="col-md-1 d-flex align-items-center justify-content-center py-1 px-0">
                                     <div [ngStyle]="{
@@ -66,11 +74,24 @@
                                 </div>
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-outline-danger" (click)="removeTransaction(i)"
-                                        [disabled]="transactions.length <= 1">
+                                        [disabled]="transactions.length <= 1 || hasTrxCreated">
                                         &times;
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!hasTrxCreated" class="row">
+                        <div class="col">
+                            <span class="summary-trx-amout"
+                                [ngClass]="areTrxsAmountsValid ? 'total-trx-amount-good' : 'total-trx-amount-bad'">
+                                {{totalTrxsAmount | currencyAmount:debtRequestVm.currency.symbol}}
+                            </span>/
+                            <span class="summary-trx-amout"
+                                [ngClass]="areTrxsAmountsValid ? 'bank-trx-amount-good' : 'bank-trx-amount-bad'">
+                                {{debtRequestVm.amount |
+                                currencyAmount:debtRequestVm.currency.symbol}}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -80,6 +101,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">Submit</button>
+        <button type="submit" class="btn btn-outline-dark"
+            [disabled]="f.invalid || hasTrxCreated || !areTrxsAmountsValid">Submit</button>
     </div>
 </form>

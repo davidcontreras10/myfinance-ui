@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddDebtRequestVm, DebtRequestVm, NewDebtRequest, SelectableItem } from './models';
+import { AddDebtRequestVm, DebtRequestAppTrx, DebtRequestVm, NewDebtRequest, SelectableItem } from './models';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -10,6 +10,19 @@ import { environment } from 'src/environments/environment';
 export class DebtManagerApiService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public deleteAllDebtRequestAppTrxs(debtRequestId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/app-trxs`);
+  }
+
+  public getDebtRequestAppTrxs(debtRequestId: number): Observable<DebtRequestAppTrx[]> {
+    return this.httpClient.get<DebtRequestAppTrx[]>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/app-trxs`);
+  }
+
+  public addTransactionsToDebtRequest(debtRequestId: number, transactions: DebtRequestAppTrx[]): Observable<void> {
+    const url = `${environment.baseApi}/api/debtRequests/${debtRequestId}/app-trxs`;
+    return this.httpClient.post<void>(url, transactions);
+  }
 
   public getAccountsForAddingTrx(currencyId: number): Observable<SelectableItem[]> {
     const url = `${environment.baseApi}/api/accounts/currencies/addition?sourceCurrencyIds=${currencyId}`;

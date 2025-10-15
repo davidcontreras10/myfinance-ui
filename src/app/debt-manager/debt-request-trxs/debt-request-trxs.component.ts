@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DebtManagerApiService } from 'src/app/services/debt-manager-api.service';
-import { DebtRequestVm, SelectableItem } from 'src/app/services/models';
+import { DebtRequestAppTrx, DebtRequestVm, SelectableItem } from 'src/app/services/models';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
 @Component({
@@ -12,12 +12,12 @@ import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service
 })
 export class DebtRequestTrxsComponent implements OnInit {
 
-
   @Input()
   debtRequestVm: DebtRequestVm;
   accounts: SelectableItem[] = [];
   trxTypes: SelectableItem[] = [];
-  transactions: { amount: number, accountId: number | null, description: string, trxTypeId: number }[] = [];
+  transactions: DebtRequestAppTrx[] = [];
+  hasTrxCreated = false;
 
   constructor(public activeModal: NgbActiveModal,
     private debtManagerApiService: DebtManagerApiService,
@@ -25,6 +25,17 @@ export class DebtRequestTrxsComponent implements OnInit {
   ) { }
 
   submit(_t5: NgForm) {
+    if (this.hasTrxCreated || !this.areTrxsAmountsValid) {
+      return;
+    }
+
+    const model = this.transactions.filter(t => t.accountId && t.accountId > 0 && t.amount > 0);
+    if (model.length === 0) {
+      return;
+    }
+    this.debtManagerApiService.addTransactionsToDebtRequest(this.debtRequestVm.id, model).subscribe(() => {
+      this.activeModal.close('saved');
+    });
   }
 
   ngOnInit(): void {
@@ -38,6 +49,16 @@ export class DebtRequestTrxsComponent implements OnInit {
     this.loadTransactions();
   }
 
+  resetTransactions() {
+    if (!confirm('Are you sure you want to reset the transactions? This will remove all transactions from the accounts.')) {
+      return;
+    }
+
+    this.debtManagerApiService.deleteAllDebtRequestAppTrxs(this.debtRequestVm.id).subscribe(() => {
+      this.loadTransactions();
+    });
+  }
+
   addTransaction() {
     this.transactions.push(this.createEmptyTransaction());
   }
@@ -45,14 +66,31 @@ export class DebtRequestTrxsComponent implements OnInit {
     this.transactions.splice(index, 1);
   }
 
+  get areTrxsAmountsValid() {
+    const totalTrxsAmount = this.transactions.map(t => t.amount).reduce((a, b) => a + b, 0);
+    return totalTrxsAmount === this.debtRequestVm.amount;
+  }
+
   get modalTitle() {
     return this.debtRequestVm.eventName?.trim().substring(0, 50) || 'Event transactions';
   }
 
+  get totalTrxsAmount() {
+    return this.transactions.map(t => t.amount).reduce((a, b) => a + b, 0);
+  }
+
   private loadTransactions() {
-    if (this.transactions.length === 0) {
-      this.transactions.push(this.createEmptyTransaction());
-    }
+    this.transactions = [];
+    this.hasTrxCreated = false;
+    this.debtManagerApiService.getDebtRequestAppTrxs(this.debtRequestVm.id).subscribe(data => {
+      this.transactions = data;
+      if (this.transactions.length === 0) {
+        this.transactions.push(this.createEmptyTransaction());
+      }
+      else {
+        this.hasTrxCreated = true;
+      }
+    });
   }
 
   private createEmptyTransaction() {
