@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbDropdownModule, NgbModule, NgbNavModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbNavModule, NgbToastModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -59,6 +59,7 @@ import { NewDebtRequestComponent } from './debt-manager/new-debt-request/new-deb
 import { ActionsComponent } from './debt-manager/submitted-debt-requests/actions/actions.component';
 import { ReceivedRequestsComponent } from './debt-manager/received-requests/received-requests.component';
 import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
+import { ToastContainerComponent } from './toast-container/toast-container.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { DebtorActionsComponent } from './debt-manager/received-requests/actions
     NewDebtRequestComponent,
     ActionsComponent,
     ReceivedRequestsComponent,
-    DebtorActionsComponent
+    DebtorActionsComponent,
+    ToastContainerComponent
   ],
   imports: [
     BrowserModule,
@@ -122,6 +124,7 @@ import { DebtorActionsComponent } from './debt-manager/received-requests/actions
     NoopAnimationsModule,
     ReactiveFormsModule,
     NgbTooltipModule,
+    NgbToastModule,
     DragDropModule
   ],
   providers: [

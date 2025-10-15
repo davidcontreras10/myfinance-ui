@@ -1,0 +1,14 @@
+<div class="toast-wrapper position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true">
+  <ngb-toast
+    *ngFor="let toast of toasterService.toasts"
+    [autohide]="toast.autohide"
+    [delay]="toast.delay"
+    [class]="toast.classname"
+    (hidden)="toasterService.remove(toast)"
+  >
+    <ng-template ngbToastHeader *ngIf="toast.header">
+      {{ toast.header }}
+    </ng-template>
+    {{ toast.message }}
+  </ngb-toast>
+</div>
