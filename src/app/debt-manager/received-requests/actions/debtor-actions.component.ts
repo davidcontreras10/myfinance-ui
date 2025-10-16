@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DebtorRequestStatus, DebtRequestVm } from 'src/app/services/models';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-debtor-actions',
@@ -15,6 +16,8 @@ export class DebtorActionsComponent {
 
   @Output()
   transactionsClicked: EventEmitter<DebtRequestVm> = new EventEmitter();
+
+  constructor(private toasterService: ToasterService) { }
 
 
   get rejectBtnEnabled(): boolean {

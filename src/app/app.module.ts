@@ -61,7 +61,6 @@ import { ReceivedRequestsComponent } from './debt-manager/received-requests/rece
 import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
 import { ToastContainerComponent } from './toast-container/toast-container.component';
 
-import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
 import { MenuPageComponent } from './menu-page/menu-page.component';
 import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-request-trxs.component';
 
@@ -115,13 +114,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     ReceivedRequestsComponent,
     DebtorActionsComponent,
     MenuPageComponent,
-    DebtRequestTrxsComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    DebtorActionsComponent,
+    DebtRequestTrxsComponent,
     ToastContainerComponent
   ],
   imports: [
