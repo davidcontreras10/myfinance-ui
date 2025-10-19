@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DebtManagerApiService } from 'src/app/services/debt-manager-api.service';
 import { DebtRequestAppTrx, DebtRequestVm, SelectableItem } from 'src/app/services/models';
+import { ToasterService } from 'src/app/services/toaster.service';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
 @Component({
@@ -21,7 +22,8 @@ export class DebtRequestTrxsComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal,
     private debtManagerApiService: DebtManagerApiService,
-    private trxTypeService: TrxTypeServiceService
+    private trxTypeService: TrxTypeServiceService,
+    private toasterService: ToasterService
   ) { }
 
   submit(_t5: NgForm) {
@@ -33,7 +35,9 @@ export class DebtRequestTrxsComponent implements OnInit {
     if (model.length === 0) {
       return;
     }
-    this.debtManagerApiService.addTransactionsToDebtRequest(this.debtRequestVm.id, model).subscribe(() => {
+    this.debtManagerApiService.addTransactionsToDebtRequest(this.debtRequestVm.id, model).subscribe((data) => {
+      const accountsModifiedCount = data.length;
+      this.toasterService.success(`${accountsModifiedCount} account/s updated`);
       this.activeModal.close('saved');
     });
   }
@@ -56,10 +60,11 @@ export class DebtRequestTrxsComponent implements OnInit {
 
     this.debtManagerApiService.deleteAllDebtRequestAppTrxs(this.debtRequestVm.id).subscribe(() => {
       this.loadTransactions();
+      this.toasterService.success('Transactions have been removed successfully.');
     });
   }
 
-  addTransaction() {
+  addEmptyTransaction() {
     this.transactions.push(this.createEmptyTransaction());
   }
   removeTransaction(index: number) {

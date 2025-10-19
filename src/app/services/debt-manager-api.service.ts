@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddDebtRequestVm, DebtRequestAppTrx, DebtRequestVm, NewDebtRequest, SelectableItem } from './models';
+import { AddDebtRequestVm, DebtRequestAppTrx, DebtRequestVm, ItemModifiedRes, NewDebtRequest, SelectableItem } from './models';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -19,9 +19,9 @@ export class DebtManagerApiService {
     return this.httpClient.get<DebtRequestAppTrx[]>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/app-trxs`);
   }
 
-  public addTransactionsToDebtRequest(debtRequestId: number, transactions: DebtRequestAppTrx[]): Observable<void> {
+  public addTransactionsToDebtRequest(debtRequestId: number, transactions: DebtRequestAppTrx[]): Observable<ItemModifiedRes[]> {
     const url = `${environment.baseApi}/api/debtRequests/${debtRequestId}/app-trxs`;
-    return this.httpClient.post<void>(url, transactions);
+    return this.httpClient.post<ItemModifiedRes[]>(url, transactions);
   }
 
   public getAccountsForAddingTrx(currencyId: number): Observable<SelectableItem[]> {
