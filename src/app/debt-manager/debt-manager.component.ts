@@ -65,9 +65,10 @@ export class DebtManagerComponent implements OnInit {
     this.updateDebtRequest(debtRequest);
   }
 
-  onTransactionsClicked(debtRequest: DebtRequestVm) {
+  onTransactionsClicked(debtRequest: DebtRequestVm, fromSubmitted: boolean) {
     const modalRef = this.modalService.open(DebtRequestTrxsComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
     modalRef.componentInstance.debtRequestVm = debtRequest;
+    modalRef.componentInstance.fromSubmitted = fromSubmitted;
   }
 
   onDebtorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {

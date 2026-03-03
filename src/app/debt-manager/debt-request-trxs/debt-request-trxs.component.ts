@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DebtManagerApiService } from 'src/app/services/debt-manager-api.service';
-import { DebtRequestAppTrx, DebtRequestVm, SelectableItem } from 'src/app/services/models';
+import { CreditorRequestStatus, DebtorRequestStatus, DebtRequestAppTrx, DebtRequestVm, SelectableItem } from 'src/app/services/models';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
@@ -19,6 +19,7 @@ export class DebtRequestTrxsComponent implements OnInit {
   trxTypes: SelectableItem[] = [];
   transactions: DebtRequestAppTrx[] = [];
   hasTrxCreated = false;
+  fromSubmitted = false;
 
   constructor(public activeModal: NgbActiveModal,
     private debtManagerApiService: DebtManagerApiService,
@@ -71,6 +72,10 @@ export class DebtRequestTrxsComponent implements OnInit {
     this.transactions.splice(index, 1);
   }
 
+  get canResetTrxs() {
+    return this.hasTrxCreated && this.isPendingStatus();
+  }
+
   get areTrxsAmountsValid() {
     const totalTrxsAmount = this.transactions.map(t => t.amount).reduce((a, b) => a + b, 0);
     return totalTrxsAmount === this.debtRequestVm.amount;
@@ -82,6 +87,14 @@ export class DebtRequestTrxsComponent implements OnInit {
 
   get totalTrxsAmount() {
     return this.transactions.map(t => t.amount).reduce((a, b) => a + b, 0);
+  }
+
+  private isPendingStatus(): boolean {
+    if (this.fromSubmitted) {
+      return this.debtRequestVm.creditor.status === CreditorRequestStatus.Pending;
+    } else {
+      return this.debtRequestVm.debtor.status === DebtorRequestStatus.Pending;
+    }
   }
 
   private loadTransactions() {

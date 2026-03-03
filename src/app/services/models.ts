@@ -455,6 +455,7 @@ export interface DebtRequestVm {
   debtor: DebtMngrUser;
   createdByMe: boolean;
   isSelected: boolean;
+  trxCount: number;
 }
 
 export interface AddDebtRequestVm {

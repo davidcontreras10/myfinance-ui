@@ -33,11 +33,11 @@ export class DebtManagerApiService {
   }
 
   public updateCreditorStatus(debtRequestId: number, status: number): Observable<DebtRequestVm> {
-    return this.httpClient.put<DebtRequestVm>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/creditor/status`, { status });
+    return this.httpClient.put<DebtRequestVm>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/creditor/status`, { status, dateTime: new Date() });
   }
 
   public updateDebtorStatus(debtRequestId: number, status: number): Observable<DebtRequestVm> {
-    return this.httpClient.put<DebtRequestVm>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/debtor/status`, { status });
+    return this.httpClient.put<DebtRequestVm>(`${environment.baseApi}/api/debtRequests/${debtRequestId}/debtor/status`, { status, dateTime: new Date() });
   }
 
   public getDebtsRequests(): Observable<DebtRequestVm[]> {
