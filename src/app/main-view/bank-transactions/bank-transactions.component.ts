@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { Utils } from 'src/app/utils';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
+import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
 @Component({
   selector: 'app-bank-transactions',
@@ -44,7 +45,9 @@ export class BankTransactionsComponent implements OnInit {
 
   constructor(private router: Router,
     private mainViewApiService: MainViewApiService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private trxTypeService: TrxTypeServiceService
+  ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state?.['uploadedFile'] && navigation?.extras?.state?.['financialEntityFile']) {
       this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
@@ -166,7 +169,7 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mainViewApiService.getUserTransactionTypes().subscribe(response => {
+    this.trxTypeService.getUserTransactionTypes().subscribe(response => {
       this.transactionTypes = response;
     });
 

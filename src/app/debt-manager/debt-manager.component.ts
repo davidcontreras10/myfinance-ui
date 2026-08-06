@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DebtManagerApiService } from '../services/debt-manager-api.service';
-import { DebtRequestVm } from '../services/models';
+import { DebtRequestVm, ItemModifiedRes } from '../services/models';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DebtRequestTrxsComponent } from './debt-request-trxs/debt-request-trxs.component';
+import { MainViewModel } from '../main-view/main-view-model';
+import { ToasterService } from '../services/toaster.service';
 
 // possible states for the active tab
 
@@ -22,7 +26,13 @@ export class DebtManagerComponent implements OnInit {
 
   private _debtRequests: DebtRequestVm[] = [];
 
-  constructor(private service: DebtManagerApiService, private route: ActivatedRoute) { }
+  constructor(
+    private service: DebtManagerApiService,
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    private mainViewModel: MainViewModel,
+    private toasterService: ToasterService
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -58,17 +68,33 @@ export class DebtManagerComponent implements OnInit {
   onCreditorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {
     this.service.updateCreditorStatus(debtRequest.id, status).subscribe(data => {
       this.updateDebtRequest(data);
+      this.notifyModifiedAccounts(data);
     });
+  }
 
-    this.updateDebtRequest(debtRequest);
+  onTransactionsClicked(debtRequest: DebtRequestVm, fromSubmitted: boolean) {
+    const modalRef = this.modalService.open(DebtRequestTrxsComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
+    modalRef.componentInstance.debtRequestVm = debtRequest;
+    modalRef.componentInstance.fromSubmitted = fromSubmitted;
+    modalRef.closed.subscribe((modifiedAccounts: ItemModifiedRes[]) => {
+      if (Array.isArray(modifiedAccounts) && modifiedAccounts.length) {
+        this.mainViewModel.notifyAccountsModified(modifiedAccounts);
+      }
+    });
   }
 
   onDebtorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {
     this.service.updateDebtorStatus(debtRequest.id, status).subscribe(data => {
       this.updateDebtRequest(data);
+      this.notifyModifiedAccounts(data);
     });
+  }
 
-    this.updateDebtRequest(debtRequest);
+  private notifyModifiedAccounts(debtRequest: DebtRequestVm) {
+    if (debtRequest.modifiedTrxs?.length) {
+      this.mainViewModel.notifyAccountsModified(debtRequest.modifiedTrxs);
+      this.toasterService.success(`${debtRequest.modifiedTrxs.length} account/s updated`);
+    }
   }
 
   updateDebtRequest(debtRequest: DebtRequestVm) {

@@ -4,14 +4,16 @@
             <button ngbNavLink>Submitted Requests</button>
             <ng-template ngbNavContent>
                 <app-submitted-debt-requests [debtRequests]="submittedDebtRequests"
-                    (statusChanged)="onCreditorDebtRequestStatusChanged($event)"></app-submitted-debt-requests>
+                    (statusChanged)="onCreditorDebtRequestStatusChanged($event)"
+                    (transactionsClicked)="onTransactionsClicked($event.debtRequest, $event.fromSubmitted)"></app-submitted-debt-requests>
             </ng-template>
         </li>
         <li [ngbNavItem]="2">
             <button ngbNavLink>Received Requests</button>
             <ng-template ngbNavContent>
                 <app-received-requests [debtRequests]="receivedDebtRequests"
-                    (statusChanged)="onDebtorDebtRequestStatusChanged($event)"></app-received-requests>
+                    (statusChanged)="onDebtorDebtRequestStatusChanged($event)"
+                    (transactionsClicked)="onTransactionsClicked($event.debtRequest, $event.fromSubmitted)"></app-received-requests>
             </ng-template>
         </li>
         <li [ngbNavItem]="3">

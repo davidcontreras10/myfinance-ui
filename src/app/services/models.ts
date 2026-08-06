@@ -443,6 +443,10 @@ export const CreditorRequestStatus = {
   Archived: 3
 } as const;
 
+export interface DebtRequestModifiedTrx extends ItemModifiedRes {
+  spendId: number;
+}
+
 export interface DebtRequestVm {
   id: number;
   eventName: string;
@@ -455,6 +459,8 @@ export interface DebtRequestVm {
   debtor: DebtMngrUser;
   createdByMe: boolean;
   isSelected: boolean;
+  trxCount: number;
+  modifiedTrxs?: DebtRequestModifiedTrx[];
 }
 
 export interface AddDebtRequestVm {
@@ -476,4 +482,12 @@ export enum FinancialEntityFile {
   Scotiabank = 1,
   Promerica = 2,
   BacSanJose = 3
+}
+
+
+export interface DebtRequestAppTrx {
+  amount: number;
+  accountId: number | null;
+  description: string;
+  trxTypeId: number;
 }

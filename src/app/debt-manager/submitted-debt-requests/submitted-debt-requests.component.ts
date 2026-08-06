@@ -11,6 +11,9 @@ export class SubmittedDebtRequestsComponent {
   @Output()
   statusChanged: EventEmitter<{ debtRequest: DebtRequestVm, status: number }> = new EventEmitter();
 
+  @Output()
+  transactionsClicked: EventEmitter<{ debtRequest: DebtRequestVm, fromSubmitted: boolean }> = new EventEmitter();
+
   @Input()
   debtRequests: DebtRequestVm[] = [];
   isAllSelected: boolean = false;

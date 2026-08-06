@@ -50,7 +50,8 @@
                     <td>{{getStatusText(debtReq.creditor.status)}}</td>
                     <td>
                         <app-creditor-actions [debtRequest]="debtReq"
-                            (statusChanged)="onDebtRequestStatusChanged($event)"></app-creditor-actions>
+                            (statusChanged)="onDebtRequestStatusChanged($event)"
+                            (transactionsClicked)="transactionsClicked.emit($event)"></app-creditor-actions>
                     </td>
                 </tr>
             </tbody>
