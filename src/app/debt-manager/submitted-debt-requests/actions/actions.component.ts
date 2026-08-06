@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CreditorRequestStatus, DebtRequestVm } from 'src/app/services/models';
+import { CreditorRequestStatus, DebtorRequestStatus, DebtRequestVm } from 'src/app/services/models';
 
 @Component({
   selector: 'app-creditor-actions',
@@ -23,7 +23,7 @@ export class ActionsComponent {
     if (this.debtRequest?.creditor.status !== CreditorRequestStatus.Pending)
       return false;
 
-    if (this.debtRequest?.debtor.status === CreditorRequestStatus.Paid)
+    if (this.debtRequest?.debtor.status === DebtorRequestStatus.Paid)
       return false;
 
     return true;
@@ -53,7 +53,7 @@ export class ActionsComponent {
     if (this.debtRequest?.creditor === null || this.debtRequest?.debtor === null)
       return false;
 
-    return (this.debtRequest?.debtor.status === CreditorRequestStatus.Pending) || ((this.debtRequest?.trxCount ?? 0) > 0);
+    return (this.debtRequest?.debtor.status === DebtorRequestStatus.Pending) || ((this.debtRequest?.trxCount ?? 0) > 0);
   }
 
   onArchiveBtnClick() {
