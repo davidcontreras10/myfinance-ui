@@ -38,8 +38,9 @@ export class DebtRequestTrxsComponent implements OnInit {
     }
     this.debtManagerApiService.addTransactionsToDebtRequest(this.debtRequestVm.id, model).subscribe((data) => {
       const accountsModifiedCount = data.length;
+      this.debtRequestVm.trxCount = model.length;
       this.toasterService.success(`${accountsModifiedCount} account/s updated`);
-      this.activeModal.close('saved');
+      this.activeModal.close(data);
     });
   }
 
@@ -60,6 +61,7 @@ export class DebtRequestTrxsComponent implements OnInit {
     }
 
     this.debtManagerApiService.deleteAllDebtRequestAppTrxs(this.debtRequestVm.id).subscribe(() => {
+      this.debtRequestVm.trxCount = 0;
       this.loadTransactions();
       this.toasterService.success('Transactions have been removed successfully.');
     });

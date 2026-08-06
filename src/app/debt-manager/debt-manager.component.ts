@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DebtManagerApiService } from '../services/debt-manager-api.service';
-import { DebtRequestVm } from '../services/models';
+import { DebtRequestVm, ItemModifiedRes } from '../services/models';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DebtRequestTrxsComponent } from './debt-request-trxs/debt-request-trxs.component';
@@ -78,6 +78,11 @@ export class DebtManagerComponent implements OnInit {
     const modalRef = this.modalService.open(DebtRequestTrxsComponent, { backdrop: 'static', keyboard: false, size: 'lg' });
     modalRef.componentInstance.debtRequestVm = debtRequest;
     modalRef.componentInstance.fromSubmitted = fromSubmitted;
+    modalRef.closed.subscribe((modifiedAccounts: ItemModifiedRes[]) => {
+      if (Array.isArray(modifiedAccounts) && modifiedAccounts.length) {
+        this.mainViewModel.notifyAccountsModified(modifiedAccounts);
+      }
+    });
   }
 
   onDebtorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {
