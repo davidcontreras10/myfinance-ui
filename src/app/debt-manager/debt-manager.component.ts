@@ -70,8 +70,6 @@ export class DebtManagerComponent implements OnInit {
       this.updateDebtRequest(data);
       this.notifyModifiedAccounts(data);
     });
-
-    this.updateDebtRequest(debtRequest);
   }
 
   onTransactionsClicked(debtRequest: DebtRequestVm, fromSubmitted: boolean) {
@@ -90,8 +88,6 @@ export class DebtManagerComponent implements OnInit {
       this.updateDebtRequest(data);
       this.notifyModifiedAccounts(data);
     });
-
-    this.updateDebtRequest(debtRequest);
   }
 
   private notifyModifiedAccounts(debtRequest: DebtRequestVm) {
