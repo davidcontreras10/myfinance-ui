@@ -443,6 +443,10 @@ export const CreditorRequestStatus = {
   Archived: 3
 } as const;
 
+export interface DebtRequestModifiedTrx extends ItemModifiedRes {
+  spendId: number;
+}
+
 export interface DebtRequestVm {
   id: number;
   eventName: string;
@@ -456,6 +460,7 @@ export interface DebtRequestVm {
   createdByMe: boolean;
   isSelected: boolean;
   trxCount: number;
+  modifiedTrxs?: DebtRequestModifiedTrx[];
 }
 
 export interface AddDebtRequestVm {

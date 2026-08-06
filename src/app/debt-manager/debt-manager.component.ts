@@ -4,6 +4,8 @@ import { DebtRequestVm } from '../services/models';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DebtRequestTrxsComponent } from './debt-request-trxs/debt-request-trxs.component';
+import { MainViewModel } from '../main-view/main-view-model';
+import { ToasterService } from '../services/toaster.service';
 
 // possible states for the active tab
 
@@ -24,7 +26,13 @@ export class DebtManagerComponent implements OnInit {
 
   private _debtRequests: DebtRequestVm[] = [];
 
-  constructor(private service: DebtManagerApiService, private route: ActivatedRoute, private modalService: NgbModal) { }
+  constructor(
+    private service: DebtManagerApiService,
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    private mainViewModel: MainViewModel,
+    private toasterService: ToasterService
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -60,6 +68,7 @@ export class DebtManagerComponent implements OnInit {
   onCreditorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {
     this.service.updateCreditorStatus(debtRequest.id, status).subscribe(data => {
       this.updateDebtRequest(data);
+      this.notifyModifiedAccounts(data);
     });
 
     this.updateDebtRequest(debtRequest);
@@ -74,9 +83,17 @@ export class DebtManagerComponent implements OnInit {
   onDebtorDebtRequestStatusChanged({ debtRequest, status }: { debtRequest: DebtRequestVm, status: number }) {
     this.service.updateDebtorStatus(debtRequest.id, status).subscribe(data => {
       this.updateDebtRequest(data);
+      this.notifyModifiedAccounts(data);
     });
 
     this.updateDebtRequest(debtRequest);
+  }
+
+  private notifyModifiedAccounts(debtRequest: DebtRequestVm) {
+    if (debtRequest.modifiedTrxs?.length) {
+      this.mainViewModel.notifyAccountsModified(debtRequest.modifiedTrxs);
+      this.toasterService.success(`${debtRequest.modifiedTrxs.length} account/s updated`);
+    }
   }
 
   updateDebtRequest(debtRequest: DebtRequestVm) {
