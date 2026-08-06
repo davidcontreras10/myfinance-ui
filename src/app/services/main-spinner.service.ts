@@ -1,33 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class MainSpinnerService {
-  private spinnerStatus$ = new Subject<boolean>();
   private showRequests = 0;
 
-  constructor() { }
+  private readonly _status$ = new BehaviorSubject<boolean>(false);
+  /** Public, read-only stream */
+  readonly status$: Observable<boolean> = this._status$.pipe(distinctUntilChanged());
 
-  public show() {
+  show(): void {
+    const wasZero = this.showRequests === 0;
     this.showRequests++;
-    this.spinnerStatus$.next(true);
+    if (wasZero) this._status$.next(true);
   }
 
-  public hide() {
-    if (this.showRequests <= 0) {
-      this.showRequests = 0;
-    }
-    else {
-      this.showRequests--;
-    }
-    if (this.showRequests === 0) {
-      this.spinnerStatus$.next(false);
-    }
-  }
-
-  public listen(): Observable<boolean> {
-    return this.spinnerStatus$.asObservable();
+  hide(): void {
+    if (this.showRequests > 0) this.showRequests--;
+    if (this.showRequests === 0) this._status$.next(false);
   }
 }

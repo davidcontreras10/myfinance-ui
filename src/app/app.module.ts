@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbDropdownModule, NgbModule, NgbNavModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModule, NgbNavModule, NgbToastModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -59,7 +59,10 @@ import { NewDebtRequestComponent } from './debt-manager/new-debt-request/new-deb
 import { ActionsComponent } from './debt-manager/submitted-debt-requests/actions/actions.component';
 import { ReceivedRequestsComponent } from './debt-manager/received-requests/received-requests.component';
 import { DebtorActionsComponent } from './debt-manager/received-requests/actions/debtor-actions.component';
+import { ToastContainerComponent } from './toast-container/toast-container.component';
+
 import { MenuPageComponent } from './menu-page/menu-page.component';
+import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-request-trxs.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +113,9 @@ import { MenuPageComponent } from './menu-page/menu-page.component';
     ActionsComponent,
     ReceivedRequestsComponent,
     DebtorActionsComponent,
-    MenuPageComponent
+    MenuPageComponent,
+    DebtRequestTrxsComponent,
+    ToastContainerComponent
   ],
   imports: [
     BrowserModule,
@@ -124,6 +129,7 @@ import { MenuPageComponent } from './menu-page/menu-page.component';
     NoopAnimationsModule,
     ReactiveFormsModule,
     NgbTooltipModule,
+    NgbToastModule,
     DragDropModule
   ],
   providers: [

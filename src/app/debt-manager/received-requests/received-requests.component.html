@@ -49,8 +49,8 @@
                     <td>{{debtReq.eventName}}</td>
                     <td>{{getStatusText(debtReq.debtor.status)}}</td>
                     <td>
-                        <app-debtor-actions [debtRequest]="debtReq"
-                            (statusChanged)="onDebtRequestStatusChanged($event)"></app-debtor-actions>
+                        <app-debtor-actions [debtRequest]="debtReq" (statusChanged)="onDebtRequestStatusChanged($event)"
+                            (transactionsClicked)="transactionsClicked.emit($event)"></app-debtor-actions>
                     </td>
                 </tr>
             </tbody>

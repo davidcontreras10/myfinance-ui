@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CreditorRequestStatus, DebtRequestVm } from 'src/app/services/models';
+import { CreditorRequestStatus, DebtorRequestStatus, DebtRequestVm } from 'src/app/services/models';
 
 @Component({
   selector: 'app-creditor-actions',
@@ -13,6 +13,8 @@ export class ActionsComponent {
   @Output()
   statusChanged: EventEmitter<{ debtRequest: DebtRequestVm, status: number }> = new EventEmitter();
 
+  @Output()
+  transactionsClicked: EventEmitter<{ debtRequest: DebtRequestVm, fromSubmitted: boolean }> = new EventEmitter();
 
   get archiveBtnEnabled(): boolean {
     if (this.debtRequest?.creditor === null || this.debtRequest?.debtor === null)
@@ -21,7 +23,7 @@ export class ActionsComponent {
     if (this.debtRequest?.creditor.status !== CreditorRequestStatus.Pending)
       return false;
 
-    if (this.debtRequest?.debtor.status === CreditorRequestStatus.Paid)
+    if (this.debtRequest?.debtor.status === DebtorRequestStatus.Paid)
       return false;
 
     return true;
@@ -47,15 +49,46 @@ export class ActionsComponent {
     return true;
   }
 
+  get trxBtnEnabled(): boolean {
+    if (this.debtRequest?.creditor === null || this.debtRequest?.debtor === null)
+      return false;
+
+    return (this.debtRequest?.debtor.status === DebtorRequestStatus.Pending) || ((this.debtRequest?.trxCount ?? 0) > 0);
+  }
+
   onArchiveBtnClick() {
     this.statusChanged.emit({ debtRequest: this.debtRequest!, status: CreditorRequestStatus.Archived });
   }
 
   onConfirmPaymentBtnClick() {
-    this.statusChanged.emit({ debtRequest: this.debtRequest!, status: CreditorRequestStatus.Paid });
+    if (this.debtRequest) {
+      if (this.debtRequest.trxCount > 0) {
+        if (confirm("This will also confirm the transactions in its accounts. Are you sure?")) {
+          this.statusChanged.emit({ debtRequest: this.debtRequest, status: CreditorRequestStatus.Paid });
+        }
+      } else {
+        this.statusChanged.emit({ debtRequest: this.debtRequest, status: CreditorRequestStatus.Paid });
+      }
+    }
   }
 
   onResetBtnClick() {
-    this.statusChanged.emit({ debtRequest: this.debtRequest!, status: CreditorRequestStatus.Pending });
+    if (this.debtRequest) {
+      if (this.debtRequest.trxCount > 0) {
+        if (confirm("This will also DELETE the transactions in its accounts. Are you sure?")) {
+          this.statusChanged.emit({ debtRequest: this.debtRequest, status: CreditorRequestStatus.Pending });
+        }
+      } else {
+        this.statusChanged.emit({ debtRequest: this.debtRequest, status: CreditorRequestStatus.Pending });
+      }
+    }
   }
+
+  onTransactionsBtnClick() {
+    if (this.debtRequest) {
+      this.transactionsClicked.emit({ debtRequest: this.debtRequest, fromSubmitted: true });
+    }
+  }
+
+
 }

@@ -133,12 +133,17 @@ export class AccountViewComponent implements OnInit {
         next: items => {
           this.mainViewModel.notifyAccountsModified(items);
         },
-        error: error => {
-          if (error.error?.errorCode === 1001) {
-            alert('Cannot delete transaction when it has bank transactions associated. Please reset the bank transactions first');
+        error: errorResponse => {
+          if (errorResponse.error?.errorCode === 2000 && errorResponse.error?.dataObject) {
+            const cantDeleteAppTrxReasons: any[] = errorResponse.error.dataObject;
+            let message = 'Cannot delete transaction for the following reasons:\n';
+            cantDeleteAppTrxReasons.forEach(reason => {
+              message += ` - ${reason.message}\n`;
+            });
+            alert(message);
           }
           else {
-            console.error(error);
+            console.error(errorResponse);
             alert('Error deleting transaction');
           }
         }

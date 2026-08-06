@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EditTrxTypeRequest, NewTrxTypeRequest, TrxTypeViewModel } from './models';
+import { EditTrxTypeRequest, NewTrxTypeRequest, SelectableItem, TrxTypeViewModel } from './models';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -35,6 +35,11 @@ export class TrxTypeServiceService {
   public getAllTransactionTypes(): Observable<TrxTypeViewModel[]> {
     const url = this.getBaseUrl();
     return this.httpClient.get<TrxTypeViewModel[]>(url);
+  }
+
+  public getUserTransactionTypes(includeAll: boolean = false): Observable<SelectableItem[]> {
+    const params = new HttpParams().set('includeAll', includeAll.toString());
+    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params });
   }
 
   public changeTrxTypeUserSelected(trxTypeId: number, newIsSelected: boolean): Observable<number[]> {
