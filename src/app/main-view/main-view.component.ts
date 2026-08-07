@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AuthGuard } from '../auth.guard';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { AccountGroup, BankTrxReqRespPair } from './models';
@@ -23,7 +24,7 @@ import { PERIOD_DATE_QUERY_PARAM } from './main-view.constants';
   styleUrls: ['./main-view.component.css'],
   providers: [AuthGuard]
 })
-export class MainViewComponent implements OnInit {
+export class MainViewComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
 
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
@@ -33,57 +34,66 @@ export class MainViewComponent implements OnInit {
   public bankSummaryloading = false;
 
   private expectedDate: Date | undefined;
+  private subscriptions = new Subscription();
 
   constructor(
-    navBarService: NavBarServiceService,
+    private navBarService: NavBarServiceService,
     private modalService: NgbModal,
     private mainViewApiService: MainViewApiService,
     public mainViewModel: MainViewModel,
     private router: Router,
     private route: ActivatedRoute) {
-    navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_SCOT_TRX_FILE).subscribe((value) => {
-      if (value === 'toggle-summary') {
-        this.handleIncomingNavBarAction(value);
-      }
-      else if (value === NavBarMenusIds.UPLOAD_SCOT_TRX_FILE) {
-        this.openBankTrxFileDialog();
-        //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
-      }
-    });
-    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE, NavBarMenusIds.CLEAR_PERIODS_DATE, NavBarMenusIds.DEBT_MANAGER).subscribe(value => {
-      if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
-        this.openPreferencesModal();
-      }
-      else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
-        const modal = this.modalService.open(SetPeriodDateComponent, { backdrop: true, size: 'lg' });
-        modal.result.then((res) => {
-          const result = <DialogResultModel<Date>>res;
-          if (result.success && result.value) {
-            this.setPeriodDate(result.value);
-          }
-        })
-      }
-      else if (value === NavBarMenusIds.CLEAR_PERIODS_DATE) {
-        this.clearPeriodDate();
-      }
-      else if (value === NavBarMenusIds.DEBT_MANAGER) {
-        const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
-        // this.router.navigate(['/debt-manager']);
-      }
-    })
+    this.subscriptions.add(
+      navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_SCOT_TRX_FILE).subscribe((value) => {
+        if (value === 'toggle-summary') {
+          this.handleIncomingNavBarAction(value);
+        }
+        else if (value === NavBarMenusIds.UPLOAD_SCOT_TRX_FILE) {
+          this.openBankTrxFileDialog();
+          //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
+        }
+      })
+    );
+    this.subscriptions.add(
+      navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE, NavBarMenusIds.CLEAR_PERIODS_DATE, NavBarMenusIds.DEBT_MANAGER).subscribe(value => {
+        if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
+          this.openPreferencesModal();
+        }
+        else if (value === NavBarMenusIds.SET_PERIODS_DATE) {
+          const modal = this.modalService.open(SetPeriodDateComponent, { backdrop: true, size: 'lg' });
+          modal.result.then((res) => {
+            const result = <DialogResultModel<Date>>res;
+            if (result.success && result.value) {
+              this.setPeriodDate(result.value);
+            }
+          })
+        }
+        else if (value === NavBarMenusIds.CLEAR_PERIODS_DATE) {
+          this.clearPeriodDate();
+        }
+        else if (value === NavBarMenusIds.DEBT_MANAGER) {
+          const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
+          // this.router.navigate(['/debt-manager']);
+        }
+      })
+    );
   }
 
   ngOnInit(): void {
 
     this.expectedDate = Utils.parseDateOnlyFormat(this.route.snapshot.queryParamMap.get(PERIOD_DATE_QUERY_PARAM));
 
-    this.mainViewModel.errorNotification$.subscribe(error => {
-      this.handleHttpError(error);
-    })
+    this.subscriptions.add(
+      this.mainViewModel.errorNotification$.subscribe(error => {
+        this.handleHttpError(error);
+      })
+    );
 
-    this.mainViewModel.listenAccountsModified().subscribe(modifiedItems => {
-      this.loadModifiedAccountFinanance(modifiedItems, undefined);
-    });
+    this.subscriptions.add(
+      this.mainViewModel.listenAccountsModified().subscribe(modifiedItems => {
+        this.loadModifiedAccountFinanance(modifiedItems, undefined);
+      })
+    );
 
     this.mainViewApiService.getMainViewPrefs().subscribe(response => {
       this.mainViewModel.mainViewPrefs = response;
@@ -96,6 +106,10 @@ export class MainViewComponent implements OnInit {
       const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
       this.loadAccountFinananceByIds(periodIds, this.expectedDate);
     }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   openBankTrxFileDialog(): void {
