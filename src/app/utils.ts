@@ -8,6 +8,26 @@ export class Utils {
         return `${year}-${month}-${day}T${hours}:${minutes}`; // concatenate the values into a string with the desired format
     }
 
+    public static toDateOnlyFormat(date: Date): string {
+        const year = date.getFullYear().toString().padStart(4, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    public static parseDateOnlyFormat(value: string | undefined | null): Date | undefined {
+        if (!value) {
+            return undefined;
+        }
+        const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+        if (!match) {
+            return undefined;
+        }
+        const [, year, month, day] = match;
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+        return isNaN(date.getTime()) ? undefined : date;
+    }
+
     public static deepClone<T>(object: T): T {
         return JSON.parse(JSON.stringify(object));
     }

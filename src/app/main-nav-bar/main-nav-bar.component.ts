@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { NavMenuItem } from './models';
+import { NavMenuItem, SubMenu } from './models';
 import { AuthService } from '../auth.service';
 import { NavBarMenusIds } from '../services/main-nav-bar/nav-bar-service.service';
+import { PERIOD_DATE_QUERY_PARAM } from '../main-view/main-view.constants';
 
 @Component({
   selector: 'app-main-nav-bar',
@@ -12,19 +13,25 @@ import { NavBarMenusIds } from '../services/main-nav-bar/nav-bar-service.service
 export class MainNavBarComponent implements OnInit {
   public items: NavMenuItem[] = [];
   isMainCollapsed = true;
+
+  private financeMenuItem: NavMenuItem;
+  private financeBaseSubMenus: SubMenu[] = [
+    { id: 'toggle-summary', name: 'Toggle Summary' },
+    { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
+    { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
+    { id: NavBarMenusIds.UPLOAD_SCOT_TRX_FILE, name: 'Upload Scotiabank File' },
+    { id: NavBarMenusIds.DEBT_MANAGER, name: 'Debt Manager' }
+  ];
+
   constructor(private router: Router, private authService: AuthService) {
+    this.financeMenuItem = {
+      isActive: false, name: 'Finance', subMenus: [...this.financeBaseSubMenus],
+      routingLink: '/finance',
+      routingRegexPattern: /^\/finance(\?.*)?$/
+    };
     this.items = [
       { isActive: false, name: 'Home', routingLink: '/' },
-      {
-        isActive: false, name: 'Finance', subMenus: [
-          { id: 'toggle-summary', name: 'Toggle Summary' },
-          { id: NavBarMenusIds.MAIN_VIEW_PREFS, name: 'Preferences' },
-          { id: NavBarMenusIds.SET_PERIODS_DATE, name: 'Set Periods Date' },
-          { id: NavBarMenusIds.UPLOAD_SCOT_TRX_FILE, name: 'Upload Scotiabank File' },
-          { id: NavBarMenusIds.DEBT_MANAGER, name: 'Debt Manager' }
-        ],
-        routingLink: '/finance'
-      },
+      this.financeMenuItem,
       {
         isActive: false, name: 'Accounts', routingLink: '/accounts', subMenus: [
           { id: NavBarMenusIds.ACCOUNT_GROUPS, name: 'Manager Account Groups' },
@@ -63,6 +70,14 @@ export class MainNavBarComponent implements OnInit {
     this.items.forEach(item => {
       item.isActive = event.url === item.routingLink || (!!item.routingRegexPattern && item.routingRegexPattern.test(event.url))
     })
+    this.updateFinanceSubMenus(event.url);
+  }
+
+  private updateFinanceSubMenus(url: string) {
+    const hasPeriodDate = !!this.router.parseUrl(url).queryParams[PERIOD_DATE_QUERY_PARAM];
+    this.financeMenuItem.subMenus = hasPeriodDate
+      ? [...this.financeBaseSubMenus, { id: NavBarMenusIds.CLEAR_PERIODS_DATE, name: 'Clear Period Date' }]
+      : [...this.financeBaseSubMenus];
   }
 
   get isLoginPage(): boolean {

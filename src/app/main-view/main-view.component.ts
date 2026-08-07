@@ -13,8 +13,9 @@ import { MainViewPrefsComponent } from './main-view-prefs/main-view-prefs.compon
 import { SetPeriodDateComponent } from './set-period-date/set-period-date.component';
 import { BankTransactionsComponent } from './bank-transactions/bank-transactions.component';
 import { Utils } from '../utils';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DebtManagerModalComponent } from '../debt-manager/debt-manager-modal/debt-manager-modal.component';
+import { PERIOD_DATE_QUERY_PARAM } from './main-view.constants';
 
 @Component({
   selector: 'app-main-view',
@@ -31,12 +32,15 @@ export class MainViewComponent implements OnInit {
   public groups: AccountGroup[] = [];
   public bankSummaryloading = false;
 
+  private expectedDate: Date | undefined;
+
   constructor(
     navBarService: NavBarServiceService,
     private modalService: NgbModal,
     private mainViewApiService: MainViewApiService,
     public mainViewModel: MainViewModel,
-    private router: Router) {
+    private router: Router,
+    private route: ActivatedRoute) {
     navBarService.getSubMenuEvents('toggle-summary', NavBarMenusIds.UPLOAD_SCOT_TRX_FILE).subscribe((value) => {
       if (value === 'toggle-summary') {
         this.handleIncomingNavBarAction(value);
@@ -46,7 +50,7 @@ export class MainViewComponent implements OnInit {
         //this.router.navigate(['/bank-trx'], { queryParams: { financialEntity: 'scotiabank' } });
       }
     });
-    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE, NavBarMenusIds.DEBT_MANAGER).subscribe(value => {
+    navBarService.getSubMenuEvents(NavBarMenusIds.MAIN_VIEW_PREFS, NavBarMenusIds.SET_PERIODS_DATE, NavBarMenusIds.CLEAR_PERIODS_DATE, NavBarMenusIds.DEBT_MANAGER).subscribe(value => {
       if (value === NavBarMenusIds.MAIN_VIEW_PREFS) {
         this.openPreferencesModal();
       }
@@ -55,10 +59,12 @@ export class MainViewComponent implements OnInit {
         modal.result.then((res) => {
           const result = <DialogResultModel<Date>>res;
           if (result.success && result.value) {
-            const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
-            this.loadAccountFinananceByIds(periodIds, result.value);
+            this.setPeriodDate(result.value);
           }
         })
+      }
+      else if (value === NavBarMenusIds.CLEAR_PERIODS_DATE) {
+        this.clearPeriodDate();
       }
       else if (value === NavBarMenusIds.DEBT_MANAGER) {
         const modal = this.modalService.open(DebtManagerModalComponent, { backdrop: true, size: 'lg' });
@@ -68,6 +74,8 @@ export class MainViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.expectedDate = Utils.parseDateOnlyFormat(this.route.snapshot.queryParamMap.get(PERIOD_DATE_QUERY_PARAM));
 
     this.mainViewModel.errorNotification$.subscribe(error => {
       this.handleHttpError(error);
@@ -86,7 +94,7 @@ export class MainViewComponent implements OnInit {
       this.mainViewModel.activeIds = this.groups.filter(x => x.isSelected).map(x => MainViewModel.getAccountGroupIdPattern(x.id));
       this.mainViewModel.updateAccountData(this.groups);
       const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
-      this.loadAccountFinananceByIds(periodIds, undefined);
+      this.loadAccountFinananceByIds(periodIds, this.expectedDate);
     }));
   }
 
@@ -109,6 +117,32 @@ export class MainViewComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
       this.router.navigate(['/bank-trx'], { state: { uploadedFile: uploadedFile, financialEntityFile: FinancialEntityFile.Scotiabank } });
     }
+  }
+
+  private setPeriodDate(date: Date): void {
+    this.expectedDate = date;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [PERIOD_DATE_QUERY_PARAM]: Utils.toDateOnlyFormat(date) },
+      queryParamsHandling: 'merge'
+    });
+    const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+    this.loadAccountFinananceByIds(periodIds, date);
+  }
+
+  private clearPeriodDate(): void {
+    // `undefined` here would just re-fetch whatever period is already selected (still the
+    // previously set date) rather than resetting anything — the API only re-resolves the
+    // period for an accountPeriodId when an explicit expectedDate is provided. So to actually
+    // snap back, we must pass today's date rather than clearing it.
+    this.expectedDate = undefined;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [PERIOD_DATE_QUERY_PARAM]: null },
+      queryParamsHandling: 'merge'
+    });
+    const periodIds = this.mainViewModel.getAllSelectedPeriodIds();
+    this.loadAccountFinananceByIds(periodIds, new Date());
   }
 
   private loadModifiedAccountFinanance(modifiedItems: ItemModifiedRes[], expectedDate: Date | undefined) {
