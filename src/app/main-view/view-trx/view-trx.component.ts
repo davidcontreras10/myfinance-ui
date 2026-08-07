@@ -4,6 +4,7 @@ import { TransactionViewModel } from '../models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgForm } from '@angular/forms';
 import { MainViewModel } from '../main-view-model';
+import { Utils } from 'src/app/utils';
 
 const PATCH_MAPS = [
   {
@@ -52,6 +53,7 @@ export class ViewTrxComponent implements OnInit {
   private updateModel(model: TransactionViewModel) {
     if (model) {
       this.trxViewModel = model;
+      this.trxViewModel.spendTypeViewModels = Utils.sortByName(this.trxViewModel.spendTypeViewModels);
       if (this.trxViewModel.selectedSpendTypeId) {
         this.selectedSpendTypeId = this.trxViewModel.selectedSpendTypeId
       }

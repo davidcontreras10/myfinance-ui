@@ -22,11 +22,17 @@ export interface DescriptionTrxFilter {
   searchText: string | null;
 }
 
+export interface TrxTypeFilter {
+  trxTypeId: number;
+}
+
 export interface TrxFilters {
   startDate: Date | null;
   endDate: Date | null;
   pendingTrxFilter: PendingTrxFilter | null;
-  descriptionTrxFilter: DescriptionTrxFilter | null
+  descriptionTrxFilter: DescriptionTrxFilter | null;
+  trxTypeFilter: TrxTypeFilter | null;
+
 }
 
 export class BasicTrxFilters implements TrxFilters {
@@ -34,6 +40,8 @@ export class BasicTrxFilters implements TrxFilters {
   endDate: Date | null;
   pendingTrxFilter: PendingTrxFilter | null;
   descriptionTrxFilter: DescriptionTrxFilter | null;
+  trxTypeFilter: TrxTypeFilter | null;
+
 }
 
 export interface FinanceAccountRequest {

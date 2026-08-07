@@ -301,6 +301,12 @@ export class MainViewApiService {
     );
   }
 
+  public getSpendTypes(includeAll: boolean = false): Observable<SelectableItem[]> {
+    const params = new HttpParams()
+      .set('includeAll', includeAll);
+    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params: params });
+  }
+
   public loadMainAccountGroups(): Observable<AccountGroup[]> {
     return this.httpClient.get<any>(`${environment.baseApi}/api/Accounts/user`).pipe(
       map(res => res.accountGroupMainViewViewModels)

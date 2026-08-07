@@ -35,4 +35,8 @@ export class Utils {
 
         return value as number;
     }
+
+    public static sortByName<T extends { name: string }>(items?: T[]): T[] {
+        return (items ?? []).slice().sort((a, b) => a.name.localeCompare(b.name));
+    }
 }
