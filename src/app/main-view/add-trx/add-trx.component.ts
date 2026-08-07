@@ -69,6 +69,7 @@ export class AddTrxComponent implements OnInit {
       this.mainViewApiSerice.loadAddTrxData(this.accountPeriodId).subscribe(res => {
         if (res) {
           res.suggestedDate = this.fixSuggestedDateFormat(res.suggestedDate);
+          res.spendTypeViewModels = Utils.sortByName(res.spendTypeViewModels);
         }
         this.addTrxModel = res;
         this.isDefaultPending = res?.isDefaultPending ?? false;

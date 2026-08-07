@@ -30,6 +30,7 @@ export class TransferViewComponent implements OnInit {
       this.mainViewApiService.getTransferInfo(this.accountPeriodId).subscribe(res => {
         this.viewModel = res;
         this.viewModel.suggestedDate = this.fixSuggestedDate(this.viewModel.suggestedDate);
+        this.viewModel.spendTypeViewModels = Utils.sortByName(this.viewModel.spendTypeViewModels);
         this.selectedCurrencyId = this.viewModel.supportedCurrencies.find(c => c.isSelected)?.id;
         this.selectedSpendTypeId = this.viewModel.spendTypeViewModels.find(st => st.isSelected)?.id;
       });
