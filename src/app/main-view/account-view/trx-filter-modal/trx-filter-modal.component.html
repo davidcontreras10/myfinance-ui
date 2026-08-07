@@ -20,8 +20,8 @@
         <div class="row">
             <div class="col">
                 <div class="form-check">
-                    <input mdbCheckbox [(ngModel)]="trxTypeEnabled" name="trxTypeEnabled" class="form-check-input"
-                        type="checkbox" id="trx-type-enabled" />
+                    <input mdbCheckbox [(ngModel)]="trxTypeEnabled" (ngModelChange)="onTrxTypeEnabledChanged($event)"
+                        name="trxTypeEnabled" class="form-check-input" type="checkbox" id="trx-type-enabled" />
                     <label class="form-check-label" for="trx-type-enabled">
                         Transaction Type
                     </label>
@@ -29,6 +29,7 @@
                 <div class="form-group">
                     <select [(ngModel)]="selectedTrxTypeId" name="trxTypeFilter" class="basic-input form-control"
                         [disabled]="!trxTypeEnabled" [required]="trxTypeEnabled">
+                        <option [ngValue]="undefined" disabled>Select a type</option>
                         <option *ngFor="let trxType of trxTypeViewModels" [value]="trxType.id">{{trxType.name}}</option>
                     </select>
                 </div>

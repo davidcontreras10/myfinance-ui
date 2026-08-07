@@ -45,8 +45,13 @@ export class TrxFilterModalComponent implements OnInit {
   private loadTrxTypes() {
     this.mainViewApiService.getSpendTypes(false).subscribe(trxTypes => {
       this.trxTypeViewModels = Utils.sortByName(trxTypes);
-      this.selectedTrxTypeId = this.trxTypeViewModels.find(t => t.isSelected)?.id ?? this.trxTypeViewModels[0]?.id;
     });
+  }
+
+  onTrxTypeEnabledChanged(enabled: boolean) {
+    if (!enabled) {
+      this.selectedTrxTypeId = undefined;
+    }
   }
 
   submit(_t5: NgForm) {
