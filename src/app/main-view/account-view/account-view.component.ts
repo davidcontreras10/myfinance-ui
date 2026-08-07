@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroupAccount, AccountPeriod } from '../models';
 import { MainViewModel } from '../main-view-model';
-import { DialogResultModel, SpendViewModel, TrxFilters } from 'src/app/services/models';
+import { DialogResultModel, SelectableItem, SpendViewModel, TrxFilters } from 'src/app/services/models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
@@ -26,6 +26,7 @@ export class AccountViewComponent implements OnInit {
   acc: AccountGroupAccount;
   selectedAccountPeriod?: AccountPeriod;
   showTraxList = false;
+  private spendTypes: SelectableItem[] = [];
 
   constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe, private router: Router) {
   }
@@ -58,6 +59,9 @@ export class AccountViewComponent implements OnInit {
         this.selectedAccountPeriod = this.acc.accountPeriods.find(accp => accp.accountPeriodId === accountPeriodId);
       }
     })
+    this.mainViewApiService.getSpendTypes(false).subscribe(spendTypes => {
+      this.spendTypes = spendTypes;
+    });
   }
 
   downloadFilteredExcelFile() {
@@ -213,6 +217,11 @@ export class AccountViewComponent implements OnInit {
     if (trxFilters.endDate) {
       const dateValue = this.datePipe.transform(trxFilters.endDate, 'yyyy/MM/dd HH:mm');
       message += ` before ${dateValue}`;
+    }
+
+    if (trxFilters.trxTypeFilter) {
+      const typeName = this.spendTypes.find(st => st.id === trxFilters.trxTypeFilter?.trxTypeId)?.name;
+      message += ` of type ${typeName ?? trxFilters.trxTypeFilter.trxTypeId}`;
     }
 
     return message;
