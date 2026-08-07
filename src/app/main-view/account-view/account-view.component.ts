@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AccountGroupAccount, AccountPeriod } from '../models';
 import { MainViewModel } from '../main-view-model';
-import { DialogResultModel, SelectableItem, SpendViewModel, TrxFilters } from 'src/app/services/models';
+import { SelectableItem, SpendViewModel, TrxFilters } from 'src/app/services/models';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddTrxComponent } from '../add-trx/add-trx.component';
@@ -9,7 +9,7 @@ import { ViewTrxComponent } from '../view-trx/view-trx.component';
 import { TransferViewComponent } from '../transfer-view/transfer-view.component';
 import { saveAs } from "file-saver";
 import { AccountNotesComponent } from '../account-notes/account-notes.component';
-import { TrxFilterModalComponent } from './trx-filter-modal/trx-filter-modal.component';
+import { TrxFilterModalComponent, TrxFiltersDialogResult } from './trx-filter-modal/trx-filter-modal.component';
 import { DatePipe } from '@angular/common';
 import { filter, map } from 'rxjs';
 import { Router } from '@angular/router';
@@ -27,6 +27,7 @@ export class AccountViewComponent implements OnInit {
   selectedAccountPeriod?: AccountPeriod;
   showTraxList = false;
   private spendTypes: SelectableItem[] = [];
+  private isCurrentPeriodFilter = false;
 
   constructor(public mainViewModel: MainViewModel, private mainViewApiService: MainViewApiService, private modalService: NgbModal, private datePipe: DatePipe, private router: Router) {
   }
@@ -80,16 +81,19 @@ export class AccountViewComponent implements OnInit {
 
   onFilterRemoveClicked() {
     if (this.selectedAccountPeriod) {
+      this.isCurrentPeriodFilter = false;
       this.mainViewModel.notifyPeriodChange(this.selectedAccountPeriod.accountPeriodId);
     }
   }
 
   onFilterClicked() {
     const modalRef = this.modalService.open(TrxFilterModalComponent, { backdrop: 'static', keyboard: false });
+    modalRef.componentInstance.accountPeriod = this.selectedAccountPeriod;
     modalRef.result.then(res => {
-      const result = <DialogResultModel<TrxFilters>>res;
+      const result = <TrxFiltersDialogResult>res;
       if (result?.value && this.selectedAccountPeriod) {
         this.showTraxList = true;
+        this.isCurrentPeriodFilter = result.dateFilterMode === 'currentPeriod';
         this.mainViewModel.notifyPeriodChange(this.selectedAccountPeriod.accountPeriodId, result.value);
       }
     })
@@ -209,14 +213,18 @@ export class AccountViewComponent implements OnInit {
       message += ` with description ${trxFilters.descriptionTrxFilter.searchText}`;
     }
 
-    if (trxFilters.startDate) {
-      const dateValue = this.datePipe.transform(trxFilters.startDate, 'yyyy/MM/dd HH:mm');
-      message += ` after ${dateValue}`;
-    }
+    if (this.isCurrentPeriodFilter && this.selectedAccountPeriod) {
+      message += ` for period ${this.selectedAccountPeriod.name}`;
+    } else {
+      if (trxFilters.startDate) {
+        const dateValue = this.datePipe.transform(trxFilters.startDate, 'yyyy/MM/dd HH:mm');
+        message += ` after ${dateValue}`;
+      }
 
-    if (trxFilters.endDate) {
-      const dateValue = this.datePipe.transform(trxFilters.endDate, 'yyyy/MM/dd HH:mm');
-      message += ` before ${dateValue}`;
+      if (trxFilters.endDate) {
+        const dateValue = this.datePipe.transform(trxFilters.endDate, 'yyyy/MM/dd HH:mm');
+        message += ` before ${dateValue}`;
+      }
     }
 
     if (trxFilters.trxTypeFilter) {

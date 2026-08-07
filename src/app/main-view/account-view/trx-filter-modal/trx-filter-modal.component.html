@@ -36,6 +36,26 @@
         </div>
         <div class="row">
             <div class="col">
+                <label>Date range</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dateFilterMode" id="date-filter-current-period"
+                        [value]="'currentPeriod'" [(ngModel)]="dateFilterMode" [disabled]="!accountPeriod" />
+                    <label class="form-check-label" for="date-filter-current-period">
+                        Current period
+                        <span *ngIf="accountPeriod">({{accountPeriod.name}})</span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="dateFilterMode" id="date-filter-custom"
+                        [value]="'custom'" [(ngModel)]="dateFilterMode" />
+                    <label class="form-check-label" for="date-filter-custom">
+                        Custom
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="dateFilterMode === 'custom'">
+            <div class="col">
                 <div class="form-check">
                     <input mdbCheckbox [(ngModel)]="startDateEnabled" name="startDateEnabled" class="form-check-input"
                         type="checkbox" id="start-date-enabled" />
@@ -49,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="dateFilterMode === 'custom'">
             <div class="col">
                 <div class="form-check">
                     <input mdbCheckbox [(ngModel)]="endDateEnabled" name="endDateEnabled" class="form-check-input"
