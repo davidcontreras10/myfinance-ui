@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd *)",
+      "PowerShell(npx ng test *)",
+      "PowerShell(git status *)",
+      "Bash(npx tsc *)",
+      "PowerShell(git diff *)",
+      "PowerShell(Select-String *)",
+      "PowerShell(Write-Host *)",
+      "Bash(git commit *)",
+      "PowerShell(git commit *)",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__Claude_Browser__tabs_context"
+    ]
+  }
+}
