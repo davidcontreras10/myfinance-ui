@@ -1,10 +1,87 @@
 import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, delay, map, of } from 'rxjs';
 import { AccountGroup, AIClassifiedBankTrx, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
+
+// TODO(backend): temporary mock for BankTrxSpendSummaryResponse, used only until
+// POST /api/BankTransactionsFiles/summary exists server-side. Remove alongside the
+// mock branch in getBankTrxSpendSummary() once the real endpoint is implemented.
+const MOCK_BANK_TRX_SPEND_SUMMARY: BankTrxSpendSummaryResponse = {
+  currencies: [
+    { currencyId: 1, symbol: '$', name: 'Dollar' },
+    { currencyId: 2, symbol: '₡', name: 'Colones' }
+  ],
+  banks: [
+    {
+      financialEntityId: 1,
+      financialEntityName: 'Bac San Jose',
+      accounts: [
+        {
+          accountId: 1,
+          accountName: 'CUENTA BAC',
+          currencyId: 1,
+          currencyAmounts: [
+            { currencyId: 1, amount: 16799.9 },
+            { currencyId: 2, amount: 1248406.5 }
+          ],
+          total: 19249.83
+        },
+        {
+          accountId: 2,
+          accountName: 'BAC COLONES',
+          currencyId: 2,
+          currencyAmounts: [
+            { currencyId: 1, amount: 10 },
+            { currencyId: 2, amount: 30000 }
+          ],
+          total: 35000
+        }
+      ]
+    },
+    {
+      financialEntityId: 2,
+      financialEntityName: 'Banco Nacional',
+      accounts: [
+        {
+          accountId: 3,
+          accountName: 'BN DÓLARES',
+          currencyId: 1,
+          currencyAmounts: [
+            { currencyId: 1, amount: 13667.76 }
+          ],
+          total: 13667.76
+        },
+        {
+          accountId: 4,
+          accountName: 'BN COLONES',
+          currencyId: 2,
+          currencyAmounts: [
+            { currencyId: 2, amount: 1884250.2 }
+          ],
+          total: 1884250.2
+        }
+      ]
+    },
+    {
+      financialEntityId: 3,
+      financialEntityName: 'Scotiabank',
+      accounts: [
+        {
+          accountId: 5,
+          accountName: 'Scotiabank_COL',
+          currencyId: 2,
+          currencyAmounts: [
+            { currencyId: 2, amount: 2346268 }
+          ],
+          total: 2346268
+        }
+      ]
+    }
+  ]
+};
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +142,17 @@ export class MainViewApiService {
 
   submitBankTrxChanges(requests: ClientBankItemRequest[]): Observable<BankTrxProcessResponse> {
     return this.httpClient.post<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/ProcessRequest`, requests);
+  }
+
+  getBankTrxSpendSummary(transactionIds: string[]): Observable<BankTrxSpendSummaryResponse> {
+    // TODO(backend): the real endpoint (below, commented out) doesn't exist server-side yet.
+    // Returning mock data for now so the frontend can be previewed end-to-end. Once
+    // POST /api/BankTransactionsFiles/summary is implemented, delete MOCK_BANK_TRX_SPEND_SUMMARY
+    // and this mock branch, and uncomment the real call.
+    return of(MOCK_BANK_TRX_SPEND_SUMMARY).pipe(delay(400));
+
+    // const body = { transactionIds };
+    // return this.httpClient.post<BankTrxSpendSummaryResponse>(`${environment.baseApi}/api/BankTransactionsFiles/summary`, body);
   }
 
   uploadBankTrxFile(file: File, financialEntityFile: FinancialEntityFile): Observable<HttpEvent<BankTrxReqResp>> {

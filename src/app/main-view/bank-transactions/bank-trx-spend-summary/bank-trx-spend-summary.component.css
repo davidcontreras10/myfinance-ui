@@ -1,0 +1,85 @@
+.spend-summary-card {
+    margin-top: 24px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.spend-summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background-color: #f8f9fa;
+}
+
+.spend-summary-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.spend-summary-subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.spend-summary-loading-badge {
+    font-size: 0.75rem;
+    color: #0d6efd;
+    white-space: nowrap;
+}
+
+.spend-summary-table {
+    margin-bottom: 0;
+}
+
+.spend-summary-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.spend-summary-table td,
+.spend-summary-table th {
+    padding: 0.6rem 1rem;
+    vertical-align: middle;
+}
+
+.bank-name-cell {
+    font-weight: 600;
+    color: #495057;
+    border-right: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.bank-alt {
+    background-color: #fafbfc;
+}
+
+.default-currency-amount {
+    font-weight: 700;
+    background-color: #eef6ff;
+}
+
+.total-cell {
+    font-weight: 700;
+    background-color: #f3f8f3;
+    border-left: 2px solid #dee2e6;
+}
+
+.on-data-loading {
+    opacity: 0.6;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.spend-summary-loading-placeholder {
+    margin-top: 24px;
+    padding: 0.75rem 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-style: italic;
+}

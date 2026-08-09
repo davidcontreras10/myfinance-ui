@@ -252,5 +252,11 @@
                 </div>
             </div>
         </div>
+        <div class="row" *ngIf="spendSummary || spendSummaryLoading">
+            <div class="col-md-9">
+                <app-bank-trx-spend-summary [summary]="spendSummary"
+                    [spendSummaryloading]="spendSummaryLoading"></app-bank-trx-spend-summary>
+            </div>
+        </div>
     </form>
 </div>

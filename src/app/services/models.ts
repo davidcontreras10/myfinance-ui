@@ -426,6 +426,36 @@ export interface BankTrxProcessResponse {
   itemModifieds: ItemModifiedRes[];
 }
 
+export interface BankTrxSpendSummaryCurrency {
+  currencyId: number;
+  symbol: string;
+  name: string;
+}
+
+export interface BankTrxSpendSummaryCurrencyAmount {
+  currencyId: number;
+  amount: number;
+}
+
+export interface BankTrxSpendSummaryAccount {
+  accountId: number;
+  accountName: string;
+  currencyId: number;
+  currencyAmounts: BankTrxSpendSummaryCurrencyAmount[];
+  total: number;
+}
+
+export interface BankTrxSpendSummaryBank {
+  financialEntityId: number;
+  financialEntityName: string;
+  accounts: BankTrxSpendSummaryAccount[];
+}
+
+export interface BankTrxSpendSummaryResponse {
+  currencies: BankTrxSpendSummaryCurrency[];
+  banks: BankTrxSpendSummaryBank[];
+}
+
 export interface AppUser {
   userId: string;
   username: string;

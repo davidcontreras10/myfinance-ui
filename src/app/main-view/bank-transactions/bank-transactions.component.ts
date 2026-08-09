@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
 import { AIClassifiedBankTrx, BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
@@ -18,7 +18,7 @@ export class BankTransactionsComponent implements OnInit {
   FinancialEntityFile = FinancialEntityFile;
 
   @ViewChild('fileInput', { static: true }) fileInput!: ElementRef;
-  @Input() bankTransactions: BankTrxReqRespPair[];
+  private _bankTransactions: BankTrxReqRespPair[] = [];
   selectedFile: File | null = null;
 
   BankTransactionStatus = BankTransactionStatus;
@@ -33,6 +33,19 @@ export class BankTransactionsComponent implements OnInit {
   respFinancialEntityId: number | null = null;
 
   transactionTypes: SelectableItem[] = [];
+
+  spendSummary: BankTrxSpendSummaryResponse | null = null;
+  spendSummaryLoading = false;
+
+  @Input()
+  set bankTransactions(value: BankTrxReqRespPair[]) {
+    this._bankTransactions = value ?? [];
+    this.updateSpendSummary();
+  }
+
+  get bankTransactions(): BankTrxReqRespPair[] {
+    return this._bankTransactions;
+  }
 
 
   statusOrder: { [key in number]: number } = {
@@ -205,6 +218,29 @@ export class BankTransactionsComponent implements OnInit {
     });
   }
 
+  private updateSpendSummary(): void {
+    const processedIds = this._bankTransactions
+      .filter(trx => trx.original.dbStatus === BankTransactionStatus.Processed)
+      .map(trx => trx.current.fileTransaction.transactionId);
+
+    if (processedIds.length === 0) {
+      this.spendSummary = null;
+      return;
+    }
+
+    this.spendSummaryLoading = true;
+    this.mainViewApiService.getBankTrxSpendSummary(processedIds).subscribe({
+      next: (response) => {
+        this.spendSummary = response;
+        this.spendSummaryLoading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Spend summary error:', err.message);
+        this.spendSummaryLoading = false;
+      }
+    });
+  }
+
   getSearchOptions(): SelectableItem[] {
     return [
       { id: 1, name: 'Reference Number', isSelected: false, isDefault: false },
@@ -230,6 +266,7 @@ export class BankTransactionsComponent implements OnInit {
             if (index > -1) {
               this.bankTransactions.splice(index, 1);
               this.selectRow(null);
+              this.updateSpendSummary();
             }
           }
         });
@@ -415,7 +452,7 @@ export class BankTransactionsComponent implements OnInit {
       trx.resetRequested = false;
     });
 
-    this.bankTransactions;
+    this.updateSpendSummary();
   }
 
 

@@ -1,0 +1,45 @@
+<div class="spend-summary-loading-placeholder" *ngIf="spendSummaryloading && !summary">
+    <span>Loading spend summary...</span>
+</div>
+<div class="card spend-summary-card" *ngIf="summary && summary.banks.length > 0">
+    <div class="card-header spend-summary-header">
+        <div>
+            <div class="spend-summary-title">Spend Summary by Bank</div>
+            <div class="spend-summary-subtitle">Processed transactions, grouped by bank and account</div>
+        </div>
+        <span class="spend-summary-loading-badge" *ngIf="spendSummaryloading">Updating...</span>
+    </div>
+    <div class="card-body p-0" [ngClass]="{'on-data-loading': spendSummaryloading}">
+        <div class="table-responsive">
+            <table class="table spend-summary-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Bank</th>
+                        <th>Account</th>
+                        <th class="text-end" *ngFor="let currency of summary.currencies">{{currency.name}}</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let bank of summary.banks; let bankIndex = index">
+                        <tr *ngFor="let acc of bank.accounts; let i = index" [class.bank-alt]="bankIndex % 2 === 1">
+                            <td *ngIf="i === 0" [attr.rowspan]="bank.accounts.length" class="bank-name-cell">
+                                {{bank.financialEntityName}}
+                            </td>
+                            <td>{{acc.accountName}}</td>
+                            <td class="text-end" *ngFor="let currency of summary.currencies"
+                                [class.default-currency-amount]="isDefaultCurrency(acc, currency.currencyId)">
+                                <ng-container *ngIf="getAmount(acc, currency.currencyId) !== null">
+                                    {{getAmount(acc, currency.currencyId) | currencyAmount:currency.symbol}}
+                                </ng-container>
+                                <span class="text-muted" *ngIf="getAmount(acc, currency.currencyId) === null">-</span>
+                            </td>
+                            <td class="text-end total-cell">
+                                {{acc.total | currencyAmount:getCurrencySymbol(acc.currencyId)}}</td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
