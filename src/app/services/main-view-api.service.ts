@@ -1,6 +1,6 @@
 import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, delay, map, of } from 'rxjs';
+import { Observable, delay, map, of, shareReplay } from 'rxjs';
 import { AccountGroup, AIClassifiedBankTrx, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
 import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
@@ -87,6 +87,8 @@ const MOCK_BANK_TRX_SPEND_SUMMARY: BankTrxSpendSummaryResponse = {
   providedIn: 'root'
 })
 export class MainViewApiService {
+
+  private spendTypesCache: { [includeAll: string]: Observable<SelectableItem[]> } = {};
 
   constructor(private httpClient: HttpClient) { }
 
@@ -390,9 +392,15 @@ export class MainViewApiService {
   }
 
   public getSpendTypes(includeAll: boolean = false): Observable<SelectableItem[]> {
-    const params = new HttpParams()
-      .set('includeAll', includeAll);
-    return this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params: params });
+    const cacheKey = String(includeAll);
+    if (!this.spendTypesCache[cacheKey]) {
+      const params = new HttpParams()
+        .set('includeAll', includeAll);
+      this.spendTypesCache[cacheKey] = this.httpClient.get<SelectableItem[]>(`${environment.baseApi}/api/SpendTypes`, { params: params }).pipe(
+        shareReplay(1)
+      );
+    }
+    return this.spendTypesCache[cacheKey];
   }
 
   public loadMainAccountGroups(): Observable<AccountGroup[]> {
