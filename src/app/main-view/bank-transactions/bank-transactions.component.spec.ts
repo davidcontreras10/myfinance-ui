@@ -143,4 +143,26 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     }).not.toThrow();
     expect(component.spendSummaryLoading).toBe(false);
   });
+
+  describe('getStatusBadgeClass', () => {
+    it('gives Processed a success badge', () => {
+      expect(component.getStatusBadgeClass(BankTransactionStatus.Processed)).toBe('text-bg-success');
+    });
+
+    it('gives Ignored a secondary badge', () => {
+      expect(component.getStatusBadgeClass(BankTransactionStatus.Ignored)).toBe('text-bg-secondary');
+    });
+
+    it('gives Inserted (New) a primary badge', () => {
+      expect(component.getStatusBadgeClass(BankTransactionStatus.Inserted)).toBe('text-bg-primary');
+    });
+
+    it('gives NotExisting the same badge as Inserted, matching getStatusName treating them alike', () => {
+      expect(component.getStatusBadgeClass(BankTransactionStatus.NotExisting)).toBe('text-bg-primary');
+    });
+
+    it('falls back to a neutral badge for Unknown', () => {
+      expect(component.getStatusBadgeClass(BankTransactionStatus.Unknown)).toBe('text-bg-light');
+    });
+  });
 });

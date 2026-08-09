@@ -1,6 +1,8 @@
 .selected {
-    background-color: #d9edf7;
-    /* Example color */
+    /* Bootstrap 5 paints each <td>'s background from --bs-table-bg individually,
+       which beats a plain background-color set on the <tr>. Overriding the custom
+       property here lets it cascade down to the cells correctly. */
+    --bs-table-bg: #d9edf7;
 }
 
 .table-selectable {
@@ -26,4 +28,97 @@
 .trx-amount-bad {
     color: red;
     font-weight: bold;
+}
+
+/* --- transactions table --- */
+.bank-trx-table-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.bank-trx-table thead th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.bank-trx-table td,
+.bank-trx-table th {
+    vertical-align: middle;
+}
+
+.bank-trx-table tbody td {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- side detail panel --- */
+.trx-detail-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.trx-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: #f8f9fa;
+}
+
+.trx-detail-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.trx-detail-summary {
+    margin: 0 0 1rem;
+}
+
+.trx-detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.trx-detail-row dt {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.trx-detail-row dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+}
+
+.trx-detail-divider {
+    margin: 0 0 1rem;
+    border-top: 1px solid #dee2e6;
+    opacity: 1;
+}
+
+.trx-detail-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.trx-detail-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.trx-detail-actions .btn {
+    flex: 1;
 }

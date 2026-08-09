@@ -357,6 +357,20 @@ export class BankTransactionsComponent implements OnInit {
     return this.getEnumText(value);
   }
 
+  getStatusBadgeClass(value: BankTransactionStatus): string {
+    switch (value) {
+      case BankTransactionStatus.Processed:
+        return 'text-bg-success';
+      case BankTransactionStatus.Ignored:
+        return 'text-bg-secondary';
+      case BankTransactionStatus.Inserted:
+      case BankTransactionStatus.NotExisting:
+        return 'text-bg-primary';
+      default:
+        return 'text-bg-light';
+    }
+  }
+
   getClientBankItemRequests(): ClientBankItemRequest[] {
     const values: ClientBankItemRequest[] = [];
     this.bankTransactions.forEach(trx => {
