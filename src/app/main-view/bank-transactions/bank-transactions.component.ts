@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
 import { AIClassifiedBankTrx, BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
@@ -219,17 +219,20 @@ export class BankTransactionsComponent implements OnInit {
   }
 
   private updateSpendSummary(): void {
-    const processedIds = this._bankTransactions
+    const processedItems: BankTrxSpendSummaryRequestItem[] = this._bankTransactions
       .filter(trx => trx.original.dbStatus === BankTransactionStatus.Processed)
-      .map(trx => trx.current.fileTransaction.transactionId);
+      .map(trx => ({
+        transactionId: trx.current.fileTransaction.transactionId,
+        financialEntityId: trx.current.financialEntityId
+      }));
 
-    if (processedIds.length === 0) {
+    if (processedItems.length === 0) {
       this.spendSummary = null;
       return;
     }
 
     this.spendSummaryLoading = true;
-    this.mainViewApiService.getBankTrxSpendSummary(processedIds).subscribe({
+    this.mainViewApiService.getBankTrxSpendSummary(processedItems).subscribe({
       next: (response) => {
         this.spendSummary = response;
         this.spendSummaryLoading = false;

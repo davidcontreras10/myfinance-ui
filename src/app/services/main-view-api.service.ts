@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, delay, map, of } from 'rxjs';
 import { AccountGroup, AIClassifiedBankTrx, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 // TODO(backend): temporary mock for BankTrxSpendSummaryResponse, used only until
@@ -144,14 +144,14 @@ export class MainViewApiService {
     return this.httpClient.post<BankTrxProcessResponse>(`${environment.baseApi}/api/BankTransactionsFiles/ProcessRequest`, requests);
   }
 
-  getBankTrxSpendSummary(transactionIds: string[]): Observable<BankTrxSpendSummaryResponse> {
+  getBankTrxSpendSummary(transactions: BankTrxSpendSummaryRequestItem[]): Observable<BankTrxSpendSummaryResponse> {
     // TODO(backend): the real endpoint (below, commented out) doesn't exist server-side yet.
     // Returning mock data for now so the frontend can be previewed end-to-end. Once
     // POST /api/BankTransactionsFiles/summary is implemented, delete MOCK_BANK_TRX_SPEND_SUMMARY
     // and this mock branch, and uncomment the real call.
     return of(MOCK_BANK_TRX_SPEND_SUMMARY).pipe(delay(400));
 
-    // const body = { transactionIds };
+    // const body = { transactions };
     // return this.httpClient.post<BankTrxSpendSummaryResponse>(`${environment.baseApi}/api/BankTransactionsFiles/summary`, body);
   }
 

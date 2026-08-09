@@ -426,6 +426,11 @@ export interface BankTrxProcessResponse {
   itemModifieds: ItemModifiedRes[];
 }
 
+export interface BankTrxSpendSummaryRequestItem {
+  transactionId: string;
+  financialEntityId: number;
+}
+
 export interface BankTrxSpendSummaryCurrency {
   currencyId: number;
   symbol: string;

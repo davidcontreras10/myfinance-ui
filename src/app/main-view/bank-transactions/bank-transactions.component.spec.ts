@@ -38,10 +38,10 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
 
   const emptySummary: BankTrxSpendSummaryResponse = { currencies: [], banks: [] };
 
-  function makeTrx(dbStatus: BankTransactionStatus, transactionId: string): any {
+  function makeTrx(dbStatus: BankTransactionStatus, transactionId: string, financialEntityId = 1): any {
     return {
-      original: { dbStatus, fileTransaction: { transactionId } },
-      current: { dbStatus, fileTransaction: { transactionId } },
+      original: { dbStatus, fileTransaction: { transactionId }, financialEntityId },
+      current: { dbStatus, fileTransaction: { transactionId }, financialEntityId },
       resetRequested: false
     };
   }
@@ -74,14 +74,17 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     expect(component.spendSummary).toBeNull();
   });
 
-  it('calls the summary API with only the ids of Processed rows when bankTransactions is set', () => {
+  it('calls the summary API with the transactionId + financialEntityId of only the Processed rows', () => {
     component.bankTransactions = [
-      makeTrx(BankTransactionStatus.Processed, 'a'),
-      makeTrx(BankTransactionStatus.Inserted, 'b'),
-      makeTrx(BankTransactionStatus.Processed, 'c')
+      makeTrx(BankTransactionStatus.Processed, 'a', 10),
+      makeTrx(BankTransactionStatus.Inserted, 'b', 20),
+      makeTrx(BankTransactionStatus.Processed, 'c', 30)
     ];
 
-    expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith(['a', 'c']);
+    expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith([
+      { transactionId: 'a', financialEntityId: 10 },
+      { transactionId: 'c', financialEntityId: 30 }
+    ]);
   });
 
   it('stores the API response in spendSummary and clears the loading flag', () => {
@@ -109,13 +112,13 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
   });
 
   it('re-triggers the summary after a submit response flips a row to Processed in place', () => {
-    component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a')];
+    component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a', 7)];
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).not.toHaveBeenCalled();
 
     const processResponse: BankTrxProcessResponse = {
       bankTransactions: [
         {
-          financialEntityId: 1,
+          financialEntityId: 7,
           fileTransaction: { transactionId: 'a', originalAmount: 100, transactionDate: new Date(), description: 'x', currencyCode: 'USD' },
           dbStatus: BankTransactionStatus.Processed,
           currency: { id: 1, name: 'Dollar', symbol: '$', isDefault: true, isSelected: true },
@@ -130,7 +133,9 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
 
     (component as any).processBankTrxProcessResponse(processResponse);
 
-    expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith(['a']);
+    expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith([
+      { transactionId: 'a', financialEntityId: 7 }
+    ]);
   });
 
   it('logs but does not throw when the summary API errors', () => {
