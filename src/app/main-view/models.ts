@@ -1,4 +1,5 @@
 import { AccountWithTrxTypeId, BankTransactionStatus, BankTrxItemReqResp, BankTrxSpendViewModel, Currency, FinanceAccountResponse, FinancialSummaryAccount, SelectableItem, SlcTrxAccountIncluded, TrxFilters } from "../services/models";
+import { Utils } from "../utils";
 
 export interface MainViewPrefs {
     periodsLimit: number;
@@ -119,7 +120,10 @@ export class BankTrxReqRespPair {
             return true;
         }
 
-        return this.totalTrxsAmount === this.current.fileTransaction.originalAmount;
+        // Comparing raw sums with === is unreliable here: e.g. 10 + 5.53 !== 15.53 due to
+        // binary floating point rounding, even though they're equal to the cent. Round
+        // both sides to the nearest cent before comparing.
+        return Utils.roundToCents(this.totalTrxsAmount) === Utils.roundToCents(this.current.fileTransaction.originalAmount);
     }
 
     get totalTrxsAmount(): number {
