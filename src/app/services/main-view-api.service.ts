@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, delay, map, of, shareReplay } from 'rxjs';
 import { AccountGroup, AIClassifiedBankTrx, BalanceTypes, BankGroups, MainViewPrefs, TransactionViewModel } from '../main-view/models';
 import { environment } from 'src/environments/environment';
-import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
+import { AccountNotes, AddTransferResponse, AddTrxRequest, AddTrxResponse, BankTrxProcessResponse, BankTrxRawAmountSummaryResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, ClientBankItemRequest, FileResponse, FinanceAccountResponse, FinancialEntityFile, FinancialSummaryAccount, GetFinanceReq, ItemModifiedRes, SelectableItem, TransactionViewResponse, TrxFilters } from './models';
 import { Utils } from '../utils';
 
 // The real POST /api/BankTransactionsFiles/summary endpoint is live now (see
@@ -154,6 +154,11 @@ export class MainViewApiService {
 
     const body = { transactions };
     return this.httpClient.post<BankTrxSpendSummaryResponse>(`${environment.baseApi}/api/BankTransactionsFiles/summary`, body);
+  }
+
+  getBankTrxRawAmountSummary(transactions: BankTrxSpendSummaryRequestItem[]): Observable<BankTrxRawAmountSummaryResponse> {
+    const body = { transactions };
+    return this.httpClient.post<BankTrxRawAmountSummaryResponse>(`${environment.baseApi}/api/BankTransactionsFiles/raw-summary`, body);
   }
 
   uploadBankTrxFile(file: File, financialEntityFile: FinancialEntityFile): Observable<HttpEvent<BankTrxReqResp>> {

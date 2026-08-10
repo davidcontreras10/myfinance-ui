@@ -239,6 +239,12 @@
                 </div>
             </div>
         </div>
+        <div class="row" *ngIf="rawAmountSummary || rawAmountSummaryLoading">
+            <div class="col-md-9">
+                <app-bank-trx-raw-amount-summary [summary]="rawAmountSummary"
+                    [rawAmountSummaryLoading]="rawAmountSummaryLoading"></app-bank-trx-raw-amount-summary>
+            </div>
+        </div>
         <div class="row" *ngIf="spendSummary || spendSummaryLoading">
             <div class="col-md-9">
                 <app-bank-trx-spend-summary [summary]="spendSummary"

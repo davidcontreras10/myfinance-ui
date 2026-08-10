@@ -53,6 +53,7 @@ import { BankTransactionsComponent } from './main-view/bank-transactions/bank-tr
 import { BankTransactionsModalComponent } from './main-view/bank-transactions/bank-transactions-modal/bank-transactions-modal.component';
 import { BankTrxMultipleComponent } from './main-view/bank-transactions/bank-trx-multiple/bank-trx-multiple.component';
 import { BankTrxSpendSummaryComponent } from './main-view/bank-transactions/bank-trx-spend-summary/bank-trx-spend-summary.component';
+import { BankTrxRawAmountSummaryComponent } from './main-view/bank-transactions/bank-trx-raw-amount-summary/bank-trx-raw-amount-summary.component';
 import { DebtManagerComponent } from './debt-manager/debt-manager.component';
 import { DebtManagerModalComponent } from './debt-manager/debt-manager-modal/debt-manager-modal.component';
 import { SubmittedDebtRequestsComponent } from './debt-manager/submitted-debt-requests/submitted-debt-requests.component';
@@ -108,6 +109,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     BankTransactionsModalComponent,
     BankTrxMultipleComponent,
     BankTrxSpendSummaryComponent,
+    BankTrxRawAmountSummaryComponent,
     DebtManagerComponent,
     DebtManagerModalComponent,
     SubmittedDebtRequestsComponent,

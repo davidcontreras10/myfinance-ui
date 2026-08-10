@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { BankTransactionsComponent } from './bank-transactions.component';
-import { BankTransactionStatus, BankTrxProcessResponse, BankTrxSpendSummaryResponse } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxProcessResponse, BankTrxRawAmountSummaryResponse, BankTrxSpendSummaryResponse } from 'src/app/services/models';
 
 describe('BankTransactionsComponent', () => {
   let component: BankTransactionsComponent;
@@ -31,12 +31,13 @@ describe('BankTransactionsComponent', () => {
 // new auto-refreshing spend-summary logic can be tested without that harness.
 describe('BankTransactionsComponent - spend summary auto-refresh', () => {
   let component: BankTransactionsComponent;
-  let mainViewApiServiceSpy: { getBankTrxSpendSummary: jasmine.Spy };
+  let mainViewApiServiceSpy: { getBankTrxSpendSummary: jasmine.Spy; getBankTrxRawAmountSummary: jasmine.Spy };
   let routerSpy: { getCurrentNavigation: jasmine.Spy; navigate: jasmine.Spy };
   let activatedRouteStub: { queryParams: any };
   let trxTypeServiceSpy: { getUserTransactionTypes: jasmine.Spy };
 
   const emptySummary: BankTrxSpendSummaryResponse = { currencies: [], banks: [] };
+  const emptyRawSummary: BankTrxRawAmountSummaryResponse = { currencies: [], banks: [] };
 
   function makeTrx(dbStatus: BankTransactionStatus, transactionId: string, financialEntityId = 1): any {
     return {
@@ -48,7 +49,8 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
 
   beforeEach(() => {
     mainViewApiServiceSpy = {
-      getBankTrxSpendSummary: jasmine.createSpy('getBankTrxSpendSummary').and.returnValue(of(emptySummary))
+      getBankTrxSpendSummary: jasmine.createSpy('getBankTrxSpendSummary').and.returnValue(of(emptySummary)),
+      getBankTrxRawAmountSummary: jasmine.createSpy('getBankTrxRawAmountSummary').and.returnValue(of(emptyRawSummary))
     };
     routerSpy = {
       getCurrentNavigation: jasmine.createSpy('getCurrentNavigation').and.returnValue(null),
@@ -147,6 +149,65 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       component.bankTransactions = [makeTrx(BankTransactionStatus.Processed, 'a')];
     }).not.toThrow();
     expect(component.spendSummaryLoading).toBe(false);
+  });
+
+  describe('raw amount summary (no status filtering)', () => {
+    it('does not call the raw-summary API when there are no rows at all', () => {
+      component.bankTransactions = [];
+
+      expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).not.toHaveBeenCalled();
+      expect(component.rawAmountSummary).toBeNull();
+    });
+
+    it('calls the raw-summary API with every row regardless of status', () => {
+      component.bankTransactions = [
+        makeTrx(BankTransactionStatus.Processed, 'a', 10),
+        makeTrx(BankTransactionStatus.Inserted, 'b', 20),
+        makeTrx(BankTransactionStatus.Ignored, 'c', 30),
+        makeTrx(BankTransactionStatus.Unknown, 'd', 40)
+      ];
+
+      expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).toHaveBeenCalledWith([
+        { transactionId: 'a', financialEntityId: 10 },
+        { transactionId: 'b', financialEntityId: 20 },
+        { transactionId: 'c', financialEntityId: 30 },
+        { transactionId: 'd', financialEntityId: 40 }
+      ]);
+    });
+
+    it('stores the API response in rawAmountSummary and clears the loading flag', () => {
+      const response: BankTrxRawAmountSummaryResponse = {
+        currencies: [{ currencyId: 1, currencyName: 'Dollar', symbol: '$', isoCode: 'USD', isDefault: false }],
+        banks: [{ financialEntityId: 1, financialEntityName: 'Bac San Jose', currencyAmounts: [] }]
+      };
+      mainViewApiServiceSpy.getBankTrxRawAmountSummary.and.returnValue(of(response));
+
+      component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a')];
+
+      expect(component.rawAmountSummary).toEqual(response);
+      expect(component.rawAmountSummaryLoading).toBe(false);
+    });
+
+    it('clears rawAmountSummary when bankTransactions is reassigned to empty', () => {
+      component.bankTransactions = [makeTrx(BankTransactionStatus.Ignored, 'a')];
+      expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).toHaveBeenCalledTimes(1);
+
+      component.bankTransactions = [];
+
+      expect(component.rawAmountSummary).toBeNull();
+      expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).toHaveBeenCalledTimes(1);
+    });
+
+    it('logs but does not throw when the raw-summary API errors', () => {
+      mainViewApiServiceSpy.getBankTrxRawAmountSummary.and.returnValue({
+        subscribe: (handlers: any) => handlers.error({ message: 'boom' })
+      });
+
+      expect(() => {
+        component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a')];
+      }).not.toThrow();
+      expect(component.rawAmountSummaryLoading).toBe(false);
+    });
   });
 
   describe('getStatusBadgeClass', () => {

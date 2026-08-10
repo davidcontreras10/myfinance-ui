@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxRawAmountSummaryResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
 import { AIClassifiedBankTrx, BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
@@ -37,10 +37,13 @@ export class BankTransactionsComponent implements OnInit {
   spendSummary: BankTrxSpendSummaryResponse | null = null;
   spendSummaryLoading = false;
 
+  rawAmountSummary: BankTrxRawAmountSummaryResponse | null = null;
+  rawAmountSummaryLoading = false;
+
   @Input()
   set bankTransactions(value: BankTrxReqRespPair[]) {
     this._bankTransactions = value ?? [];
-    this.updateSpendSummary();
+    this.refreshSummaries();
   }
 
   get bankTransactions(): BankTrxReqRespPair[] {
@@ -218,6 +221,11 @@ export class BankTransactionsComponent implements OnInit {
     });
   }
 
+  private refreshSummaries(): void {
+    this.updateSpendSummary();
+    this.updateRawAmountSummary();
+  }
+
   private updateSpendSummary(): void {
     const processedItems: BankTrxSpendSummaryRequestItem[] = this._bankTransactions
       .filter(trx => trx.original.dbStatus === BankTransactionStatus.Processed)
@@ -240,6 +248,33 @@ export class BankTransactionsComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         console.error('Spend summary error:', err.message);
         this.spendSummaryLoading = false;
+      }
+    });
+  }
+
+  private updateRawAmountSummary(): void {
+    // Unlike updateSpendSummary(), no status filtering here — every currently-loaded
+    // row is included regardless of status (Processed/Ignored/Inserted/Unknown).
+    const allItems: BankTrxSpendSummaryRequestItem[] = this._bankTransactions
+      .map(trx => ({
+        transactionId: trx.current.fileTransaction.transactionId,
+        financialEntityId: trx.current.financialEntityId
+      }));
+
+    if (allItems.length === 0) {
+      this.rawAmountSummary = null;
+      return;
+    }
+
+    this.rawAmountSummaryLoading = true;
+    this.mainViewApiService.getBankTrxRawAmountSummary(allItems).subscribe({
+      next: (response) => {
+        this.rawAmountSummary = response;
+        this.rawAmountSummaryLoading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Raw amount summary error:', err.message);
+        this.rawAmountSummaryLoading = false;
       }
     });
   }
@@ -269,7 +304,7 @@ export class BankTransactionsComponent implements OnInit {
             if (index > -1) {
               this.bankTransactions.splice(index, 1);
               this.selectRow(null);
-              this.updateSpendSummary();
+              this.refreshSummaries();
             }
           }
         });
@@ -469,7 +504,7 @@ export class BankTransactionsComponent implements OnInit {
       trx.resetRequested = false;
     });
 
-    this.updateSpendSummary();
+    this.refreshSummaries();
   }
 
 
