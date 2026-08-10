@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxReqResp, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
+import { BankTransactionStatus, BankTrxItemReqResp, BankTrxProcessResponse, BankTrxRawAmountSummaryResponse, BankTrxReqResp, BankTrxSpendSummaryRequestItem, BankTrxSpendSummaryResponse, BankTrxSpendViewModel, ClientBankItemRequest, ClientBankTrxRequest, FinancialEntityFile, SelectableItem } from 'src/app/services/models';
 import { AIClassifiedBankTrx, BankTrxReqRespPair } from '../models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainViewApiService } from 'src/app/services/main-view-api.service';
@@ -18,7 +18,8 @@ export class BankTransactionsComponent implements OnInit {
   FinancialEntityFile = FinancialEntityFile;
 
   @ViewChild('fileInput', { static: true }) fileInput!: ElementRef;
-  @Input() bankTransactions: BankTrxReqRespPair[];
+  @ViewChild('trxDetailColumn') trxDetailColumn?: ElementRef<HTMLElement>;
+  private _bankTransactions: BankTrxReqRespPair[] = [];
   selectedFile: File | null = null;
 
   BankTransactionStatus = BankTransactionStatus;
@@ -33,6 +34,22 @@ export class BankTransactionsComponent implements OnInit {
   respFinancialEntityId: number | null = null;
 
   transactionTypes: SelectableItem[] = [];
+
+  spendSummary: BankTrxSpendSummaryResponse | null = null;
+  spendSummaryLoading = false;
+
+  rawAmountSummary: BankTrxRawAmountSummaryResponse | null = null;
+  rawAmountSummaryLoading = false;
+
+  @Input()
+  set bankTransactions(value: BankTrxReqRespPair[]) {
+    this._bankTransactions = value ?? [];
+    this.refreshSummaries();
+  }
+
+  get bankTransactions(): BankTrxReqRespPair[] {
+    return this._bankTransactions;
+  }
 
 
   statusOrder: { [key in number]: number } = {
@@ -205,6 +222,64 @@ export class BankTransactionsComponent implements OnInit {
     });
   }
 
+  private refreshSummaries(): void {
+    this.updateSpendSummary();
+    this.updateRawAmountSummary();
+  }
+
+  private updateSpendSummary(): void {
+    const processedItems: BankTrxSpendSummaryRequestItem[] = this._bankTransactions
+      .filter(trx => trx.original.dbStatus === BankTransactionStatus.Processed)
+      .map(trx => ({
+        transactionId: trx.current.fileTransaction.transactionId,
+        financialEntityId: trx.current.financialEntityId
+      }));
+
+    if (processedItems.length === 0) {
+      this.spendSummary = null;
+      return;
+    }
+
+    this.spendSummaryLoading = true;
+    this.mainViewApiService.getBankTrxSpendSummary(processedItems).subscribe({
+      next: (response) => {
+        this.spendSummary = response;
+        this.spendSummaryLoading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Spend summary error:', err.message);
+        this.spendSummaryLoading = false;
+      }
+    });
+  }
+
+  private updateRawAmountSummary(): void {
+    // Unlike updateSpendSummary(), no status filtering here — every currently-loaded
+    // row is included regardless of status (Processed/Ignored/Inserted/Unknown).
+    const allItems: BankTrxSpendSummaryRequestItem[] = this._bankTransactions
+      .map(trx => ({
+        transactionId: trx.current.fileTransaction.transactionId,
+        financialEntityId: trx.current.financialEntityId
+      }));
+
+    if (allItems.length === 0) {
+      this.rawAmountSummary = null;
+      return;
+    }
+
+    this.rawAmountSummaryLoading = true;
+    this.mainViewApiService.getBankTrxRawAmountSummary(allItems).subscribe({
+      next: (response) => {
+        this.rawAmountSummary = response;
+        this.rawAmountSummaryLoading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Raw amount summary error:', err.message);
+        this.rawAmountSummaryLoading = false;
+      }
+    });
+  }
+
   getSearchOptions(): SelectableItem[] {
     return [
       { id: 1, name: 'Reference Number', isSelected: false, isDefault: false },
@@ -230,6 +305,7 @@ export class BankTransactionsComponent implements OnInit {
             if (index > -1) {
               this.bankTransactions.splice(index, 1);
               this.selectRow(null);
+              this.refreshSummaries();
             }
           }
         });
@@ -305,6 +381,24 @@ export class BankTransactionsComponent implements OnInit {
     this.selectedTransaction = row;
   }
 
+  onMultipleTransactionsToggled(): void {
+    if (this.selectedTransaction?.isMultipleTrx) {
+      this.scrollDetailColumnToBottom();
+    }
+  }
+
+  // Called after the split editor renders a new/changed row so it's actually visible,
+  // instead of leaving the user to scroll the (internally-scrollable) detail column
+  // themselves to find it.
+  scrollDetailColumnToBottom(): void {
+    setTimeout(() => {
+      const el = this.trxDetailColumn?.nativeElement;
+      if (el) {
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      }
+    });
+  }
+
   getEnumText(value: BankTransactionStatus): string {
     return BankTransactionStatus[value];
   }
@@ -318,6 +412,20 @@ export class BankTransactionsComponent implements OnInit {
       value = BankTransactionStatus.Inserted;
     }
     return this.getEnumText(value);
+  }
+
+  getStatusBadgeClass(value: BankTransactionStatus): string {
+    switch (value) {
+      case BankTransactionStatus.Processed:
+        return 'text-bg-success';
+      case BankTransactionStatus.Ignored:
+        return 'text-bg-secondary';
+      case BankTransactionStatus.Inserted:
+      case BankTransactionStatus.NotExisting:
+        return 'text-bg-primary';
+      default:
+        return 'text-bg-light';
+    }
   }
 
   getClientBankItemRequests(): ClientBankItemRequest[] {
@@ -415,7 +523,7 @@ export class BankTransactionsComponent implements OnInit {
       trx.resetRequested = false;
     });
 
-    this.bankTransactions;
+    this.refreshSummaries();
   }
 
 

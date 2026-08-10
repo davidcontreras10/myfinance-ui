@@ -1,0 +1,36 @@
+<div class="spend-summary-loading-placeholder" *ngIf="rawAmountSummaryLoading && !summary">
+    <span>Loading raw amounts...</span>
+</div>
+<div class="card spend-summary-card" *ngIf="summary && summary.banks.length > 0">
+    <div class="card-header spend-summary-header">
+        <div>
+            <div class="spend-summary-title">Raw Amounts by Bank</div>
+            <div class="spend-summary-subtitle">Every loaded row, as-is from the file — before it becomes a
+                transaction</div>
+        </div>
+        <span class="spend-summary-loading-badge" *ngIf="rawAmountSummaryLoading">Updating...</span>
+    </div>
+    <div class="card-body p-0" [ngClass]="{'on-data-loading': rawAmountSummaryLoading}">
+        <div class="table-responsive">
+            <table class="table spend-summary-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Bank</th>
+                        <th class="text-end" *ngFor="let currency of summary.currencies">{{currency.currencyName}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let bank of summary.banks; let bankIndex = index" [class.bank-alt]="bankIndex % 2 === 1">
+                        <td class="bank-name-cell">{{bank.financialEntityName}}</td>
+                        <td class="text-end" *ngFor="let currency of summary.currencies">
+                            <ng-container *ngIf="getAmount(bank, currency.currencyId) !== null">
+                                {{getAmount(bank, currency.currencyId) | currencyAmount:currency.symbol}}
+                            </ng-container>
+                            <span class="text-muted" *ngIf="getAmount(bank, currency.currencyId) === null">-</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
