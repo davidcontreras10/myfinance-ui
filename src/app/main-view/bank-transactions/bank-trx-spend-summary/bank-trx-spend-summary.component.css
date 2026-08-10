@@ -1,5 +1,6 @@
 .spend-summary-card {
     margin-top: 24px;
+    margin-bottom: 24px;
     border: 1px solid #dee2e6;
     border-radius: 8px;
     overflow: hidden;
@@ -47,12 +48,17 @@
 .spend-summary-table th {
     padding: 0.6rem 1rem;
     vertical-align: middle;
+    border-right: 1px solid #e9ecef;
+}
+
+.spend-summary-table td:last-child,
+.spend-summary-table th:last-child {
+    border-right: none;
 }
 
 .bank-name-cell {
     font-weight: 600;
     color: #495057;
-    border-right: 1px solid #e9ecef;
     vertical-align: middle;
 }
 
@@ -78,6 +84,7 @@
 
 .spend-summary-loading-placeholder {
     margin-top: 24px;
+    margin-bottom: 24px;
     padding: 0.75rem 1rem;
     color: #6c757d;
     font-size: 0.9rem;
