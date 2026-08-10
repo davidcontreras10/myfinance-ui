@@ -89,7 +89,7 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
 
   it('stores the API response in spendSummary and clears the loading flag', () => {
     const response: BankTrxSpendSummaryResponse = {
-      currencies: [{ currencyId: 1, symbol: '$', name: 'Dollar' }],
+      currencies: [{ id: 1, symbol: '$', name: 'Dollar', isDefault: true, isSelected: true }],
       banks: [{ financialEntityId: 1, financialEntityName: 'Bac San Jose', accounts: [] }]
     };
     mainViewApiServiceSpy.getBankTrxSpendSummary.and.returnValue(of(response));

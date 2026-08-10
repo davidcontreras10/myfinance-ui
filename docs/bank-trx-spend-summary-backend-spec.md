@@ -77,14 +77,18 @@ interface BankTrxSpendSummaryRequestItem {
 
 ```ts
 interface BankTrxSpendSummaryResponse {
-  currencies: BankTrxSpendSummaryCurrency[];   // union of every currency that appears anywhere in the result
+  currencies: Currency[];   // union of every currency that appears anywhere in the result
   banks: BankTrxSpendSummaryBank[];
 }
 
-interface BankTrxSpendSummaryCurrency {
-  currencyId: number;
-  symbol: string;   // e.g. "$"
-  name: string;      // e.g. "Dollar"
+// Currency is the frontend's existing type for the backend's BasicCurrencyViewModel —
+// no new/bespoke currency shape needed, see note below.
+interface Currency {
+  id: number;         // BasicCurrencyViewModel.Id (= CurrencyId)
+  name: string;        // BasicCurrencyViewModel.Name (= CurrencyName)
+  symbol: string;      // BasicCurrencyViewModel.Symbol, e.g. "$"
+  isDefault: boolean;  // BasicCurrencyViewModel.IsDefault
+  isSelected: boolean; // BasicCurrencyViewModel.IsSelected (= IsDefault)
 }
 
 interface BankTrxSpendSummaryBank {
@@ -107,12 +111,20 @@ interface BankTrxSpendSummaryCurrencyAmount {
 }
 ```
 
+Note: `currencies` deliberately reuses the same shape as the backend's existing
+`BasicCurrencyViewModel` (`CurrencyId`/`CurrencyName`/`Symbol`/`IsDefault` plus the
+`IDropDownSelectable`-computed `Id`/`Name`/`IsSelected`) rather than inventing a new DTO —
+the frontend already has a matching `Currency` type used for other currency dropdowns in
+the app. Just serialize `List<BasicCurrencyViewModel>` directly for this field; the extra
+`IsoCode` property is harmless and simply ignored by the frontend.
+
 ### Business rules for the response shape
 
 1. **`currencies` is the global, top-level list** — the union of every currency that shows
    up across the whole result, in a stable order. The frontend uses this array (not each
    account's own currencies) to build the table's columns, so every account's
-   `currencyAmounts` should use `currencyId` values that exist in this top-level list.
+   `currencyAmounts[].currencyId` (and `accounts[].currencyId`) should match the `id`
+   (`BasicCurrencyViewModel.CurrencyId`) of an entry in this top-level list.
 2. **Omit, don't zero.** If an account has no spend in a given currency, don't include an
    entry for it in that account's `currencyAmounts` at all — the frontend renders a `-` for
    any currency in the global list that's absent from a given account's array. Sending a

@@ -28,11 +28,11 @@
                             </td>
                             <td>{{acc.accountName}}</td>
                             <td class="text-end" *ngFor="let currency of summary.currencies"
-                                [class.default-currency-amount]="isDefaultCurrency(acc, currency.currencyId)">
-                                <ng-container *ngIf="getAmount(acc, currency.currencyId) !== null">
-                                    {{getAmount(acc, currency.currencyId) | currencyAmount:currency.symbol}}
+                                [class.default-currency-amount]="isDefaultCurrency(acc, currency.id)">
+                                <ng-container *ngIf="getAmount(acc, currency.id) !== null">
+                                    {{getAmount(acc, currency.id) | currencyAmount:currency.symbol}}
                                 </ng-container>
-                                <span class="text-muted" *ngIf="getAmount(acc, currency.currencyId) === null">-</span>
+                                <span class="text-muted" *ngIf="getAmount(acc, currency.id) === null">-</span>
                             </td>
                             <td class="text-end total-cell">
                                 {{acc.total | currencyAmount:getCurrencySymbol(acc.currencyId)}}</td>

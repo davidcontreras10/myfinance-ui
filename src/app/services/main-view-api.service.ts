@@ -11,8 +11,8 @@ import { Utils } from '../utils';
 // mock branch in getBankTrxSpendSummary() once the real endpoint is implemented.
 const MOCK_BANK_TRX_SPEND_SUMMARY: BankTrxSpendSummaryResponse = {
   currencies: [
-    { currencyId: 1, symbol: '$', name: 'Dollar' },
-    { currencyId: 2, symbol: '₡', name: 'Colones' }
+    { id: 1, symbol: '$', name: 'Dollar', isDefault: false, isSelected: false },
+    { id: 2, symbol: '₡', name: 'Colones', isDefault: true, isSelected: true }
   ],
   banks: [
     {

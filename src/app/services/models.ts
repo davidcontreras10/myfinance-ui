@@ -431,12 +431,6 @@ export interface BankTrxSpendSummaryRequestItem {
   financialEntityId: number;
 }
 
-export interface BankTrxSpendSummaryCurrency {
-  currencyId: number;
-  symbol: string;
-  name: string;
-}
-
 export interface BankTrxSpendSummaryCurrencyAmount {
   currencyId: number;
   amount: number;
@@ -457,7 +451,7 @@ export interface BankTrxSpendSummaryBank {
 }
 
 export interface BankTrxSpendSummaryResponse {
-  currencies: BankTrxSpendSummaryCurrency[];
+  currencies: Currency[];
   banks: BankTrxSpendSummaryBank[];
 }
 

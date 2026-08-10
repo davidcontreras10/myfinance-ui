@@ -21,6 +21,6 @@ export class BankTrxSpendSummaryComponent {
   }
 
   getCurrencySymbol(currencyId: number): string {
-    return this.summary?.currencies.find(c => c.currencyId === currencyId)?.symbol ?? '';
+    return this.summary?.currencies.find(c => c.id === currencyId)?.symbol ?? '';
   }
 }

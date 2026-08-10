@@ -8,18 +8,18 @@ describe('BankTrxSpendSummaryComponent', () => {
   let component: BankTrxSpendSummaryComponent;
   let fixture: ComponentFixture<BankTrxSpendSummaryComponent>;
 
-  const dollarCurrency = { currencyId: 1, symbol: '$', name: 'Dollar' };
-  const colonesCurrency = { currencyId: 2, symbol: '₡', name: 'Colones' };
-  const euroCurrency = { currencyId: 3, symbol: '€', name: 'Euro' };
+  const dollarCurrency = { id: 1, symbol: '$', name: 'Dollar', isDefault: false, isSelected: false };
+  const colonesCurrency = { id: 2, symbol: '₡', name: 'Colones', isDefault: true, isSelected: true };
+  const euroCurrency = { id: 3, symbol: '€', name: 'Euro', isDefault: false, isSelected: false };
 
   const cuentaBacAccount: BankTrxSpendSummaryAccount = {
     accountId: 1,
     accountName: 'CUENTA BAC',
-    currencyId: dollarCurrency.currencyId,
+    currencyId: dollarCurrency.id,
     currencyAmounts: [
-      { currencyId: dollarCurrency.currencyId, amount: 150 },
-      { currencyId: colonesCurrency.currencyId, amount: 25000 },
-      { currencyId: euroCurrency.currencyId, amount: 100 }
+      { currencyId: dollarCurrency.id, amount: 150 },
+      { currencyId: colonesCurrency.id, amount: 25000 },
+      { currencyId: euroCurrency.id, amount: 100 }
     ],
     total: 300
   };
@@ -27,10 +27,10 @@ describe('BankTrxSpendSummaryComponent', () => {
   const bacColonesAccount: BankTrxSpendSummaryAccount = {
     accountId: 2,
     accountName: 'BAC COLONES',
-    currencyId: colonesCurrency.currencyId,
+    currencyId: colonesCurrency.id,
     currencyAmounts: [
-      { currencyId: dollarCurrency.currencyId, amount: 10 },
-      { currencyId: colonesCurrency.currencyId, amount: 30000 }
+      { currencyId: dollarCurrency.id, amount: 10 },
+      { currencyId: colonesCurrency.id, amount: 30000 }
     ],
     total: 35000
   };
@@ -85,33 +85,33 @@ describe('BankTrxSpendSummaryComponent', () => {
 
   describe('getAmount', () => {
     it('returns the amount when the account has an entry for that currency', () => {
-      expect(component.getAmount(cuentaBacAccount, colonesCurrency.currencyId)).toBe(25000);
+      expect(component.getAmount(cuentaBacAccount, colonesCurrency.id)).toBe(25000);
     });
 
     it('returns null when the account has no entry for that currency', () => {
-      expect(component.getAmount(bacColonesAccount, euroCurrency.currencyId)).toBeNull();
+      expect(component.getAmount(bacColonesAccount, euroCurrency.id)).toBeNull();
     });
   });
 
   describe('isDefaultCurrency', () => {
     it('returns true when the currency matches the account default currency', () => {
-      expect(component.isDefaultCurrency(cuentaBacAccount, dollarCurrency.currencyId)).toBe(true);
+      expect(component.isDefaultCurrency(cuentaBacAccount, dollarCurrency.id)).toBe(true);
     });
 
     it('returns false when the currency does not match the account default currency', () => {
-      expect(component.isDefaultCurrency(cuentaBacAccount, colonesCurrency.currencyId)).toBe(false);
+      expect(component.isDefaultCurrency(cuentaBacAccount, colonesCurrency.id)).toBe(false);
     });
   });
 
   describe('getCurrencySymbol', () => {
     it('returns the symbol for a known currency id', () => {
       component.summary = summary;
-      expect(component.getCurrencySymbol(colonesCurrency.currencyId)).toBe('₡');
+      expect(component.getCurrencySymbol(colonesCurrency.id)).toBe('₡');
     });
 
     it('returns an empty string when there is no summary loaded', () => {
       component.summary = null;
-      expect(component.getCurrencySymbol(colonesCurrency.currencyId)).toBe('');
+      expect(component.getCurrencySymbol(colonesCurrency.id)).toBe('');
     });
 
     it('returns an empty string for an unknown currency id', () => {
