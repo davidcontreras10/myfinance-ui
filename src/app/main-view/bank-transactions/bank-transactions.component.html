@@ -163,8 +163,20 @@
                             [disabled]="f.invalid">
                     </div>
                 </div>
+                <div class="row" *ngIf="rawAmountSummary || rawAmountSummaryLoading">
+                    <div class="col-md-12">
+                        <app-bank-trx-raw-amount-summary [summary]="rawAmountSummary"
+                            [rawAmountSummaryLoading]="rawAmountSummaryLoading"></app-bank-trx-raw-amount-summary>
+                    </div>
+                </div>
+                <div class="row" *ngIf="spendSummary || spendSummaryLoading">
+                    <div class="col-md-12">
+                        <app-bank-trx-spend-summary [summary]="spendSummary"
+                            [spendSummaryloading]="spendSummaryLoading"></app-bank-trx-spend-summary>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3" *ngIf="selectedTransaction">
+            <div class="col-md-3 trx-detail-column" *ngIf="selectedTransaction">
                 <div class="card trx-detail-card">
                     <div class="card-header trx-detail-header">
                         <span class="trx-detail-title">Transaction Details</span>
@@ -237,18 +249,6 @@
                     <app-bank-trx-multiple [selectedTransaction]="selectedTransaction"
                         [transactionTypes]="transactionTypes"></app-bank-trx-multiple>
                 </div>
-            </div>
-        </div>
-        <div class="row" *ngIf="rawAmountSummary || rawAmountSummaryLoading">
-            <div class="col-md-9">
-                <app-bank-trx-raw-amount-summary [summary]="rawAmountSummary"
-                    [rawAmountSummaryLoading]="rawAmountSummaryLoading"></app-bank-trx-raw-amount-summary>
-            </div>
-        </div>
-        <div class="row" *ngIf="spendSummary || spendSummaryLoading">
-            <div class="col-md-9">
-                <app-bank-trx-spend-summary [summary]="spendSummary"
-                    [spendSummaryloading]="spendSummaryLoading"></app-bank-trx-spend-summary>
             </div>
         </div>
     </form>

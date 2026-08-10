@@ -58,6 +58,11 @@
 }
 
 /* --- side detail panel --- */
+.trx-detail-column {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
 .trx-detail-card {
     border: 1px solid #dee2e6;
     border-radius: 8px;
