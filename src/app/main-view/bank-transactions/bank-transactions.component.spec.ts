@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { BankTransactionsComponent } from './bank-transactions.component';
@@ -208,6 +208,38 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       }).not.toThrow();
       expect(component.rawAmountSummaryLoading).toBe(false);
     });
+  });
+
+  describe('scrolling the split editor into view', () => {
+    // No TestBed here, so trxDetailColumn (a @ViewChild) is never populated - these tests
+    // only need to confirm the scroll call is attempted/skipped correctly, not that a real
+    // element actually scrolls (that's for e2e/manual verification).
+    it('scrolls when Multiple transactions is toggled on', fakeAsync(() => {
+      component.selectedTransaction = { isMultipleTrx: true } as any;
+      const scrollSpy = spyOn(component, 'scrollDetailColumnToBottom');
+
+      component.onMultipleTransactionsToggled();
+
+      expect(scrollSpy).toHaveBeenCalled();
+      tick();
+    }));
+
+    it('does not scroll when Multiple transactions is toggled off', fakeAsync(() => {
+      component.selectedTransaction = { isMultipleTrx: false } as any;
+      const scrollSpy = spyOn(component, 'scrollDetailColumnToBottom');
+
+      component.onMultipleTransactionsToggled();
+
+      expect(scrollSpy).not.toHaveBeenCalled();
+      tick();
+    }));
+
+    it('scrollDetailColumnToBottom does not throw when no detail column is rendered', fakeAsync(() => {
+      expect(() => {
+        component.scrollDetailColumnToBottom();
+        tick();
+      }).not.toThrow();
+    }));
   });
 
   describe('getStatusBadgeClass', () => {

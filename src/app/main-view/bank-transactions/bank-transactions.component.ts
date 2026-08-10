@@ -18,6 +18,7 @@ export class BankTransactionsComponent implements OnInit {
   FinancialEntityFile = FinancialEntityFile;
 
   @ViewChild('fileInput', { static: true }) fileInput!: ElementRef;
+  @ViewChild('trxDetailColumn') trxDetailColumn?: ElementRef<HTMLElement>;
   private _bankTransactions: BankTrxReqRespPair[] = [];
   selectedFile: File | null = null;
 
@@ -378,6 +379,24 @@ export class BankTransactionsComponent implements OnInit {
 
   selectRow(row: BankTrxReqRespPair | null): void {
     this.selectedTransaction = row;
+  }
+
+  onMultipleTransactionsToggled(): void {
+    if (this.selectedTransaction?.isMultipleTrx) {
+      this.scrollDetailColumnToBottom();
+    }
+  }
+
+  // Called after the split editor renders a new/changed row so it's actually visible,
+  // instead of leaving the user to scroll the (internally-scrollable) detail column
+  // themselves to find it.
+  scrollDetailColumnToBottom(): void {
+    setTimeout(() => {
+      const el = this.trxDetailColumn?.nativeElement;
+      if (el) {
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      }
+    });
   }
 
   getEnumText(value: BankTransactionStatus): string {

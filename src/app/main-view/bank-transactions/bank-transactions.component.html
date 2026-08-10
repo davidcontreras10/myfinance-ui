@@ -176,7 +176,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 trx-detail-column" *ngIf="selectedTransaction">
+            <div class="col-md-3 trx-detail-column" #trxDetailColumn *ngIf="selectedTransaction">
                 <div class="card trx-detail-card">
                     <div class="card-header trx-detail-header">
                         <span class="trx-detail-title">Transaction Details</span>
@@ -229,6 +229,7 @@
                         <div class="form-check mb-3">
                             <input [(ngModel)]="selectedTransaction.isMultipleTrx" name="multipleTransactions"
                                 class="form-check-input" type="checkbox" id="multiple-transactions"
+                                (change)="onMultipleTransactionsToggled()"
                                 [disabled]="!selectedTransaction.canModifyTrxs()" />
                             <label class="form-check-label" for="multiple-transactions">
                                 Multiple transactions
@@ -247,7 +248,8 @@
 
                 <div class="mt-3">
                     <app-bank-trx-multiple [selectedTransaction]="selectedTransaction"
-                        [transactionTypes]="transactionTypes"></app-bank-trx-multiple>
+                        [transactionTypes]="transactionTypes"
+                        (trxAdded)="scrollDetailColumnToBottom()"></app-bank-trx-multiple>
                 </div>
             </div>
         </div>
