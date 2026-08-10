@@ -59,4 +59,12 @@ export class Utils {
     public static sortByName<T extends { name: string }>(items?: T[]): T[] {
         return (items ?? []).slice().sort((a, b) => a.name.localeCompare(b.name));
     }
+
+    // Rounds to the nearest cent. Use this before comparing/displaying summed currency
+    // amounts - floating point addition (e.g. 10 + 5.53) does not reliably equal the
+    // literal sum (15.53) due to binary rounding, so plain === comparisons on raw sums
+    // are unreliable for money.
+    public static roundToCents(value: number): number {
+        return Math.round((value + Number.EPSILON) * 100) / 100;
+    }
 }

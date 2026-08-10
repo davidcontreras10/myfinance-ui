@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BankTrxReqRespPair } from '../../models';
 import { BankTransactionStatus, BankTrxSpendViewModel, SelectableItem } from 'src/app/services/models';
 
@@ -13,6 +13,10 @@ export class BankTrxMultipleComponent implements OnInit {
   @Input() transactionTypes: SelectableItem[] = [];
   @Input() selectedTransaction: BankTrxReqRespPair | null = null;
 
+  // Lets the parent scroll the (internally-scrollable) detail column so a newly-added
+  // split row is actually visible, instead of leaving the user to scroll to find it.
+  @Output() trxAdded = new EventEmitter<void>();
+
   constructor() { }
 
   removeTransaction(_t9: BankTrxSpendViewModel, arg1: BankTrxReqRespPair) {
@@ -24,6 +28,7 @@ export class BankTrxMultipleComponent implements OnInit {
   addAppTrx() {
     if (this.selectedTransaction) {
       this.selectedTransaction.addTrx();
+      this.trxAdded.emit();
     }
   }
 

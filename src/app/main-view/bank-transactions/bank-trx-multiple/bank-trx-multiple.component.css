@@ -1,31 +1,119 @@
-.trx-item {
-    padding: 10px;
-    /* margin: 5px; */
+.split-trx-section {
+    margin-top: 1rem;
 }
 
-.row {
-    margin-top: 5px;
+.split-trx-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 0.75rem;
 }
 
-.total-trx-amount-good {
-    color: green;
-    font-weight: bold;
+.split-trx-title {
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
-.total-trx-amount-bad {
-    color: red;
-    font-weight: bold;
+.split-trx-total {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50rem;
+    font-size: 0.85rem;
 }
 
-.bank-trx-amount-good {
-    color: green;
-    font-weight: bold;
+.split-trx-total-good {
+    color: #146c2e;
+    background-color: #d1e7dd;
 }
 
-.bank-trx-amount-bad {
-    color: default;
+.split-trx-total-bad {
+    color: #b02a37;
+    background-color: #f8d7da;
 }
 
-.summary-trx-amout {
-    font-size: 1em;
+.split-trx-item {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    background-color: #fff;
+}
+
+.split-trx-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.split-trx-index {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+}
+
+.split-trx-remove {
+    width: 1.75rem;
+    height: 1.75rem;
+    line-height: 1;
+    padding: 0;
+    border: 1px solid #dee2e6;
+    border-radius: 50%;
+    background: transparent;
+    color: #dc3545;
+    font-size: 1.1rem;
+}
+
+.split-trx-remove:disabled {
+    color: #adb5bd;
+    border-color: #e9ecef;
+}
+
+.split-trx-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.2rem;
+}
+
+.split-trx-item .row {
+    margin-top: 0.5rem;
+}
+
+.split-trx-item .row:first-of-type {
+    margin-top: 0;
+}
+
+.split-trx-pending .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: calc(1.5em + 0.75rem + 2px);
+}
+
+.split-trx-add {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px dashed #adb5bd;
+    border-radius: 8px;
+    background: transparent;
+    color: #495057;
+    font-weight: 600;
+}
+
+.split-trx-add:hover:not(:disabled) {
+    background-color: #f8f9fa;
+}
+
+.split-trx-add:disabled {
+    color: #adb5bd;
+    border-color: #e9ecef;
 }

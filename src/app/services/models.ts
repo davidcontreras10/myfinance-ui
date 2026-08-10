@@ -426,6 +426,63 @@ export interface BankTrxProcessResponse {
   itemModifieds: ItemModifiedRes[];
 }
 
+export interface BankTrxSpendSummaryRequestItem {
+  transactionId: string;
+  financialEntityId: number;
+}
+
+export interface BankTrxSpendSummaryCurrencyAmount {
+  currencyId: number;
+  amount: number;
+}
+
+export interface BankTrxSpendSummaryAccount {
+  accountId: number;
+  accountName: string;
+  currencyId: number;
+  currencyAmounts: BankTrxSpendSummaryCurrencyAmount[];
+  total: number;
+}
+
+export interface BankTrxSpendSummaryBank {
+  financialEntityId: number;
+  financialEntityName: string;
+  accounts: BankTrxSpendSummaryAccount[];
+}
+
+export interface BankTrxSpendSummaryResponse {
+  currencies: Currency[];
+  banks: BankTrxSpendSummaryBank[];
+}
+
+// Raw property shape of the backend's BasicCurrencyViewModel (CurrencyId/CurrencyName/
+// Symbol/IsDefault/IsoCode), as returned by the raw-summary endpoint. Deliberately NOT the
+// frontend's Currency/SelectableItem shape (id/name/isSelected) used for /summary — the two
+// endpoints serialize this same backend class differently.
+export interface BasicCurrencyViewModel {
+  currencyId: number;
+  currencyName: string;
+  symbol: string;
+  isoCode: string;
+  isDefault: boolean;
+}
+
+export interface BankTrxCurrencyAmount {
+  currencyId: number;
+  amount: number;
+}
+
+export interface BankTrxRawAmountSummaryBank {
+  financialEntityId: number;
+  financialEntityName: string;
+  currencyAmounts: BankTrxCurrencyAmount[];
+}
+
+export interface BankTrxRawAmountSummaryResponse {
+  currencies: BasicCurrencyViewModel[];
+  banks: BankTrxRawAmountSummaryBank[];
+}
+
 export interface AppUser {
   userId: string;
   username: string;
