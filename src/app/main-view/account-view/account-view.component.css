@@ -13,41 +13,50 @@
     text-decoration: underline;
 }
 
-.table-low-margin>tbody>tr>td {
-    padding: 4px;
+/* Period Summary stat strip, replacing the old Budget/Spending/Balance
+   table - it was always a single data row wearing a 5-column header, and
+   which columns showed depended on account type (see the *ngIf's in the
+   template). auto-fit reflows the tiles from the strip's own rendered
+   width, same idea as the transaction cards: no viewport breakpoint to
+   misjudge, since accounts can share the screen two-up on desktop. */
+.acct-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    /* The old <table> had this from Bootstrap's default .table margin; a
+       plain div doesn't inherit it. */
+    margin-bottom: 16px;
 }
 
-/*saving*/
-.table-savings tr>th:nth-of-type(1),
-.table-savings tr>td:nth-of-type(1) {
-    display: none;
+.acct-stat {
+    padding: 9px 12px;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    background: #fff;
 }
 
-.table-savings tr>th:nth-of-type(2),
-.table-savings tr>td:nth-of-type(2) {
-    display: none;
+.acct-stat:last-child {
+    border-right: none;
 }
 
-/*saving*/
-.table-checking tr>th:nth-of-type(5),
-.table-checking tr>td:nth-of-type(5) {
-    display: none;
+.acct-stat-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #5c6660;
+    margin-bottom: 3px;
 }
 
-/*Bank*/
-.table-bank tr>th:nth-of-type(1),
-.table-bank tr>td:nth-of-type(1) {
-    display: none;
-}
-
-.table-bank tr>th:nth-of-type(2),
-.table-bank tr>td:nth-of-type(2) {
-    display: none;
-}
-
-.table-bank tr>th:nth-of-type(4),
-.table-bank tr>td:nth-of-type(4) {
-    display: none;
+.acct-stat-value {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: #212529;
+    font-variant-numeric: tabular-nums;
 }
 
 .spend-amount {

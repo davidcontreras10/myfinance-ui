@@ -3,6 +3,10 @@ import { SpendViewModel } from 'src/app/services/models';
 import { AccountGroupAccount } from '../../models';
 import { MainViewModel } from '../../main-view-model';
 
+// Below this many transactions there's nothing to be "compact" about - the
+// toggle would just be noise on a list that's already short.
+const COMPACT_VIEW_MIN_TRX_COUNT = 4;
+
 @Component({
   selector: 'app-trx-table',
   templateUrl: './trx-table.component.html',
@@ -32,6 +36,17 @@ export class TrxTableComponent implements OnInit {
   acc: AccountGroupAccount;
 
   isAllSelected: boolean = false;
+
+  // Desktop-only density switch (see the toolbar's .trx-density-toggle,
+  // hidden below a wider container-query threshold than the one that turns
+  // the mobile stack into a single detailed row - a compact card needs
+  // roughly two detailed rows' worth of width to show two of them side by
+  // side without cramping).
+  viewMode: 'detailed' | 'compact' = 'detailed';
+
+  get canShowCompactView(): boolean {
+    return (this.acc?.financeData?.spendViewModels?.length ?? 0) > COMPACT_VIEW_MIN_TRX_COUNT;
+  }
 
   constructor(private mainViewModel: MainViewModel) { }
 
@@ -76,6 +91,16 @@ export class TrxTableComponent implements OnInit {
 
   toggleAllSelection(): void {
     this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = this.isAllSelected);
+  }
+
+  // Clears the selection without acting on it - the "x" on the bulk-action bar.
+  clearSelection(): void {
+    this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = false);
+    this.isAllSelected = false;
+  }
+
+  setViewMode(mode: 'detailed' | 'compact'): void {
+    this.viewMode = mode;
   }
 
   anySelected() {
