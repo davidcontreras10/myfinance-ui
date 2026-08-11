@@ -5,3 +5,76 @@
 .saving-amount {
     color: green;
 }
+
+/* Three fixed-position slots: the amount, the copy button, and the currency
+   toggle. The third track is declared even on rows that have no toggle
+   (isOriginal), so the amount's right edge sits at the same offset on every
+   row - otherwise converted rows push their number left by the width of that
+   icon and the column of amounts stops lining up. */
+.amount-line {
+    display: inline-grid;
+    grid-template-columns: auto 24px 24px;
+    align-items: center;
+    gap: 2px;
+}
+
+/* min-width keeps every cluster the same overall width, so when the parent
+   centers them (see trx-table.component.css) they all land in the same place
+   and the numbers still read as one right-aligned column. */
+.amount-value {
+    justify-self: end;
+    min-width: 4.5em;
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.amount-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #adb5bd;
+    cursor: pointer;
+    flex: none;
+}
+
+.amount-icon-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.amount-icon-btn:hover {
+    background: #f1f3f5;
+    color: #495057;
+}
+
+.copy-amount-btn.copied {
+    color: #2e7d55;
+}
+
+/* Compact (two-column) transaction list - same three-slot grid, scaled down. */
+.amount-line.compact {
+    grid-template-columns: auto 20px 20px;
+}
+
+.amount-line.compact .amount-value {
+    min-width: 3.6em;
+    font-size: 13.5px;
+}
+
+.amount-line.compact .amount-icon-btn {
+    width: 20px;
+    height: 20px;
+}
+
+.amount-line.compact .amount-icon-btn svg {
+    width: 11px;
+    height: 11px;
+}

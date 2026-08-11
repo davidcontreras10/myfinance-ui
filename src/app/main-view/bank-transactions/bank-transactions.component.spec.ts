@@ -76,16 +76,30 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     expect(component.spendSummary).toBeNull();
   });
 
-  it('calls the summary API with the transactionId + financialEntityId of only the Processed rows', () => {
+  // The threshold is "more than 2 applicable records" - 1 or 2 Processed rows
+  // isn't enough to bother calling the API for a summary.
+  it('does not call the summary API with only 1 or 2 Processed rows', () => {
+    component.bankTransactions = [
+      makeTrx(BankTransactionStatus.Processed, 'a', 10),
+      makeTrx(BankTransactionStatus.Processed, 'b', 20)
+    ];
+
+    expect(mainViewApiServiceSpy.getBankTrxSpendSummary).not.toHaveBeenCalled();
+    expect(component.spendSummary).toBeNull();
+  });
+
+  it('calls the summary API with the transactionId + financialEntityId of only the Processed rows, once there are more than 2', () => {
     component.bankTransactions = [
       makeTrx(BankTransactionStatus.Processed, 'a', 10),
       makeTrx(BankTransactionStatus.Inserted, 'b', 20),
-      makeTrx(BankTransactionStatus.Processed, 'c', 30)
+      makeTrx(BankTransactionStatus.Processed, 'c', 30),
+      makeTrx(BankTransactionStatus.Processed, 'd', 40)
     ];
 
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith([
       { transactionId: 'a', financialEntityId: 10 },
-      { transactionId: 'c', financialEntityId: 30 }
+      { transactionId: 'c', financialEntityId: 30 },
+      { transactionId: 'd', financialEntityId: 40 }
     ]);
   });
 
@@ -96,15 +110,23 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     };
     mainViewApiServiceSpy.getBankTrxSpendSummary.and.returnValue(of(response));
 
-    component.bankTransactions = [makeTrx(BankTransactionStatus.Processed, 'a')];
+    component.bankTransactions = [
+      makeTrx(BankTransactionStatus.Processed, 'a'),
+      makeTrx(BankTransactionStatus.Processed, 'b'),
+      makeTrx(BankTransactionStatus.Processed, 'c')
+    ];
 
     expect(component.spendSummary).toEqual(response);
     expect(component.spendSummaryLoading).toBe(false);
   });
 
-  it('clears spendSummary when bankTransactions is reassigned with no Processed rows (e.g. Clear Transactions)', () => {
+  it('clears spendSummary when bankTransactions is reassigned with 2 or fewer Processed rows (e.g. Clear Transactions)', () => {
     mainViewApiServiceSpy.getBankTrxSpendSummary.and.returnValue(of(emptySummary));
-    component.bankTransactions = [makeTrx(BankTransactionStatus.Processed, 'a')];
+    component.bankTransactions = [
+      makeTrx(BankTransactionStatus.Processed, 'a'),
+      makeTrx(BankTransactionStatus.Processed, 'b'),
+      makeTrx(BankTransactionStatus.Processed, 'c')
+    ];
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledTimes(1);
 
     component.bankTransactions = [];
@@ -113,30 +135,36 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledTimes(1);
   });
 
-  it('re-triggers the summary after a submit response flips a row to Processed in place', () => {
-    component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a', 7)];
+  it('re-triggers the summary after a submit response flips rows to Processed in place, crossing the threshold', () => {
+    component.bankTransactions = [
+      makeTrx(BankTransactionStatus.Inserted, 'a', 7),
+      makeTrx(BankTransactionStatus.Inserted, 'b', 7),
+      makeTrx(BankTransactionStatus.Inserted, 'c', 7)
+    ];
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).not.toHaveBeenCalled();
 
+    const makeProcessedBankTrx = (transactionId: string) => ({
+      financialEntityId: 7,
+      fileTransaction: { transactionId, originalAmount: 100, transactionDate: new Date(), description: 'x', currencyCode: 'USD' },
+      dbStatus: BankTransactionStatus.Processed,
+      currency: { id: 1, name: 'Dollar', symbol: '$', isDefault: true, isSelected: true },
+      singleTrxAccountId: 1,
+      singleTrxTypeId: 2,
+      singleTrxIsPending: false,
+      processData: { transactions: [{ accountId: 1, spendId: 1, spendDate: new Date(), setPaymentDate: null, spendTypeId: 2, originalAmount: 100, amountCurrencyId: 1, description: 'x', convertedAmount: 100, accounts: [], isPending: false }] }
+    });
+
     const processResponse: BankTrxProcessResponse = {
-      bankTransactions: [
-        {
-          financialEntityId: 7,
-          fileTransaction: { transactionId: 'a', originalAmount: 100, transactionDate: new Date(), description: 'x', currencyCode: 'USD' },
-          dbStatus: BankTransactionStatus.Processed,
-          currency: { id: 1, name: 'Dollar', symbol: '$', isDefault: true, isSelected: true },
-          singleTrxAccountId: 1,
-          singleTrxTypeId: 2,
-          singleTrxIsPending: false,
-          processData: { transactions: [{ accountId: 1, spendId: 1, spendDate: new Date(), setPaymentDate: null, spendTypeId: 2, originalAmount: 100, amountCurrencyId: 1, description: 'x', convertedAmount: 100, accounts: [], isPending: false }] }
-        }
-      ],
+      bankTransactions: [makeProcessedBankTrx('a'), makeProcessedBankTrx('b'), makeProcessedBankTrx('c')],
       itemModifieds: []
     };
 
     (component as any).processBankTrxProcessResponse(processResponse);
 
     expect(mainViewApiServiceSpy.getBankTrxSpendSummary).toHaveBeenCalledWith([
-      { transactionId: 'a', financialEntityId: 7 }
+      { transactionId: 'a', financialEntityId: 7 },
+      { transactionId: 'b', financialEntityId: 7 },
+      { transactionId: 'c', financialEntityId: 7 }
     ]);
   });
 
@@ -146,7 +174,11 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
     });
 
     expect(() => {
-      component.bankTransactions = [makeTrx(BankTransactionStatus.Processed, 'a')];
+      component.bankTransactions = [
+        makeTrx(BankTransactionStatus.Processed, 'a'),
+        makeTrx(BankTransactionStatus.Processed, 'b'),
+        makeTrx(BankTransactionStatus.Processed, 'c')
+      ];
     }).not.toThrow();
     expect(component.spendSummaryLoading).toBe(false);
   });
@@ -159,7 +191,19 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       expect(component.rawAmountSummary).toBeNull();
     });
 
-    it('calls the raw-summary API with every row regardless of status', () => {
+    // Same "more than 2 applicable records" threshold as the spend summary,
+    // but against every row regardless of status.
+    it('does not call the raw-summary API with only 1 or 2 rows', () => {
+      component.bankTransactions = [
+        makeTrx(BankTransactionStatus.Inserted, 'a', 10),
+        makeTrx(BankTransactionStatus.Ignored, 'b', 20)
+      ];
+
+      expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).not.toHaveBeenCalled();
+      expect(component.rawAmountSummary).toBeNull();
+    });
+
+    it('calls the raw-summary API with every row regardless of status, once there are more than 2', () => {
       component.bankTransactions = [
         makeTrx(BankTransactionStatus.Processed, 'a', 10),
         makeTrx(BankTransactionStatus.Inserted, 'b', 20),
@@ -182,14 +226,22 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       };
       mainViewApiServiceSpy.getBankTrxRawAmountSummary.and.returnValue(of(response));
 
-      component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a')];
+      component.bankTransactions = [
+        makeTrx(BankTransactionStatus.Inserted, 'a'),
+        makeTrx(BankTransactionStatus.Inserted, 'b'),
+        makeTrx(BankTransactionStatus.Inserted, 'c')
+      ];
 
       expect(component.rawAmountSummary).toEqual(response);
       expect(component.rawAmountSummaryLoading).toBe(false);
     });
 
     it('clears rawAmountSummary when bankTransactions is reassigned to empty', () => {
-      component.bankTransactions = [makeTrx(BankTransactionStatus.Ignored, 'a')];
+      component.bankTransactions = [
+        makeTrx(BankTransactionStatus.Ignored, 'a'),
+        makeTrx(BankTransactionStatus.Ignored, 'b'),
+        makeTrx(BankTransactionStatus.Ignored, 'c')
+      ];
       expect(mainViewApiServiceSpy.getBankTrxRawAmountSummary).toHaveBeenCalledTimes(1);
 
       component.bankTransactions = [];
@@ -204,7 +256,11 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       });
 
       expect(() => {
-        component.bankTransactions = [makeTrx(BankTransactionStatus.Inserted, 'a')];
+        component.bankTransactions = [
+          makeTrx(BankTransactionStatus.Inserted, 'a'),
+          makeTrx(BankTransactionStatus.Inserted, 'b'),
+          makeTrx(BankTransactionStatus.Inserted, 'c')
+        ];
       }).not.toThrow();
       expect(component.rawAmountSummaryLoading).toBe(false);
     });

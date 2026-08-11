@@ -131,7 +131,14 @@ export class AccountViewComponent implements OnInit {
 
   onBankTrxView(trx: SpendViewModel) {
     if (trx) {
-      this.router.navigate(['/bank-trx'], { queryParams: { trxId: trx.spendId } });
+      // Opens in a new tab rather than navigating away - BankTransactionsComponent
+      // is a full page (upload/search/split-editor/summaries) with its own
+      // page-level navigation baked in (e.g. clearTransactions() navigates to
+      // /bank-trx itself), so hosting it in a modal here would risk that
+      // internal navigation unexpectedly closing the modal. A new tab leaves
+      // this page's state untouched and gives the linked record the whole page.
+      const urlTree = this.router.createUrlTree(['/bank-trx'], { queryParams: { trxId: trx.spendId } });
+      window.open(this.router.serializeUrl(urlTree), '_blank');
     }
   }
 

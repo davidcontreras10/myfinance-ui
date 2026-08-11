@@ -63,27 +63,34 @@
 <br />
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-bordered table-low-margin" [class.table-checking]="acc.type === 1"
-            [class.table-savings]="acc.type === 2" [class.table-bank]="acc.type === 3">
-            <thead>
-                <tr>
-                    <th data-field="Budget">Budget</th>
-                    <th data-field="Spent">Spending</th>
-                    <th data-field="Balance">Balance</th>
-                    <th data-field="OverallBalance">Overall Balance</th>
-                    <th data-field="OverallBalanceToday">Balance As Of Today</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{acc.financeData?.numBudget}}</td>
-                    <td>{{acc.financeData?.numSpent}}</td>
-                    <td>{{acc.financeData?.numPeriodBalance}}</td>
-                    <td>{{acc.financeData?.numGeneralBalance}}</td>
-                    <td>{{acc.financeData?.numGeneralBalanceToday}}</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Account types (see AccountGroupAccount.type): 1 = checking (no
+             Balance As Of Today), 2 = savings (no Budget/Spending), 3 =
+             bank-linked (Balance and Balance As Of Today only). Each stat is
+             its own *ngIf'd tile rather than a CSS column-hide rule, so the
+             visibility logic reads directly here instead of depending on a
+             table's fixed column order. -->
+        <div class="acct-stats">
+            <div class="acct-stat" *ngIf="acc.type !== 2 && acc.type !== 3">
+                <span class="acct-stat-label">Budget</span>
+                <span class="acct-stat-value">{{acc.financeData?.numBudget}}</span>
+            </div>
+            <div class="acct-stat" *ngIf="acc.type !== 2 && acc.type !== 3">
+                <span class="acct-stat-label">Spending</span>
+                <span class="acct-stat-value">{{acc.financeData?.numSpent}}</span>
+            </div>
+            <div class="acct-stat">
+                <span class="acct-stat-label">Balance</span>
+                <span class="acct-stat-value">{{acc.financeData?.numPeriodBalance}}</span>
+            </div>
+            <div class="acct-stat" *ngIf="acc.type !== 3">
+                <span class="acct-stat-label">Overall Balance</span>
+                <span class="acct-stat-value">{{acc.financeData?.numGeneralBalance}}</span>
+            </div>
+            <div class="acct-stat" *ngIf="acc.type !== 1">
+                <span class="acct-stat-label">Balance As Of Today</span>
+                <span class="acct-stat-value">{{acc.financeData?.numGeneralBalanceToday}}</span>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row" *ngIf="!isFilterMode()">
