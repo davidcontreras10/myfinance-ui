@@ -1,4 +1,4 @@
-<div *ngIf="acc?.financeData?.spendViewModels" class="trx-card-list">
+<div *ngIf="acc?.financeData?.spendViewModels?.length" class="trx-card-list">
   <div class="trx-card-body">
 
     <div class="trx-list-toolbar" *ngIf="!anySelected()">
@@ -90,4 +90,7 @@
     </div>
 
   </div>
+</div>
+<div *ngIf="acc?.financeData?.spendViewModels?.length === 0" class="trx-empty-state">
+    No transactions for this period.
 </div>

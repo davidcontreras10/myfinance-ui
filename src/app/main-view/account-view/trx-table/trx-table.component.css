@@ -224,6 +224,15 @@
     display: none;
 }
 
+.trx-empty-state {
+    padding: 22px 12px;
+    text-align: center;
+    color: #868e96;
+    font-size: 13.5px;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+}
+
 /* Once there's enough room for checkbox + date + type + amount + actions on
    one line without crowding, collapse the two stacked rows into one - and
    make every row share the same column widths, via CSS subgrid, so amounts
