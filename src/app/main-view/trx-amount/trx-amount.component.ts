@@ -18,6 +18,11 @@ export class TrxAmountComponent implements OnInit {
   @Input()
   spendViewModel: SpendViewModel;
 
+  // Smaller type/icons for the compact (two-column) transaction list -
+  // same markup and behavior, just sized to fit twice the density.
+  @Input()
+  compact = false;
+
   showConverted = false;
   justCopied = false;
 

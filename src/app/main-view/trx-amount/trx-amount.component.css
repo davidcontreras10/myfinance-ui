@@ -58,3 +58,23 @@
 .copy-amount-btn.copied {
     color: #2e7d55;
 }
+
+/* Compact (two-column) transaction list - same three-slot grid, scaled down. */
+.amount-line.compact {
+    grid-template-columns: auto 20px 20px;
+}
+
+.amount-line.compact .amount-value {
+    min-width: 3.6em;
+    font-size: 13.5px;
+}
+
+.amount-line.compact .amount-icon-btn {
+    width: 20px;
+    height: 20px;
+}
+
+.amount-line.compact .amount-icon-btn svg {
+    width: 11px;
+    height: 11px;
+}

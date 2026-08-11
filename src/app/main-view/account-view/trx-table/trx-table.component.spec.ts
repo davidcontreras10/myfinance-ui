@@ -120,4 +120,38 @@ describe('TrxTableComponent - card selection', () => {
 
     expect(emitSpy).toHaveBeenCalledWith([selected]);
   });
+
+  describe('setViewMode', () => {
+    it('defaults to detailed', () => {
+      expect(component.viewMode).toBe('detailed');
+    });
+
+    it('switches to compact and back', () => {
+      component.setViewMode('compact');
+      expect(component.viewMode).toBe('compact');
+
+      component.setViewMode('detailed');
+      expect(component.viewMode).toBe('detailed');
+    });
+  });
+
+  describe('canShowCompactView', () => {
+    it('is false with 4 or fewer transactions', () => {
+      component.acc = makeAcc([makeTrx(), makeTrx(), makeTrx(), makeTrx()]);
+
+      expect(component.canShowCompactView).toBe(false);
+    });
+
+    it('is true once there are more than 4 transactions', () => {
+      component.acc = makeAcc([makeTrx(), makeTrx(), makeTrx(), makeTrx(), makeTrx()]);
+
+      expect(component.canShowCompactView).toBe(true);
+    });
+
+    it('is false when there is no account yet', () => {
+      component.acc = undefined as any;
+
+      expect(component.canShowCompactView).toBe(false);
+    });
+  });
 });

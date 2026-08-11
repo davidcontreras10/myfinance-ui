@@ -16,6 +16,9 @@
 }
 
 .trx-list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 4px 2px 10px;
 }
 
@@ -25,6 +28,44 @@
     gap: 6px;
     font-size: 14.5px;
     color: #5c6660;
+}
+
+/* Density switch - hidden by default (see the wider @container threshold
+   below), since a compact card needs real width to hold two side by side
+   without cramping. Not shown at all below that, rather than shown-disabled,
+   so a narrow window/phone never even discovers a feature it can't use. */
+.trx-density-toggle {
+    display: none;
+    border: 1px solid #dee2e6;
+    border-radius: 7px;
+    overflow: hidden;
+    flex: none;
+}
+
+.trx-density-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+    background: #fff;
+    border: none;
+    color: #868e96;
+    cursor: pointer;
+}
+
+.trx-density-btn + .trx-density-btn {
+    border-left: 1px solid #dee2e6;
+}
+
+.trx-density-btn.active {
+    background: #e3efe8;
+    color: #2f6f5e;
+}
+
+.trx-density-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 /* Tinted to match the selected rows below it, rather than a heavy dark bar -
@@ -224,6 +265,128 @@
     display: none;
 }
 
+/* Compact (two-column) view - a lighter row than the detailed one: no
+   subgrid/column-alignment across cards, since this mode trades exact
+   alignment for density. Single column by default; two only once there's
+   real room (see the @container block below). */
+.trx-compact-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 22px;
+}
+
+.trx-compact-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 7px 4px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.trx-compact-card.is-pending {
+    background-color: lavenderblush;
+}
+
+.trx-compact-card.is-selected {
+    background-color: #e6f2ea;
+}
+
+.trx-compact-check {
+    flex: none;
+}
+
+.trx-compact-date {
+    flex: none;
+    width: 52px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #5c6660;
+    font-variant-numeric: tabular-nums;
+}
+
+.trx-compact-type {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #495057;
+    background: #f1f3f5;
+    padding: 2px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    min-width: 0;
+}
+
+.trx-compact-pending-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d9a441;
+    flex: none;
+}
+
+/* Pushes the amount+kebab group to the row's right edge regardless of how
+   long the type badge ends up being. */
+.trx-compact-amount {
+    margin-left: auto;
+}
+
+.trx-compact-menu {
+    flex: none;
+}
+
+.trx-compact-kebab {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 7px;
+    background: #fff;
+    color: #495057;
+    cursor: pointer;
+}
+
+.trx-compact-kebab svg {
+    width: 13px;
+    height: 13px;
+}
+
+.trx-compact-kebab:hover,
+.trx-compact-kebab[aria-expanded="true"] {
+    background: #f1f3f5;
+}
+
+/* ngbDropdownToggle applies Bootstrap's own .dropdown-toggle class to its
+   host automatically (it extends NgbDropdownAnchor, which hard-codes it),
+   which draws a caret via ::after - suppress it, since this button already
+   has its own three-dot icon and doesn't need a second indicator drawn on
+   top of it. Two classes to out-specificity Bootstrap's single-class rule
+   regardless of stylesheet order. */
+.trx-compact-kebab.dropdown-toggle::after {
+    display: none;
+}
+
+/* ngbDropdownItem only applies Bootstrap's .dropdown-item class - lay out
+   the icon+label ourselves, and size the icons explicitly: an <svg> with no
+   width/height defaults to its intrinsic ~300x150px, which is exactly the
+   oversized-icon bug. */
+.trx-compact-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trx-compact-menu-item svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+    fill: currentColor;
+}
+
 .trx-empty-state {
     padding: 22px 12px;
     text-align: center;
@@ -258,7 +421,8 @@
     }
 
     .trx-list-toolbar,
-    .trx-bulk-bar {
+    .trx-bulk-bar,
+    .trx-compact-body {
         grid-column: 1 / -1;
     }
 
@@ -285,8 +449,12 @@
     }
 
     /* Right-aligned within its own column so the digits form a clean numeric
-       column - the column itself is positioned by space-between above. */
-    app-trx-amount {
+       column - the column itself is positioned by space-between above.
+       Scoped to the detailed row specifically: an unscoped `app-trx-amount`
+       selector here would also reach the compact view's amount (nested
+       inside .trx-compact-card, a flex container) and its `order: 3` would
+       silently reorder that row's flex children. */
+    .trx-card-top > app-trx-amount {
         order: 3;
         justify-self: end;
     }
@@ -294,5 +462,22 @@
     .trx-card-actions {
         order: 4;
         justify-self: end;
+    }
+}
+
+/* Compact mode needs roughly two detailed rows' worth of width to show two
+   cards side by side without cramping (checkbox + date + type badge +
+   amount-with-icons + kebab, twice, plus the gap between). Below this, the
+   toggle itself is hidden (see .trx-density-toggle above) and the compact
+   grid falls back to a single column, so even the rare case of a window
+   shrinking mid-session while already in compact mode stays readable
+   instead of squeezing two columns into no room. */
+@container trx-list (min-width: 620px) {
+    .trx-density-toggle {
+        display: flex;
+    }
+
+    .trx-compact-body {
+        grid-template-columns: 1fr 1fr;
     }
 }

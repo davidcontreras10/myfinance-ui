@@ -1,5 +1,5 @@
 <div *ngIf="!isOriginal">
-    <div *ngIf="showConverted" class="amount-line">
+    <div *ngIf="showConverted" class="amount-line" [class.compact]="compact">
         <span class="amount-value" [ngClass]="{
             'spend-amount': spendViewModel.amountTypeId === 1,
             'saving-amount': spendViewModel.amountTypeId === 2
@@ -28,7 +28,7 @@
             </svg>
         </button>
     </div>
-    <div *ngIf="!showConverted" class="amount-line">
+    <div *ngIf="!showConverted" class="amount-line" [class.compact]="compact">
         <span class="amount-value" [ngClass]="{
             'spend-amount': spendViewModel.amountTypeId === 1,
             'saving-amount': spendViewModel.amountTypeId === 2
@@ -60,7 +60,7 @@
 </div>
 <!-- No exchange toggle on this branch (nothing to convert), but .amount-line
      still reserves its column so these amounts line up with converted ones. -->
-<div *ngIf="isOriginal" class="amount-line">
+<div *ngIf="isOriginal" class="amount-line" [class.compact]="compact">
     <span class="amount-value" [ngClass]="{
         'spend-amount': spendViewModel.amountTypeId === 1,
         'saving-amount': spendViewModel.amountTypeId === 2
