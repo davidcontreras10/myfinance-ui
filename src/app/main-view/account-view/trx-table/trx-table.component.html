@@ -118,7 +118,7 @@
                 <input type="checkbox" class="form-check-input trx-compact-check" [(ngModel)]="trx.vmIsSelected"
                     (change)="toggleSelection(trx)"
                     [attr.aria-label]="'Select transaction from ' + (trx.spendDate | date:'yyyy/MM/dd')" />
-                <span class="trx-compact-date">{{ trx.spendDate | date:"MM/dd" }}</span>
+                <span class="trx-compact-date">{{ trx.spendDate | date:"d MMM" }}</span>
                 <span class="trx-compact-type" [attr.title]="trx.spendTypeName">{{trx.spendTypeName}}</span>
                 <span class="trx-compact-pending-dot" *ngIf="trx.isPending" title="Pending"
                     aria-label="Pending"></span>
