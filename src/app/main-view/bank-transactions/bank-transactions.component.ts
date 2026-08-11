@@ -8,6 +8,11 @@ import { Utils } from 'src/app/utils';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
+// Below this many applicable records, a summary isn't worth the API call -
+// there's nothing to summarize that isn't already obvious from the rows
+// themselves.
+const MIN_TRX_FOR_SUMMARY = 2;
+
 @Component({
   selector: 'app-bank-transactions',
   templateUrl: './bank-transactions.component.html',
@@ -235,7 +240,7 @@ export class BankTransactionsComponent implements OnInit {
         financialEntityId: trx.current.financialEntityId
       }));
 
-    if (processedItems.length === 0) {
+    if (processedItems.length <= MIN_TRX_FOR_SUMMARY) {
       this.spendSummary = null;
       return;
     }
@@ -262,7 +267,7 @@ export class BankTransactionsComponent implements OnInit {
         financialEntityId: trx.current.financialEntityId
       }));
 
-    if (allItems.length === 0) {
+    if (allItems.length <= MIN_TRX_FOR_SUMMARY) {
       this.rawAmountSummary = null;
       return;
     }
