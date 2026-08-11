@@ -1,79 +1,289 @@
-.main-box-title {
+/* Card list replacing the old <table> - see trx-table.component.html.
+   (Removed several rules that only made sense for the old table markup:
+   .table-savings/.table-checking/.table-bank nth-of-type column hiding, and a
+   blanket `button { margin: 5px }` that had no effect while this template had
+   no <button> elements but would otherwise now clash with the action buttons
+   below.) */
+
+.trx-card-list {
+    margin-bottom: 12px;
+    /* Lets the card layout respond to its own rendered width rather than the
+       viewport's - accounts sit two-up on desktop (see acc-group.component.ts,
+       col-md-6), so "desktop" here is often not much wider than "mobile" once
+       two cards share the screen. A plain @media breakpoint can't see that. */
+    container-type: inline-size;
+    container-name: trx-list;
+}
+
+.trx-list-toolbar {
+    padding: 4px 2px 10px;
+}
+
+.trx-select-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14.5px;
+    color: #5c6660;
+}
+
+/* Tinted to match the selected rows below it, rather than a heavy dark bar -
+   it's a state indicator for those rows, so it reads better as part of the
+   same selection than as a separate black slab. */
+.trx-bulk-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #e3efe8;
+    border: 1px solid #bcd8c8;
+    color: #234032;
+    padding: 7px 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.trx-bulk-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trx-bulk-count {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.trx-bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.trx-bulk-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    border: 1px solid #bcd8c8;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2e7d55;
+    cursor: pointer;
+}
+
+.trx-bulk-pill svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.trx-bulk-pill:hover {
+    background: #f2f9f5;
+}
+
+.trx-bulk-pill.trx-bulk-danger {
+    border-color: #e6c3bc;
+    color: #b64a3a;
+}
+
+.trx-bulk-pill.trx-bulk-danger:hover {
+    background: #fdf5f3;
+}
+
+/* Sits before the count, not among the actions - it exits the selection,
+   it isn't something done *to* the selected rows. */
+.trx-bulk-close {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #567061;
     font-size: 20px;
-    float: none;
-    text-align: center;
-    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    flex: none;
 }
 
-.box-title {
-    font-size: 20px;
+.trx-bulk-close:hover {
+    background: #cfe4d8;
+    color: #234032;
 }
 
-.box-title:hover {
-    text-decoration: underline;
+.trx-card {
+    padding: 10px 4px;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.table-low-margin>tbody>tr>td {
-    padding: 4px;
-}
-
-/*saving*/
-.table-savings tr>th:nth-of-type(1),
-.table-savings tr>td:nth-of-type(1) {
-    display: none;
-}
-
-.table-savings tr>th:nth-of-type(2),
-.table-savings tr>td:nth-of-type(2) {
-    display: none;
-}
-
-/*saving*/
-.table-checking tr>th:nth-of-type(5),
-.table-checking tr>td:nth-of-type(5) {
-    display: none;
-}
-
-/*Bank*/
-.table-bank tr>th:nth-of-type(1),
-.table-bank tr>td:nth-of-type(1) {
-    display: none;
-}
-
-.table-bank tr>th:nth-of-type(2),
-.table-bank tr>td:nth-of-type(2) {
-    display: none;
-}
-
-.table-bank tr>th:nth-of-type(4),
-.table-bank tr>td:nth-of-type(4) {
-    display: none;
-}
-
-.spend-amount {
-    color: red;
-}
-
-.saving-amount {
-    color: green;
-}
-
-.outer-column {
-    border: solid cadetblue 5px;
-}
-
-button {
-    margin: 5px;
-}
-
-.is-pending {
+.trx-card.is-pending {
     background-color: lavenderblush;
 }
 
-.is-pending {
-    background: lavenderblush;
+.trx-card.is-selected {
+    background-color: #e6f2ea;
+}
+
+.trx-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.trx-card-lead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trx-card-date {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #5c6660;
+    letter-spacing: .01em;
+    font-variant-numeric: tabular-nums;
+}
+
+.trx-card-mid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.trx-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.trx-type-badge {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #495057;
+    background: #f1f3f5;
+    padding: 3px 10px;
+    border-radius: 100px;
+}
+
+.trx-pending-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #b8842c;
+    background: #f7edd9;
+    padding: 3px 8px;
+    border-radius: 100px;
+}
+
+.trx-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.trx-act-btn {
+    width: 33px;
+    height: 33px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.trx-act-btn svg {
+    width: 15px;
+    height: 15px;
+    fill: #495057;
+}
+
+.trx-act-btn:hover {
+    background: #f1f3f5;
+}
+
+.trx-act-btn.trx-act-danger svg {
+    fill: #c0392b;
 }
 
 .debug-data {
     display: none;
+}
+
+/* Once there's enough room for checkbox + date + type + amount + actions on
+   one line without crowding, collapse the two stacked rows into one - and
+   make every row share the same column widths, via CSS subgrid, so amounts
+   and action clusters line up on a consistent edge instead of each row
+   sizing itself independently (which is what flexbox was doing before: a
+   row with the currency-exchange icon or an extra action button is wider
+   than one without, so nothing lined up). The thresholds below are wide
+   enough for the worst case (pending badge, 4 action buttons). */
+@container trx-list (min-width: 480px) {
+    .trx-card-body {
+        /* Use the full width of the account panel and spread the leftover
+           space *between* every column (space-between), rather than pooling
+           it into one flexible track - that's what made a single dead gap
+           appear. Each track is auto-sized from the widest value in its
+           column (shared across rows via subgrid below), so a long type name
+           or a large amount widens its own column for every row instead of
+           colliding with its neighbour. Same behaviour the original table
+           had. */
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        justify-content: space-between;
+        column-gap: 14px;
+    }
+
+    .trx-list-toolbar,
+    .trx-bulk-bar {
+        grid-column: 1 / -1;
+    }
+
+    .trx-card {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: subgrid;
+        align-items: center;
+    }
+
+    .trx-card-top,
+    .trx-card-mid {
+        display: contents;
+    }
+
+    .trx-card-lead {
+        order: 1;
+    }
+
+    .trx-card-meta {
+        order: 2;
+        justify-self: start;
+        min-width: 0;
+    }
+
+    /* Right-aligned within its own column so the digits form a clean numeric
+       column - the column itself is positioned by space-between above. */
+    app-trx-amount {
+        order: 3;
+        justify-self: end;
+    }
+
+    .trx-card-actions {
+        order: 4;
+        justify-self: end;
+    }
 }

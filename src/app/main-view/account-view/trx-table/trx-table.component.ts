@@ -78,6 +78,12 @@ export class TrxTableComponent implements OnInit {
     this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = this.isAllSelected);
   }
 
+  // Clears the selection without acting on it - the "x" on the bulk-action bar.
+  clearSelection(): void {
+    this.acc?.financeData?.spendViewModels?.forEach(trx => trx.vmIsSelected = false);
+    this.isAllSelected = false;
+  }
+
   anySelected() {
     return this.acc?.financeData?.spendViewModels?.some(trx => trx.vmIsSelected) ?? false;
   }
