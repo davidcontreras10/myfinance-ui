@@ -261,6 +261,14 @@
     fill: #c0392b;
 }
 
+/* Same blue as the compact view's linked-bank-trx kebab, so the color means
+   the same thing in both views - only the icon is tinted here, matching how
+   this view already handles Delete (border/background stay neutral for
+   every button; only the icon carries meaning). */
+.trx-act-btn.trx-act-linked svg {
+    fill: #4a7fb5;
+}
+
 .debug-data {
     display: none;
 }
@@ -346,6 +354,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
     border: 1px solid #dee2e6;
     border-radius: 7px;
     background: #fff;
@@ -361,6 +370,20 @@
 .trx-compact-kebab:hover,
 .trx-compact-kebab[aria-expanded="true"] {
     background: #f1f3f5;
+}
+
+/* "Has a linked bank transaction" - border + a light fill on the button
+   that reveals it, rather than an extra element. Costs no layout space
+   (same button, same size) and, paired with the title/aria-label above,
+   isn't a color-only signal even though color carries most of it. */
+.trx-compact-kebab.linked-bank-trx {
+    border-color: #4a7fb5;
+    color: #4a7fb5;
+    background: #eaf1f8;
+}
+
+.trx-compact-kebab.linked-bank-trx:hover {
+    background: #dce9f4;
 }
 
 /* ngbDropdownToggle applies Bootstrap's own .dropdown-toggle class to its
