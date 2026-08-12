@@ -1,7 +1,9 @@
 <div *ngIf="dataSource && dataSource.length > 0">
-    <h3>Executed Tasks:</h3>
-    <div class="partial-view">
-        <table class="table full-width">
+    <div class="history-head">
+        <h4>Execution history</h4>
+    </div>
+    <div class="history-table-wrap">
+        <table class="history">
             <thead>
                 <tr>
                     <th scope="col">Date</th>
@@ -11,16 +13,16 @@
             </thead>
             <tbody>
                 <tr *ngFor="let element of dataSource">
-                    <td> {{element.executedDate | date: 'dd/MM HH:mm'}}</td>
+                    <td class="date"> {{element.executedDate | date: 'dd/MM HH:mm'}}</td>
                     <td>
                         <app-task-status [taskStatus]="element.status"></app-task-status>
                     </td>
-                    <td> {{element.message}} </td>
+                    <td class="msg"> {{element.message}} </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-<div *ngIf="dataSource && dataSource.length < 1">
-    <h3>Not executed records</h3>
+<div *ngIf="dataSource && dataSource.length === 0" class="history-empty">
+    No execution records yet.
 </div>

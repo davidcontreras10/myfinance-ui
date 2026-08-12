@@ -1,14 +1,41 @@
-.createdTask{
-    color: blue;
-    font-weight: bold;
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
 }
 
-.succededTask{
-    color: green;
-    font-weight: bold;
+.status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
 }
 
-.failedTask{
-    color: red;
-    font-weight: bold;
+.status-pill.succeeded {
+    background: var(--st-success-tint);
+    color: var(--st-success);
+}
+
+.status-pill.failed {
+    background: var(--st-danger-tint);
+    color: var(--st-danger);
+}
+
+.status-pill.created {
+    background: var(--st-created-tint);
+    color: var(--st-created);
+}
+
+.status-pill.unknown {
+    background: var(--st-border-soft);
+    color: var(--st-ink-faint);
 }
