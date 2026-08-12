@@ -1,6 +1,6 @@
 <div class="task-list">
     <button type="button" class="task-row" *ngFor="let task of tasks"
-        [class.is-selected]="task === selectedTask" (click)="selectRow(task)">
+        [class.is-selected]="task.id === selectedTask?.id" (click)="selectRow(task)">
         <div>
             <p class="task-row-account">{{ task.description }}</p>
             <p class="task-row-desc">{{ task.accountName }}</p>

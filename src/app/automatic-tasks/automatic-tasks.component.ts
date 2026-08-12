@@ -54,6 +54,18 @@ export class AutomaticTasksComponent implements OnInit {
   private _setLoadedTasks(data: IAutomaticTask[]) {
     this.loadedTasks = [];
     this.loadedTasks = data;
+    this._reselectCurrentTask();
+  }
+
+  // Every reload (after edit/delete/run) fetches a brand new array of task
+  // objects - selectedTask would otherwise keep pointing at the old,
+  // now-detached instance, so the detail panel would go on showing pre-edit
+  // values. Re-point it at the refreshed object with the same id (or clear
+  // it if that task no longer exists, e.g. after a delete).
+  private _reselectCurrentTask(): void {
+    if (this.selectedTask) {
+      this.selectedTask = this.loadedTasks.find(task => task.id === this.selectedTask.id) as IAutomaticTask;
+    }
   }
 
   private _reloadScheduledTasks() {

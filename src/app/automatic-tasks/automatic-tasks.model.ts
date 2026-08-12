@@ -32,6 +32,9 @@ export interface IAutomaticTask {
     accountName: string,
     amount: number,
     currencySymbol: string,
+    // Already present on the API response (BaseScheduledTaskVm.spendTypeId) - this
+    // was just never typed here. Needed to pre-fill/edit the transaction type.
+    spendTypeId: number,
     lastExecutedStatus: TaskStatus,
     frequencyType: FrequencyType,
     taskType: AutomaticTaskType,
@@ -71,6 +74,7 @@ export class SpInAutomaticTask implements IAutomaticTask {
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
+    spendTypeId!: number;
     isSpend!: boolean;
     frequencyType!: FrequencyType;
     taskType!: AutomaticTaskType;
@@ -86,6 +90,7 @@ export class TransferAutomaticTask implements IAutomaticTask {
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
+    spendTypeId!: number;
     toAccountName: string = "";
     frequencyType!: FrequencyType;
     taskType!: AutomaticTaskType;

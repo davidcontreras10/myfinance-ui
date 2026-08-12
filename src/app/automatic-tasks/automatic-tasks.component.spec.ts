@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { AutomaticTasksComponent } from './automatic-tasks.component';
 import { IAutomaticTask, TaskStatus } from './automatic-tasks.model';
@@ -91,5 +92,65 @@ describe('AutomaticTasksComponent - search', () => {
     component.clearSearch();
 
     expect(component.searchTerm).toBe('');
+  });
+});
+
+// Direct instantiation - onTaskModelChanged only touches the api service
+// spy and the component's own inputs, neither of which needs Angular's
+// DI/rendering.
+describe('AutomaticTasksComponent - reselect after reload', () => {
+  let component: AutomaticTasksComponent;
+  let serviceSpy: jasmine.SpyObj<any>;
+
+  function makeTask(overrides: Partial<IAutomaticTask> = {}): IAutomaticTask {
+    return {
+      id: '1',
+      description: 'Cambio de Aceite',
+      accountId: 1,
+      accountName: 'General Bac',
+      amount: 100,
+      currencySymbol: '₡',
+      lastExecutedStatus: TaskStatus.Succeeded,
+      frequencyType: 1,
+      taskType: 1,
+      days: [3],
+      isPending: false,
+      ...overrides
+    } as IAutomaticTask;
+  }
+
+  beforeEach(() => {
+    serviceSpy = jasmine.createSpyObj('AutoTasksApiService', ['getScheduledTasks']);
+    component = new AutomaticTasksComponent(serviceSpy, null as any);
+  });
+
+  it('re-points selectedTask at the refreshed object with the same id', () => {
+    const staleSelection = makeTask({ id: '1', description: 'Gasolina', amount: 100 });
+    component.selectedTask = staleSelection;
+    const refreshed = makeTask({ id: '1', description: 'Gasolina', amount: 250 });
+    serviceSpy.getScheduledTasks.and.returnValue(of([refreshed, makeTask({ id: '2' })]));
+
+    component.onTaskModelChanged();
+
+    expect(component.selectedTask).toBe(refreshed);
+    expect(component.selectedTask.amount).toBe(250);
+  });
+
+  it('clears selectedTask when it no longer exists after reload (e.g. deleted)', () => {
+    component.selectedTask = makeTask({ id: '1' });
+    serviceSpy.getScheduledTasks.and.returnValue(of([makeTask({ id: '2' })]));
+
+    component.onTaskModelChanged();
+
+    expect(component.selectedTask).toBeUndefined();
+  });
+
+  it('leaves selectedTask alone when nothing was selected', () => {
+    component.selectedTask = undefined as any;
+    serviceSpy.getScheduledTasks.and.returnValue(of([makeTask({ id: '1' })]));
+
+    component.onTaskModelChanged();
+
+    expect(component.selectedTask).toBeUndefined();
   });
 });

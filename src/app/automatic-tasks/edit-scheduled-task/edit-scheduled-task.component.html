@@ -1,0 +1,52 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="modal-header">
+        <h4 class="modal-title">Edit {{task.description}}</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <p class="edit-account-context">Account: {{task.accountName}}</p>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="edit-task-description">Description:</label>
+                    <input [ngModel]="task.description" [minlength]="3" [maxlength]="100" required class="form-control"
+                        name="description" id="edit-task-description" type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="edit-task-amount">Amount ({{task.currencySymbol}}):</label>
+                    <input [ngModel]="task.amount" [min]="0.1" required class="form-control" name="amount"
+                        id="edit-task-amount" type="number" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="edit-task-spend-type">Type:</label>
+                    <select [(ngModel)]="selectedSpendTypeId" required name="spendType"
+                        id="edit-task-spend-type" class="form-control">
+                        <option *ngFor="let spendType of spendTypes" [value]="spendType.id">{{spendType.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-check">
+                    <input mdbCheckbox [ngModel]="task.isPending" name="isPending" class="form-check-input" type="checkbox"
+                        id="edit-task-pending" />
+                    <label class="form-check-label" for="edit-task-pending">
+                        Pending
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('Close click')">Close</button>
+        <button [disabled]="f.invalid || f.pristine" type="submit" class="btn btn-outline-dark">Save Changes</button>
+    </div>
+</form>

@@ -10,7 +10,7 @@ export class TasksListComponent implements OnInit {
 
   TaskStatus = TaskStatus;
 
-  selectedTask: IAutomaticTask;
+  selectedTask?: IAutomaticTask;
 
   @Input() tasks: IAutomaticTask[];
   @Output() selectedChanged = new EventEmitter();

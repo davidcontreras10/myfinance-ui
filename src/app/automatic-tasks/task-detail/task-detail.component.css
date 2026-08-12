@@ -63,6 +63,16 @@
     flex: none;
 }
 
+.btn-outline-accent {
+    background: transparent;
+    border-color: var(--st-accent);
+    color: var(--st-accent-ink);
+}
+
+.btn-outline-accent:hover {
+    background: var(--st-accent-tint);
+}
+
 .btn-outline-danger {
     background: transparent;
     border-color: var(--st-danger);

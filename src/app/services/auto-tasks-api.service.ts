@@ -83,4 +83,9 @@ export class AutoTasksApiService {
     const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}`;
     return this.http.delete<void>(url);
   }
+
+  editScheduledTask(taskId: string, model: any): Observable<void> {
+    const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}`;
+    return this.http.patch<void>(url, model);
+  }
 }

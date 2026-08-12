@@ -10,6 +10,10 @@
     <p class="detail-desc">{{getDesc(selectedTask)}}</p>
 
     <div class="action-row">
+        <button type="button" class="btn btn-outline-accent" (click)="onEditTask()">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.85 2.15a1.5 1.5 0 0 1 2.12 0l.88.88a1.5 1.5 0 0 1 0 2.12l-8.5 8.5a.75.75 0 0 1-.33.19l-3.25.9a.75.75 0 0 1-.92-.92l.9-3.25a.75.75 0 0 1 .19-.33l8.5-8.5Zm1.06 1.06a.5.5 0 0 0-.7 0l-.9.9 1.59 1.59.9-.9a.5.5 0 0 0 0-.7l-.88-.89ZM12.2 6.9 10.6 5.31l-6.32 6.32-.55 1.98 1.98-.55L12.2 6.9Z"/></svg>
+            Edit
+        </button>
         <button type="button" class="btn btn-outline-danger" (click)="onDeleteTask()">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 2a1 1 0 0 0-1 1v1H2.5a.75.75 0 0 0 0 1.5h.55l.72 8.65A1.5 1.5 0 0 0 5.26 15.5h5.48a1.5 1.5 0 0 0 1.49-1.35l.72-8.65h.55a.75.75 0 0 0 0-1.5H11V3a1 1 0 0 0-1-1H6Zm1 1.5h2V4H7v-.5ZM5.55 5.5h4.9l-.68 8.15a.25.25 0 0 1-.25.23H6.48a.25.25 0 0 1-.25-.23L5.55 5.5Z"/></svg>
             Delete
