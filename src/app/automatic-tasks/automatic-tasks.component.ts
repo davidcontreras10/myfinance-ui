@@ -12,11 +12,32 @@ export class AutomaticTasksComponent implements OnInit {
 
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
+  public searchTerm = '';
 
   constructor(private service: AutoTasksApiService, private router: Router) { }
 
   ngOnInit(): void {
     this._reloadScheduledTasks();
+  }
+
+  // Filtered client-side, in memory - getScheduledTasks() already returns the
+  // full list with no server-side pagination/search, so there is no API to
+  // call here.
+  public get filteredTasks(): IAutomaticTask[] {
+    if (!this.loadedTasks) {
+      return [];
+    }
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.loadedTasks;
+    }
+    return this.loadedTasks.filter(task =>
+      task.description?.toLowerCase().includes(term) ||
+      task.accountName?.toLowerCase().includes(term));
+  }
+
+  public clearSearch(): void {
+    this.searchTerm = '';
   }
 
   public onSelectedTaskChanged(selectedOption: IAutomaticTask): void {
