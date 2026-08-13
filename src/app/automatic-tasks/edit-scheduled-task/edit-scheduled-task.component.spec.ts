@@ -129,6 +129,70 @@ describe('EditScheduledTaskComponent - submit', () => {
     expect(serviceSpy.editScheduledTask).not.toHaveBeenCalled();
     expect(activeModalSpy.dismiss).not.toHaveBeenCalled();
   });
+
+  it('sends frequencyType and days together when the frequency radio changes', () => {
+    component.selectedFreqType = 2;
+    component.selectedDayOfWeek = 5;
+    const form = { controls: {
+      frqType: makeControl(2, false)
+    } } as any;
+
+    component.submit(form);
+
+    expect(serviceSpy.editScheduledTask).toHaveBeenCalledWith('task-1', {
+      frequencyType: 2,
+      days: [5],
+      modifyList: [5, 6]
+    });
+  });
+
+  it('sends frequencyType and days together when only the day changes (frequency untouched)', () => {
+    component.selectedFreqType = 1;
+    component.selectedDayOfMonth = 20;
+    const form = { controls: {
+      dayOfMonth: makeControl(20, false)
+    } } as any;
+
+    component.submit(form);
+
+    expect(serviceSpy.editScheduledTask).toHaveBeenCalledWith('task-1', {
+      frequencyType: 1,
+      days: [20],
+      modifyList: [5, 6]
+    });
+  });
+
+  it('sends only frequencyType, no days, when switching to Manual', () => {
+    component.selectedFreqType = 3;
+    const form = { controls: {
+      frqType: makeControl(3, false)
+    } } as any;
+
+    component.submit(form);
+
+    expect(serviceSpy.editScheduledTask).toHaveBeenCalledWith('task-1', {
+      frequencyType: 3,
+      modifyList: [5]
+    });
+  });
+
+  it('combines frequency/day changes with simple field changes in one request', () => {
+    component.selectedFreqType = 2;
+    component.selectedDayOfWeek = 0;
+    const form = { controls: {
+      amount: makeControl(150, false),
+      frqType: makeControl(2, false)
+    } } as any;
+
+    component.submit(form);
+
+    expect(serviceSpy.editScheduledTask).toHaveBeenCalledWith('task-1', {
+      amount: 150,
+      frequencyType: 2,
+      days: [0],
+      modifyList: [1, 5, 6]
+    });
+  });
 });
 
 // Direct instantiation - ngOnInit only touches its inputs and the
@@ -163,5 +227,35 @@ describe('EditScheduledTaskComponent - ngOnInit', () => {
     component.ngOnInit();
 
     expect(component.selectedSpendTypeId).toBe(1);
+  });
+
+  it('preselects the frequency type and day of month for a monthly task', () => {
+    component.task = { id: 'task-1', frequencyType: 1, days: [15] } as any;
+
+    component.ngOnInit();
+
+    expect(component.selectedFreqType).toBe(1);
+    expect(component.selectedDayOfMonth).toBe(15);
+    expect(component.selectedDayOfWeek).toBeUndefined();
+  });
+
+  it('preselects the frequency type and day of week for a weekly task', () => {
+    component.task = { id: 'task-1', frequencyType: 2, days: [0] } as any;
+
+    component.ngOnInit();
+
+    expect(component.selectedFreqType).toBe(2);
+    expect(component.selectedDayOfWeek).toBe(0);
+    expect(component.selectedDayOfMonth).toBeUndefined();
+  });
+
+  it('preselects Manual with no day prefilled', () => {
+    component.task = { id: 'task-1', frequencyType: 3, days: [] } as any;
+
+    component.ngOnInit();
+
+    expect(component.selectedFreqType).toBe(3);
+    expect(component.selectedDayOfMonth).toBeUndefined();
+    expect(component.selectedDayOfWeek).toBeUndefined();
   });
 });

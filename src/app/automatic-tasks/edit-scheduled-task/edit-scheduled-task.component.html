@@ -44,6 +44,51 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Frequency:</label>
+                    <div class="radio">
+                        <label for="edit-freq-monthly">
+                            <input required type="radio" id="edit-freq-monthly" name="frqType"
+                                [(ngModel)]="selectedFreqType" [value]="1">
+                            Monthly
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="edit-freq-weekly">
+                            <input required type="radio" id="edit-freq-weekly" name="frqType"
+                                [(ngModel)]="selectedFreqType" [value]="2">
+                            Weekly
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="edit-freq-manual">
+                            <input required type="radio" id="edit-freq-manual" name="frqType"
+                                [(ngModel)]="selectedFreqType" [value]="3">
+                            Manual
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="selectedFreqType === 1">
+                <div class="form-group">
+                    <label for="edit-day-of-month">Day of Month:</label>
+                    <input [(ngModel)]="selectedDayOfMonth" required class="form-control" name="dayOfMonth"
+                        id="edit-day-of-month" type="number" [placeholder]="monthDayPlaceholder"
+                        [min]="minMonthDay" [max]="maxMonthDay" />
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="selectedFreqType === 2">
+                <div class="form-group">
+                    <label for="edit-day-of-week">Day of Week:</label>
+                    <select [(ngModel)]="selectedDayOfWeek" required name="dayOfWeek" id="edit-day-of-week"
+                        class="form-control">
+                        <option *ngFor="let day of daysOfWeek" [value]="day.id">{{day.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('Close click')">Close</button>

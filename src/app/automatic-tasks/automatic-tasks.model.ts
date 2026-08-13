@@ -59,6 +59,18 @@ export interface BasicOption {
     name: string
 }
 
+// Shared between new-scheduled-task (create) and edit-scheduled-task (edit) -
+// same weekly day options, same .NET DayOfWeek ordinals (0=Sunday..6=Saturday).
+export const DAYS_OF_WEEK: BasicOption[] = [
+    { id: 0, name: 'Sunday' },
+    { id: 1, name: 'Monday' },
+    { id: 2, name: 'Tuesday' },
+    { id: 3, name: 'Wednesday' },
+    { id: 4, name: 'Thursday' },
+    { id: 5, name: 'Friday' },
+    { id: 6, name: 'Saturday' }
+];
+
 export interface ExecutedTask {
     executedDate: Date;
     status: TaskStatus;
