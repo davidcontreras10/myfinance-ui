@@ -1,0 +1,127 @@
+.detail-empty {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--st-ink-faint);
+    font-size: 13.5px;
+}
+
+.detail-body {
+    padding: 18px 20px 20px;
+}
+
+.detail-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 6px;
+}
+
+.detail-title h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.detail-account {
+    margin: 0 0 10px;
+    color: var(--st-ink-muted);
+    font-size: 12.5px;
+}
+
+.detail-desc {
+    margin: 0 0 18px;
+    color: var(--st-ink-muted);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    line-height: 1;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.btn svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+}
+
+.btn-outline-accent {
+    background: transparent;
+    border-color: var(--st-accent);
+    color: var(--st-accent-ink);
+}
+
+.btn-outline-accent:hover {
+    background: var(--st-accent-tint);
+}
+
+.btn-outline-danger {
+    background: transparent;
+    border-color: var(--st-danger);
+    color: var(--st-danger);
+}
+
+.btn-outline-danger:hover {
+    background: var(--st-danger-tint);
+}
+
+.btn-outline-success {
+    background: transparent;
+    border-color: var(--st-success);
+    color: var(--st-success);
+}
+
+.btn-outline-success:hover {
+    background: var(--st-success-tint);
+}
+
+.btn-toggle {
+    background: #fff;
+    border-color: var(--st-border);
+    color: var(--st-ink);
+    margin-left: auto;
+}
+
+.btn-toggle:hover {
+    background: var(--st-border-soft);
+}
+
+.btn-toggle.is-open {
+    background: var(--st-accent-tint);
+    border-color: var(--st-accent);
+    color: var(--st-accent-ink);
+}
+
+.btn-toggle .chev {
+    transition: transform 0.15s ease;
+}
+
+.btn-toggle.is-open .chev {
+    transform: rotate(180deg);
+}
+
+/* app-executed-tasks renders directly below the action row, inside this same
+   card - one connected panel instead of a second disconnected table. */
+.history-wrap {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--st-border-soft);
+}

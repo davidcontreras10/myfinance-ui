@@ -1,22 +1,42 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 partial-view">
-            <h3>Scheduled tasks list:</h3>
-            <div *ngIf="loadedTasks && loadedTasks.length > 0">
-                <app-tasks-list [tasks]="loadedTasks"
-                    (selectedChanged)="onSelectedTaskChanged($event)"></app-tasks-list>
-            </div>
-            <div *ngIf="loadedTasks && loadedTasks.length < 1">
-                <span>No scheduled tasks</span>
-            </div>
+<div class="page">
+    <div class="page-head">
+        <div>
+            <h1>Scheduled Tasks</h1>
+            <p>Recurring income, spend and transfers that run automatically.</p>
         </div>
-        <div class="col-md-6">
-            <app-task-detail [selectedTask]="selectedTask" (tasksModelChanged)="onTaskModelChanged()"></app-task-detail>
-        </div>
+        <button type="button" class="btn btn-primary" (click)="goToNew()">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2H9v5a1 1 0 1 1-2 0V9H2a1 1 0 1 1 0-2h5V2a1 1 0 0 1 1-1Z"/></svg>
+            New scheduled task
+        </button>
     </div>
-    <div class="row">
-        <div class="col-md-6" style="margin-top: 30px;">
-            <button class="btn btn-success" (click)="goToNew()">Set New Scheduled Transaction</button>
+
+    <div class="board-shell">
+        <div class="board">
+            <div class="card">
+                <div class="card-head">
+                    <h2>Tasks</h2>
+                    <span class="count-chip">{{ filteredTasks.length }}</span>
+                </div>
+                <div class="card-search" *ngIf="loadedTasks && loadedTasks.length > 0">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.25 2a5.25 5.25 0 1 0 3.28 9.37l3.05 3.05a.75.75 0 1 0 1.06-1.06l-3.05-3.05A5.25 5.25 0 0 0 7.25 2Zm-3.75 5.25a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0Z"/></svg>
+                    <input type="text" placeholder="Search by name or account" [(ngModel)]="searchTerm"
+                        (keydown.escape)="clearSearch()" />
+                </div>
+                <div *ngIf="filteredTasks.length > 0">
+                    <app-tasks-list [tasks]="filteredTasks"
+                        (selectedChanged)="onSelectedTaskChanged($event)"></app-tasks-list>
+                </div>
+                <div *ngIf="loadedTasks && loadedTasks.length === 0" class="empty-list">
+                    No scheduled tasks yet. Use "New scheduled task" to set one up.
+                </div>
+                <div *ngIf="loadedTasks && loadedTasks.length > 0 && filteredTasks.length === 0" class="empty-list">
+                    No tasks match "{{ searchTerm }}".
+                </div>
+            </div>
+
+            <div class="card">
+                <app-task-detail [selectedTask]="selectedTask" (tasksModelChanged)="onTaskModelChanged()"></app-task-detail>
+            </div>
         </div>
     </div>
 </div>

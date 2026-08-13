@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { AutomaticTaskType, FrequencyType, IAutomaticTask, SpInAutomaticTask, TransferAutomaticTask } from '../automatic-tasks.model';
 import { AutoTasksApiService } from 'src/app/services/auto-tasks-api.service';
 import { AutoTasksMessageBus } from '../auto-tasks-message-bus';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditScheduledTaskComponent } from '../edit-scheduled-task/edit-scheduled-task.component';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -18,7 +21,12 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   private viewRecordsId: string = "";
   private weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  constructor(private service: AutoTasksApiService, private messageBus: AutoTasksMessageBus) { }
+  constructor(
+    private service: AutoTasksApiService,
+    private messageBus: AutoTasksMessageBus,
+    private modalService: NgbModal,
+    private toasterService: ToasterService
+  ) { }
   ngOnChanges(changes: SimpleChanges): void {
     this.showRecords = !!this.selectedTask?.id && !!this.viewRecordsId && this.viewRecordsId === this.selectedTask.id;
   }
@@ -42,6 +50,19 @@ export class TaskDetailComponent implements OnInit, OnChanges {
           this.tasksModelChanged.emit();
           this.messageBus.executedTasksChangedMessage.next(this.selectedTask.id);
         })
+    }
+  }
+
+  public onEditTask() {
+    if (this.selectedTask) {
+      const modalRef = this.modalService.open(EditScheduledTaskComponent, { backdrop: 'static', keyboard: false });
+      modalRef.componentInstance.task = this.selectedTask;
+      modalRef.result.then(() => {
+        this.tasksModelChanged.emit();
+        this.toasterService.success('Scheduled task updated');
+      }, () => {
+        // dismissed without saving - nothing to refresh
+      });
     }
   }
 

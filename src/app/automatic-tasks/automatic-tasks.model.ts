@@ -32,6 +32,9 @@ export interface IAutomaticTask {
     accountName: string,
     amount: number,
     currencySymbol: string,
+    // Already present on the API response (BaseScheduledTaskVm.spendTypeId) - this
+    // was just never typed here. Needed to pre-fill/edit the transaction type.
+    spendTypeId: number,
     lastExecutedStatus: TaskStatus,
     frequencyType: FrequencyType,
     taskType: AutomaticTaskType,
@@ -56,6 +59,18 @@ export interface BasicOption {
     name: string
 }
 
+// Shared between new-scheduled-task (create) and edit-scheduled-task (edit) -
+// same weekly day options, same .NET DayOfWeek ordinals (0=Sunday..6=Saturday).
+export const DAYS_OF_WEEK: BasicOption[] = [
+    { id: 0, name: 'Sunday' },
+    { id: 1, name: 'Monday' },
+    { id: 2, name: 'Tuesday' },
+    { id: 3, name: 'Wednesday' },
+    { id: 4, name: 'Thursday' },
+    { id: 5, name: 'Friday' },
+    { id: 6, name: 'Saturday' }
+];
+
 export interface ExecutedTask {
     executedDate: Date;
     status: TaskStatus;
@@ -71,6 +86,7 @@ export class SpInAutomaticTask implements IAutomaticTask {
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
+    spendTypeId!: number;
     isSpend!: boolean;
     frequencyType!: FrequencyType;
     taskType!: AutomaticTaskType;
@@ -86,6 +102,7 @@ export class TransferAutomaticTask implements IAutomaticTask {
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
+    spendTypeId!: number;
     toAccountName: string = "";
     frequencyType!: FrequencyType;
     taskType!: AutomaticTaskType;

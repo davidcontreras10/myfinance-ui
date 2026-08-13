@@ -1,0 +1,9 @@
+.form-control.ng-invalid.ng-touched {
+    border: 2px solid red;
+}
+
+.edit-account-context {
+    margin: 0 0 14px;
+    color: var(--st-ink-muted);
+    font-size: 13px;
+}

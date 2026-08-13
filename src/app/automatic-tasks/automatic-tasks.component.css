@@ -1,8 +1,148 @@
-table {
-    width: 100%;
-  }
-  
-  .partial-view{
-    max-height: 70vh;
-    overflow-y: auto;
-  }
+.page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+.page-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.page-head h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.page-head p {
+    margin: 4px 0 0;
+    color: var(--st-ink-muted);
+    font-size: 13px;
+}
+
+.btn {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    line-height: 1;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.btn svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+}
+
+.btn-primary {
+    background: var(--st-accent);
+    border-color: var(--st-accent);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--st-accent-ink);
+    border-color: var(--st-accent-ink);
+}
+
+/* Container query, not a viewport breakpoint - the board should switch to
+   two columns based on the space it actually has, same reasoning as the
+   account view's transaction list. */
+.board-shell {
+    container-type: inline-size;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+}
+
+@container (min-width: 760px) {
+    .board {
+        grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+    }
+}
+
+.card {
+    background: #fff;
+    border: 1px solid var(--st-border);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(20, 30, 40, 0.05), 0 4px 14px rgba(20, 30, 40, 0.04);
+    overflow: hidden;
+}
+
+.card-head {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--st-border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.card-head h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--st-ink-muted);
+}
+
+.count-chip {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--st-ink-faint);
+    background: var(--st-border-soft);
+    border-radius: 999px;
+    padding: 2px 8px;
+}
+
+.card-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--st-border-soft);
+}
+
+.card-search svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+    color: var(--st-ink-faint);
+}
+
+.card-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13.5px;
+    color: var(--st-ink);
+}
+
+.card-search input::placeholder {
+    color: var(--st-ink-faint);
+}
+
+.empty-list {
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--st-ink-muted);
+    font-size: 13px;
+}

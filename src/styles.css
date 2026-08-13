@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Shared color tokens for the Scheduled Tasks screen (automatic-tasks and its
+   children). Angular's per-component style encapsulation only scopes each
+   component's own rules to its own template - it does not create a separate
+   CSS custom-property scope, so :root variables declared here still cascade
+   into every component's rendered DOM and can be reused via var(...) from
+   any component stylesheet. */
+:root {
+  --st-border: #e1e6ea;
+  --st-border-soft: #edf0f3;
+  --st-ink: #202832;
+  --st-ink-muted: #667080;
+  --st-ink-faint: #97a1ac;
+  --st-accent: #3f7cac;
+  --st-accent-ink: #2c5b80;
+  --st-accent-tint: #eaf1f8;
+  --st-success: #1f8a4c;
+  --st-success-tint: #e5f5eb;
+  --st-danger: #c94141;
+  --st-danger-tint: #fbebeb;
+  --st-created: #6a5acd;
+  --st-created-tint: #eeecfa;
+}

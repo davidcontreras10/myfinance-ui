@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserSelectAccount, BasicOption, ScheduleTaskRequestType, FrequencyType } from '../automatic-tasks.model';
+import { UserSelectAccount, BasicOption, ScheduleTaskRequestType, FrequencyType, DAYS_OF_WEEK } from '../automatic-tasks.model';
 import { AutoTasksApiService } from 'src/app/services/auto-tasks-api.service';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 import { Router } from '@angular/router';
@@ -272,35 +272,7 @@ export class NewScheduledTaskComponent implements OnInit {
   }
 
   private _loadDaysOfWeeks() {
-    this.daysOfWeek = [];
-    this.daysOfWeek.push({
-      id: 0,
-      name: 'Sunday'
-    });
-    this.daysOfWeek.push({
-      id: 1,
-      name: 'Monday'
-    });
-    this.daysOfWeek.push({
-      id: 2,
-      name: 'Tuesday'
-    });
-    this.daysOfWeek.push({
-      id: 3,
-      name: 'Wednesday'
-    });
-    this.daysOfWeek.push({
-      id: 4,
-      name: 'Thursday'
-    });
-    this.daysOfWeek.push({
-      id: 5,
-      name: 'Friday'
-    });
-    this.daysOfWeek.push({
-      id: 6,
-      name: 'Saturday'
-    });
+    this.daysOfWeek = DAYS_OF_WEEK;
   }
 
 }
