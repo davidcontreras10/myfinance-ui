@@ -1,5 +1,8 @@
 <form #f="ngForm" (ngSubmit)="submit(f)">
     <div class="container">
+        <div class="alert alert-info" *ngIf="addChildParentName">
+            Adding a child account under <strong>{{addChildParentName}}</strong>
+        </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
@@ -76,51 +79,38 @@
         </div>
         <div class="row" *ngIf="inputModel.selectedCurrencyId">
             <div class="col-lg-4">
-                <label for="parent-accounts">Parent accounts...</label>
-                <select id="parent-accounts" class="basic-input form-control" multiple>
-                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item.id"
-                        (click)="accountIncludeClick(item)">
+                <label for="parent-account">Parent account</label>
+                <select id="parent-account" class="basic-input form-control"
+                    [disabled]="inputModel.hasSubAccounts || isParentLocked()"
+                    (change)="onParentAccountSelect($any($event.target).value)">
+                    <option value="" [selected]="!inputModel.selectedParentAcc">None</option>
+                    <option *ngFor="let item of getAvailableParentAccounts()" [value]="item.id"
+                        [selected]="inputModel.selectedParentAcc?.id === item.id">
                         {{item.name}}</option>
                 </select>
+                <small *ngIf="inputModel.hasSubAccounts" class="form-text text-muted">
+                    This account has sub-accounts, so it can't become a sub-account itself.
+                </small>
+                <small *ngIf="!inputModel.hasSubAccounts && isParentLocked()" class="form-text text-muted">
+                    🔒 Locked — you started from {{addChildParentName}} → + Add child
+                </small>
+                <small *ngIf="!inputModel.hasSubAccounts && !isParentLocked()" class="form-text text-muted">
+                    Only accounts without a parent of their own are shown here.
+                </small>
             </div>
-            <div class="col-md-8">
-                <!-- <ul>
-                    <li *ngFor="let item of selectedParentAccs">{{item.name}}<span (click)="removeAccountInclude(item)">
-                            X</span></li>
-                </ul> -->
-                <table class="table table-bordered table-low-margin">
-                    <thead>
-                        <tr>
-                            <th data-field="Budget">Parent Account</th>
-                            <th data-field="Spent">Exchange</th>
-                            <th data-field="Balance">Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let parAccount of inputModel.selectedParentAccs">
-                            <td>{{parAccount.name}}</td>
-                            <td>
-                                <select class="basic-input form-control" [name]="'acci-' + parAccount.id"
-                                    [(ngModel)]="inputModel.selectedMethodIds[parAccount.id]" required>
-                                    <option *ngFor="let method of parAccount.methodIds" [ngValue]="method">
-                                        {{method.name}}
-                                    </option>
-                                </select>
-                            </td>
-                            <td>
-                                <app-bs-icon (click)="removeAccountInclude(parAccount)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path
-                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                                        <path
-                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                                    </svg>
-                                </app-bs-icon>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-8" *ngIf="inputModel.selectedParentAcc">
+                <span>
+                    Conversion method:
+                    <strong>{{inputModel.selectedMethodIds[inputModel.selectedParentAcc.id]?.name}}</strong>
+                    &mdash; applied automatically, nothing to choose.
+                </span>
+            </div>
+        </div>
+        <div class="row" *ngIf="inputModel.hasSubAccounts">
+            <div class="col">
+                <small class="form-text text-muted">
+                    Sub-accounts ({{inputModel.subAccounts.length}}): {{getSubAccountNamesPreview()}}
+                </small>
             </div>
         </div>
         <div class="row">

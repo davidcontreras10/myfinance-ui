@@ -22,6 +22,8 @@ export class NewAccountComponent implements OnInit {
 
   viewModel: AddNewAccountViewModel;
   inputModel: AccountViewModel = new AccountViewModel();
+  pendingParentAccountId?: number;
+  addChildParentName?: string;
   accountFiedlds: { [fieldId: string]: number } = {
     'accountName': 1,
     'baseBudget': 4,
@@ -82,10 +84,30 @@ export class NewAccountComponent implements OnInit {
         this.inputModel.selectedAccountGroupId =
           Number.parseInt(queryAccountGroupId);
       }
+      const queryParentAccountId = params['parentAccountId'];
+      if (queryParentAccountId) {
+        this.pendingParentAccountId = Number.parseInt(queryParentAccountId);
+        this.addChildParentName = params['parentAccountName'];
+      }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
         this.viewModel = res;
       });
     });
+  }
+
+  isParentLocked(): boolean {
+    return !!this.pendingParentAccountId;
+  }
+
+  private tryApplyPendingParent() {
+    if (this.pendingParentAccountId) {
+      const candidate = this.getAvailableParentAccounts().find(
+        (a) => a.id === this.pendingParentAccountId
+      );
+      if (candidate) {
+        this.onParentAccountChanged(candidate);
+      }
+    }
   }
 
   private readEditSubmitModel(form: NgForm): EditAccountRequestModel | null {
@@ -153,27 +175,15 @@ export class NewAccountComponent implements OnInit {
   }
 
   private isAccountIncludeModified(): boolean {
-    const selectedAccountIncludes = this.viewModel.accountIncludeViewModels.filter(x => x.isSelected);
-    const acciCount = Object.keys(this.inputModel.selectedMethodIds).length;
-    if (acciCount !== selectedAccountIncludes.length) {
+    const previouslySelected = this.viewModel.accountIncludeViewModels.find(x => x.isSelected);
+    const currentlySelected = this.inputModel.selectedParentAcc;
+    if (previouslySelected?.id !== currentlySelected?.id) {
       return true;
     }
-    for (let acci of selectedAccountIncludes) {
-      const inputAcciMethod = this.inputModel.selectedMethodIds[acci.id.toString()];
-      if (inputAcciMethod) {
-        const vmSelectedMethod = acci.methodIds.find(m => m.isSelected);
-        if (vmSelectedMethod) {
-          if (vmSelectedMethod.id != inputAcciMethod.id) {
-            return true;
-          }
-        }
-        else {
-          return true;
-        }
-      }
-      else {
-        return true;
-      }
+    if (currentlySelected) {
+      const inputMethod = this.inputModel.selectedMethodIds[currentlySelected.id.toString()];
+      const vmSelectedMethod = previouslySelected?.methodIds.find(m => m.isSelected);
+      return vmSelectedMethod?.id !== inputMethod?.id;
     }
 
     return false;
@@ -216,36 +226,28 @@ export class NewAccountComponent implements OnInit {
   }
 
   private readAccountIncludes(accountId: number = 0): AccountInclude[] {
-    const accArray: AccountInclude[] = [];
-    if (this.inputModel.selectedMethodIds) {
-      const methodsArray = this.inputModel.selectedMethodIds;
-      for (let key in methodsArray) {
-        if (methodsArray.hasOwnProperty(key)) {
-          const method = methodsArray[key];
-          if (method) {
-            const accInclude = {
-              accountId: accountId,
-              accountIncludeId: Number.parseInt(key),
-              currencyConverterMethodId: method.id,
-            };
-
-            accArray.push(accInclude);
-          }
-        }
-      }
+    const selected = this.inputModel.selectedParentAcc;
+    if (!selected) {
+      return [];
     }
 
-    return accArray;
+    const method = this.inputModel.selectedMethodIds[selected.id.toString()];
+    if (!method) {
+      return [];
+    }
+
+    return [{
+      accountId: accountId,
+      accountIncludeId: selected.id,
+      currencyConverterMethodId: method.id,
+    }];
   }
 
   private loadAccountIncludes(preserveAccSelection: boolean = false) {
+    const previousSelectionId = preserveAccSelection ? this.inputModel.selectedParentAcc?.id : undefined;
     this.inputModel.selectedMethodIds = {};
     this.viewModel.accountIncludeViewModels = [];
-    let tempSelectedParentAccs: number[] = [];
-    if (preserveAccSelection) {
-      tempSelectedParentAccs = this.inputModel.selectedParentAccs.map(x => x.id);
-    }
-    this.inputModel.selectedParentAccs = [];
+    this.inputModel.selectedParentAcc = undefined;
     if (
       this.inputModel.selectedCurrencyId &&
       this.inputModel.selectedCurrencyId > 0
@@ -257,12 +259,13 @@ export class NewAccountComponent implements OnInit {
         )
         .subscribe((res) => {
           this.viewModel.accountIncludeViewModels = res;
-          if (preserveAccSelection) {
-            for (let accId of tempSelectedParentAccs) {
-              const acc = this.viewModel.accountIncludeViewModels.find(acci => acci.id === accId);
-              if (acc)
-                this.accountIncludeClick(acc);
+          if (previousSelectionId) {
+            const acc = res.find(acci => acci.id === previousSelectionId);
+            if (acc) {
+              this.onParentAccountChanged(acc);
             }
+          } else {
+            this.tryApplyPendingParent();
           }
         });
     }
@@ -272,9 +275,12 @@ export class NewAccountComponent implements OnInit {
     const requestModel = this.readEditSubmitModel(form);
     console.log('Request Model:', requestModel);
     if (requestModel) {
-      this.apiService.editAccount(requestModel).subscribe(() => {
-        alert('Account edited');
-        this.navigation.goBack(['/accounts']);
+      this.apiService.editAccount(requestModel).subscribe({
+        next: () => {
+          alert('Account edited');
+          this.navigation.goBack(['/accounts']);
+        },
+        error: (err) => this.showSubmitError(err),
       });
     }
   }
@@ -282,11 +288,19 @@ export class NewAccountComponent implements OnInit {
   private submitNewAccount(form: NgForm): void {
     const submitModel = this.readNewSubmitModel(form);
     if (submitModel) {
-      this.apiService.addNewAccount(submitModel).subscribe(() => {
-        alert('Account created');
-        this.navigation.goBack(['/accounts']);
+      this.apiService.addNewAccount(submitModel).subscribe({
+        next: () => {
+          alert('Account created');
+          this.navigation.goBack(['/accounts']);
+        },
+        error: (err) => this.showSubmitError(err),
       });
     }
+  }
+
+  private showSubmitError(err: any): void {
+    console.error(err);
+    alert(err?.error?.message ?? 'Error saving account');
   }
 
   private getIfEditModel(): EditAccountViewModel | null {
@@ -316,24 +330,29 @@ export class NewAccountComponent implements OnInit {
     this.loadAccountIncludes(true);
   }
 
-  getIncludedAccounts(): BasicAccountIncluded[] {
-    return this.viewModel?.accountIncludeViewModels.filter((vm) =>
-      this.inputModel.selectedParentAccs.every((s) => s.id !== vm.id)
-    );
+  getSubAccountNamesPreview(): string {
+    const names = this.inputModel.subAccounts.slice(0, 3).map((s) => s.accountName);
+    const suffix = this.inputModel.subAccounts.length > 3 ? ', …' : '';
+    return names.join(', ') + suffix;
   }
 
-  accountIncludeClick(item: BasicAccountIncluded) {
-    this.inputModel.selectedMethodIds[item.id] = item.methodIds.find(
-      (x) => x.isSelected
-    );
-    this.inputModel.selectedParentAccs.push(item);
+  getAvailableParentAccounts(): BasicAccountIncluded[] {
+    return this.viewModel?.accountIncludeViewModels.filter((vm) => !vm.hasParent) ?? [];
   }
 
-  removeAccountInclude(item: BasicAccountIncluded) {
-    const index = this.inputModel.selectedParentAccs.indexOf(item);
-    if (index !== -1) {
-      delete this.inputModel.selectedMethodIds[item.id.toString()];
-      this.inputModel.selectedParentAccs.splice(index, 1);
+  onParentAccountChanged(item: BasicAccountIncluded | undefined) {
+    this.inputModel.selectedMethodIds = {};
+    this.inputModel.selectedParentAcc = item;
+    if (item) {
+      this.inputModel.selectedMethodIds[item.id] = item.methodIds.find(
+        (x) => x.isSelected
+      ) ?? item.methodIds[0];
     }
+  }
+
+  onParentAccountSelect(accountId: string) {
+    const parsedId = Number.parseInt(accountId, 10);
+    const item = this.getAvailableParentAccounts().find((a) => a.id === parsedId);
+    this.onParentAccountChanged(item);
   }
 }

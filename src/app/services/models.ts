@@ -193,6 +193,7 @@ export interface ItemModifiedRes {
 
 export interface BasicAccountIncluded extends SelectableItem {
   methodIds: SelectableItem[];
+  hasParent: boolean;
 }
 
 export interface TrxAccountIncluded extends BasicAccountIncluded {
@@ -246,12 +247,21 @@ export interface AccountBasicInfo {
   accountName: string;
 }
 
+export interface SubAccountViewModel {
+  accountId: number;
+  accountName: string;
+  accountGroupId: number;
+}
+
 export interface AccountViewModel extends AccountBasicInfo {
   accountPosition: number;
   currencyId: number;
   currencyName: string;
   frontStyle: AccountStyle;
   type: number;
+  parentAccountId: number | null;
+  parentAccountName: string | null;
+  subAccounts: SubAccountViewModel[];
 }
 
 export interface AccGroupViewModel {
@@ -293,6 +303,9 @@ export interface EditAccountViewModel extends AddNewAccountViewModel {
   accountGroupId: number;
   accountId: number;
   accountPosition: number;
+  parentAccountId: number | null;
+  parentAccountName: string | null;
+  subAccounts: SubAccountViewModel[];
 }
 
 export interface AccountInclude {

@@ -20,6 +20,16 @@ the user keeps **one real bank account** and splits the money **inside the app**
 sub-accounts. The sum of the app's sub-accounts must **reconcile** against the real bank balance, so
 amounts shown in the UI have to be trustworthy.
 
+### Account hierarchy
+
+An account can have at most **one parent** (a "main account"), and hierarchy is capped at **two
+levels** — a sub-account can't have sub-accounts of its own. A sub-account can live in a different
+**account group** than its parent; account groups are purely organizational and independent of the
+hierarchy. Currency conversion between a sub-account and its parent is derived automatically from
+the financial entity + currency pair — there's no manual "conversion method" choice in the UI.
+Deleting a main account does not cascade: its sub-accounts silently become top-level accounts (the UI
+warns about this before deleting).
+
 ## Screens and features
 
 Routes are defined in `src/app/app-routing.module.ts`; all except `login` require authentication.
