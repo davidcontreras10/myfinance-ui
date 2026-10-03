@@ -186,6 +186,11 @@ export class NewAccountComponent implements OnInit {
         requestModel.editAccountFields.push(this.accountFiedlds['accountName']);
       }
 
+      if (controls['baseBudget']?.dirty) {
+        requestModel.baseBudget = this.inputModel.amount;
+        requestModel.editAccountFields.push(this.accountFiedlds['baseBudget']);
+      }
+
       if (controls['accountTypeId'].dirty) {
         requestModel.accountTypeId = this.inputModel.selectedAccountTypeId ?? 0;
         requestModel.editAccountFields.push(this.accountFiedlds['accountTypeId']);
@@ -254,7 +259,7 @@ export class NewAccountComponent implements OnInit {
       const formValue = form.value;
       const model = new NewAccountRequestModel();
       model.accountGroupId = Number.parseInt(formValue.accountGroupId);
-      model.baseBudget = 0; // the base budget is no longer entered in the form
+      model.baseBudget = 0; // new accounts always start with a base budget of 0
       model.accountName = formValue.accountName;
       model.headerColor = {
         headerColor: formValue.headerColor,

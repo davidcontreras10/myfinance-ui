@@ -250,11 +250,18 @@ describe('NewAccountComponent main account template', () => {
     expect(el.textContent).not.toContain('Colones default');
   });
 
-  it('has no base budget field', async () => {
+  it('has no base budget field when creating an account', async () => {
     await render();
 
     expect(el.querySelector('#base-budget')).toBeNull();
     expect(el.textContent).not.toContain('Base Budget');
+  });
+
+  it('shows the base budget field when editing an account', async () => {
+    component.inputModel.editMode = true;
+    await render();
+
+    expect(el.querySelector('#base-budget')).not.toBeNull();
   });
 
   it('shows a required method picker when the user must choose', async () => {

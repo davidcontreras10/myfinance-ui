@@ -18,6 +18,7 @@ export class AccountViewModel {
   selectedMethodIds: { [accountId: string]: SelectableItem | undefined } = {};
   defaultCurrencyId: number | null;
   isDefaultPending: boolean;
+  amount: number = 0;
   subAccounts: SubAccountViewModel[] = [];
 
   public setValues(viewModel: EditAccountViewModel): void {
@@ -29,6 +30,7 @@ export class AccountViewModel {
     this.selectedAccountTypeId = viewModel.accountTypeViewModels.find(x => x.isSelected)?.id;
     this.editMode = true;
     this.accountName = viewModel.accountName;
+    this.amount = viewModel.baseBudget;
     this.subAccounts = viewModel.subAccounts ?? [];
     this.setAccountInclude(viewModel);
     this.defaultCurrencyId = viewModel.defaultCurrencyId;

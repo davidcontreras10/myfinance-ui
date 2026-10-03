@@ -63,4 +63,6 @@ services it injects.
 - UI is Bootstrap 5 + ng-bootstrap. Match the look of neighboring screens rather than introducing new
   styling libraries.
 - Don't commit secrets or environment-specific URLs other than the two in `src/environments/`.
-- Branching: work on `develop`; `master` deploys to Azure.
+- Branching: work on `develop`; `master` deploys to Azure. **Production is the only environment** (no dev or
+  staging): merging to `master` is a production release, and the API's release runs its database migrations
+  first (see the API repo's `docs/architecture.md`, "CI / deployment").
