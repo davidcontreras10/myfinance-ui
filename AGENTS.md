@@ -42,8 +42,17 @@ npm run build      # output in dist/
 npm test           # Karma + Jasmine (needs Chrome)
 ```
 
+To run one spec headless (set `CHROME_BIN` to your Chrome executable first):
+
+```bash
+npx ng test --watch=false --browsers=ChromeHeadless --include 'src/app/new-account/**/*.spec.ts'
+```
+
 Many components and services have `.spec.ts` files, but don't assume behavior is pinned by tests — check
-the code and call sites when changing something.
+the code and call sites when changing something. Some specs are unedited Angular scaffolds that already
+fail (they provide no `HttpClient` or router), so a red full run isn't necessarily new. Prefer testing a
+component's logic directly, without `TestBed` (see `bank-transactions.component.spec.ts`), or provide the
+services it injects.
 
 ## Conventions
 
