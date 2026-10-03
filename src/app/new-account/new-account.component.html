@@ -97,7 +97,7 @@
 
         <div class="row">
             <div class="col-md-6">
-                <label for="account-spend-type" class="required">Default Spend Type</label>
+                <label for="account-spend-type" class="required">Default Transaction Type</label>
                 <select id="account-spend-type" class="basic-input form-control"
                     [(ngModel)]="inputModel.selectedSpendTypeId" name="spendTypeId" required>
                     <option *ngFor="let item of viewModel?.spendTypeViewModels" [value]="item.id"
