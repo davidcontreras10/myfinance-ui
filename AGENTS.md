@@ -62,6 +62,10 @@ services it injects.
   `HttpClient` directly. Use the existing base URL from `environment.baseApi`.
 - UI is Bootstrap 5 + ng-bootstrap. Match the look of neighboring screens rather than introducing new
   styling libraries.
+- Use the theme tokens in `src/styles.css` (`--st-border`, `--st-ink`, `--st-accent`, …) for new styles, and the
+  shared `.fold` pattern in `new-account.component.css` for collapsible sections, instead of one-off colors.
+- Words users see say "transaction" where the code says `spend` (e.g. the "Default Transaction Type" field is
+  `spendTypeId`). Change the label, not the code names.
 - Don't commit secrets or environment-specific URLs other than the two in `src/environments/`.
 - Branching: work on `develop`; `master` deploys to Azure. **Production is the only environment** (no dev or
   staging): merging to `master` is a production release, and the API's release runs its database migrations

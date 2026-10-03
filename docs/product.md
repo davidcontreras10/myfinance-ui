@@ -52,6 +52,8 @@ Routes are defined in `src/app/app-routing.module.ts`; all except `login` requir
 
 - **Spend** — a historical backend name. It means *any* transaction that affects an account balance,
   expense **or** income. UI labels may say "transaction".
+- **Transaction type** — what users see for the backend's `SpendType` (e.g. the account form's "Default
+  Transaction Type" is `spendTypeId`).
 - **Reconciliation** — matching the sum of sub-accounts against the real bank balance.
 - **Financial entity** — a bank/institution.
 - **App transaction vs. bank transaction** — app transactions are what the user records in the app;
