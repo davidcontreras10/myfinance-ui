@@ -114,34 +114,70 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <label for="header-color">Header Color</label>
-                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="header-color"
-                    name="headerColor" [ngModel]="viewModel.accountStyle?.headerColor"
-                    class="basic-input form-control form-control-color" />
-            </div>
-            <div class="col-md-6">
-                <label for="border-color">Border Color</label>
-                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="border-color"
-                    name="borderColor" [ngModel]="viewModel.accountStyle?.borderColor"
-                    class="basic-input form-control form-control-color" />
+        <!-- Colors are cosmetic and have defaults, so they live in a collapsed bar. The swatches in the bar and the
+             preview inside show how the account will look on the finance screen. -->
+        <div class="fold">
+            <button type="button" id="style-toggle" class="fold-toggle" (click)="styleExpanded = !styleExpanded"
+                [attr.aria-expanded]="styleExpanded" aria-controls="style-settings">
+                <span class="fold-title">Style</span>
+                <span class="fold-hint">
+                    <span class="swatch" [style.background]="inputModel.headerColor || '#ffffff'"></span>
+                    <span class="swatch" [style.background]="inputModel.borderColor || '#ffffff'"></span>
+                    Header and border colors
+                </span>
+                <span class="fold-chevron" [class.open]="styleExpanded" aria-hidden="true">▸</span>
+            </button>
+            <div id="style-settings" [ngbCollapse]="!styleExpanded">
+                <div class="fold-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="header-color">Header Color</label>
+                            <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" id="header-color"
+                                name="headerColor" [(ngModel)]="inputModel.headerColor"
+                                class="basic-input form-control form-control-color" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="border-color">Border Color</label>
+                            <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" id="border-color"
+                                name="borderColor" [(ngModel)]="inputModel.borderColor"
+                                class="basic-input form-control form-control-color" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="style-preview-label">Preview on the finance screen</div>
+                            <!-- Same as the finance screen: a 5px frame in the border color, and the header color
+                                 only behind the title row. -->
+                            <div id="style-preview" class="style-preview"
+                                [style.border]="'solid ' + (inputModel.borderColor || '#cccccc') + ' 5px'">
+                                <div class="style-preview-header"
+                                    [style.background]="inputModel.headerColor || 'transparent'">
+                                    <strong>{{inputModel.accountName || 'Account name'}}</strong>
+                                    <strong>Period: {{previewPeriod}}</strong>
+                                </div>
+                                <div class="style-preview-tiles">
+                                    <div class="style-preview-tile" *ngFor="let tile of previewTiles">{{tile}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Period type and account type are suggested automatically, so they are only shown on request. They are
              kept in the DOM (collapsed, not removed) so the form still validates them; the section opens by
              itself when one of them is empty. -->
-        <div class="advanced">
-            <button type="button" id="advanced-toggle" class="advanced-toggle"
+        <div class="fold">
+            <button type="button" id="advanced-toggle" class="fold-toggle"
                 (click)="advancedExpanded = !advancedExpanded" [attr.aria-expanded]="showAdvanced"
                 aria-controls="advanced-settings">
-                <span class="advanced-title">Advanced settings</span>
-                <span class="advanced-hint">Period, account type and transaction defaults</span>
-                <span class="advanced-chevron" [class.open]="showAdvanced" aria-hidden="true">▸</span>
+                <span class="fold-title">Advanced settings</span>
+                <span class="fold-hint">Period, account type and transaction defaults</span>
+                <span class="fold-chevron" [class.open]="showAdvanced" aria-hidden="true">▸</span>
             </button>
             <div id="advanced-settings" [ngbCollapse]="!showAdvanced">
-                <div class="advanced-body">
+                <div class="fold-body">
                     <div class="row">
                         <div class="col-md-6">
                             <label for="account-period-type" class="required">Period Type</label>

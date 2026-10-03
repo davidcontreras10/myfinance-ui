@@ -508,4 +508,62 @@ describe('NewAccountComponent main account template', () => {
       expect(panel.querySelector('#new-trx-pending')).not.toBeNull();
     });
   });
+
+  describe('style', () => {
+    const panel = () => el.querySelector('#style-settings') as HTMLElement;
+    const preview = () => el.querySelector('#style-preview') as HTMLElement;
+    const header = () => el.querySelector('.style-preview-header') as HTMLElement;
+
+    it('is closed by default, and the color fields stay in the form', async () => {
+      component.viewModel.accountStyle = { headerColor: '#ffffff', borderColor: '#5f9ea0' };
+      await render();
+
+      expect(panel().classList.contains('show')).toBeFalse();
+      expect(el.querySelector('#header-color')).not.toBeNull();
+      expect(el.querySelector('#border-color')).not.toBeNull();
+    });
+
+    it('opens when the toggle is clicked', async () => {
+      await render();
+      const toggle = el.querySelector('#style-toggle') as HTMLButtonElement;
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+      toggle.click();
+      await render();
+
+      expect(component.styleExpanded).toBeTrue();
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('previews the colors like the finance screen: a 5px frame, and the header color behind the title only', async () => {
+      component.viewModel.accountStyle = { headerColor: '#ffffff', borderColor: '#5f9ea0' };
+      component.inputModel.headerColor = '#ff0000';
+      component.inputModel.borderColor = '#00aa00';
+      component.inputModel.accountName = 'Mensual Comida';
+      await render();
+
+      expect(preview().style.border).toContain('5px');
+      expect(preview().style.border).toContain('rgb(0, 170, 0)');
+      expect(header().style.background).toContain('rgb(255, 0, 0)');
+      expect(header().textContent).toContain('Mensual Comida');
+      expect(header().textContent).toContain('Period:');
+    });
+
+    it('shows a placeholder name in the preview when the account has no name yet', async () => {
+      await render();
+
+      expect(header().textContent).toContain('Account name');
+    });
+
+    it('shows the current colors as swatches in the bar', async () => {
+      component.inputModel.headerColor = '#ff0000';
+      component.inputModel.borderColor = '#00aa00';
+      await render();
+
+      const swatches = Array.from(el.querySelectorAll('#style-toggle .swatch')) as HTMLElement[];
+      expect(swatches.length).toBe(2);
+      expect(swatches[0].style.background).toContain('rgb(255, 0, 0)');
+      expect(swatches[1].style.background).toContain('rgb(0, 170, 0)');
+    });
+  });
 });

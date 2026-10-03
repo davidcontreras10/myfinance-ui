@@ -29,6 +29,10 @@ export class NewAccountComponent implements OnInit {
   financialEntityLockedBy?: string;
   accountIncludesLoaded = false;
   advancedExpanded = false;
+  styleExpanded = false;
+  // Sample text for the style preview, like the period shown on the finance screen.
+  readonly previewPeriod = `${new Date().toLocaleString('en-US', { month: 'long' })} - ${new Date().getFullYear()}`;
+  readonly previewTiles = ['Budget', 'Spending', 'Balance', 'Overall balance'];
   private accountTypeChosenByUser = false;
   accountFiedlds: { [fieldId: string]: number } = {
     'accountName': 1,
@@ -97,6 +101,8 @@ export class NewAccountComponent implements OnInit {
       }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
         this.viewModel = res;
+        this.inputModel.headerColor = res.accountStyle?.headerColor;
+        this.inputModel.borderColor = res.accountStyle?.borderColor;
         this.applyPeriodTypeDefault();
         this.applyAccountTypeSuggestion();
         if (this.pendingParentAccountId) {
@@ -274,7 +280,7 @@ export class NewAccountComponent implements OnInit {
         requestModel.accountIncludes = this.readAccountIncludes(viewModel.accountId);
       }
 
-      if (controls['headerColor'].dirty || controls['borderColor'].dirty) {
+      if (controls['headerColor']?.dirty || controls['borderColor']?.dirty) {
         requestModel.headerColor = {
           headerColor: form.value.headerColor,
           borderColor: form.value.borderColor,

@@ -63,6 +63,11 @@ product.md; the UI only renders and edits what the API returns/validates, it doe
   On add, the API's suggestions are applied: the period type marked `isSelected`, and the account type from
   `suggestedAccountTypeIdForMainAccount` / `suggestedAccountTypeIdForSubAccount`, which follows whether a main
   account is chosen until the user picks a type (`onAccountTypeChanged`). They're suggestions, not rules.
+- **Style** (`#style-settings`) is a second collapsed bar of the same kind (shared `.fold` styles) with the header
+  and border colors. Colors are optional and have defaults, so the section never opens by itself. The bar shows
+  two swatches of the current colors, and the panel has a preview that copies the finance screen's account card
+  (5px frame in the border color; the header color only behind the title row). The color inputs bind to
+  `inputModel.headerColor` / `borderColor`; the form still reads them from the `headerColor` / `borderColor` controls.
 - The parent-account `<select>` is disabled both when editing an account that already has sub-accounts
   (`inputModel.hasSubAccounts`) and when arriving via "+ Add child" from `AccountsComponent` (carries
   `parentAccountId`/`parentAccountName` as query params into `accounts/new`, applied once candidates load).

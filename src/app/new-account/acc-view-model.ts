@@ -19,6 +19,8 @@ export class AccountViewModel {
   defaultCurrencyId: number | null;
   isDefaultPending: boolean;
   amount: number = 0;
+  headerColor?: string;
+  borderColor?: string;
   subAccounts: SubAccountViewModel[] = [];
 
   public setValues(viewModel: EditAccountViewModel): void {
@@ -30,6 +32,8 @@ export class AccountViewModel {
     this.selectedAccountTypeId = viewModel.accountTypeViewModels.find(x => x.isSelected)?.id;
     this.editMode = true;
     this.accountName = viewModel.accountName;
+    this.headerColor = viewModel.accountStyle?.headerColor;
+    this.borderColor = viewModel.accountStyle?.borderColor;
     this.amount = viewModel.baseBudget;
     this.subAccounts = viewModel.subAccounts ?? [];
     this.setAccountInclude(viewModel);
