@@ -22,14 +22,16 @@ amounts shown in the UI have to be trustworthy.
 
 ### Account hierarchy
 
-An account can have at most **one parent** (a "main account"), and hierarchy is capped at **two
-levels** — a sub-account can't have sub-accounts of its own. A sub-account can live in a different
-**account group** than its parent; account groups are purely organizational and independent of the
-hierarchy. When creating a sub-account, its financial entity must match its main account's (if that has
-one) and the exchange method is chosen automatically; only when the main account has no entity and the
-currencies differ does the user pick the method. Existing accounts aren't re-checked on edit yet.
-Deleting a main account does not cascade: its sub-accounts silently become top-level accounts (the UI
-warns about this before deleting).
+Accounts form two levels: a **main account** and its **sub-accounts**. An account has at most one main
+account, and a sub-account can't have sub-accounts of its own. A sub-account can live in a different
+account group than its main account. When creating a sub-account, its financial entity must match its main
+account's (if that has one) and the exchange method is chosen automatically; only when the main account has
+no entity and the currencies differ does the user pick the method. Existing accounts aren't re-checked on
+edit yet. Deleting a main account doesn't delete its sub-accounts (they become top-level accounts), and the
+UI warns first.
+
+The full numbered rules are in the API repo's `docs/product.md` (section "Account hierarchy rules"), which
+is the source of truth; the UI only renders and edits what the API returns and validates.
 
 ## Screens and features
 
