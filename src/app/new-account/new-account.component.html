@@ -42,10 +42,14 @@
             <div class="col-md-4">
                 <label for="account-financial-entity">Financial Entity</label>
                 <select id="account-financial-entity" class="basic-input form-control" ngModel name="financialEntityId"
-                    [(ngModel)]="inputModel.selectedFinancialEntityId" (change)="onFianancialEntityChanged()">
+                    [(ngModel)]="inputModel.selectedFinancialEntityId" (change)="onFianancialEntityChanged()"
+                    [disabled]="financialEntityLocked">
                     <option *ngFor="let item of viewModel?.financialEntityViewModels" [value]="item.id">
                         {{item.name}}</option>
                 </select>
+                <small *ngIf="financialEntityLocked" class="form-text text-muted">
+                    🔒 Same as {{financialEntityLockedBy}} (main account)
+                </small>
             </div>
             <div class="col-md-4">
                 <label for="account-spend-type">Default Spend Type</label>
@@ -85,8 +89,9 @@
                     (change)="onParentAccountSelect($any($event.target).value)">
                     <option value="" [selected]="!inputModel.selectedParentAcc">None</option>
                     <option *ngFor="let item of getAvailableParentAccounts()" [value]="item.id"
-                        [selected]="inputModel.selectedParentAcc?.id === item.id">
-                        {{item.name}}</option>
+                        [selected]="inputModel.selectedParentAcc?.id === item.id"
+                        [disabled]="!item.methodIds.length">
+                        {{item.name}}{{item.methodIds.length ? '' : ' — no exchange method for this currency'}}</option>
                 </select>
                 <small *ngIf="inputModel.hasSubAccounts" class="form-text text-muted">
                     This account has sub-accounts, so it can't become a sub-account itself.
@@ -98,12 +103,31 @@
                     Only accounts without a parent of their own are shown here.
                 </small>
             </div>
-            <div class="col-md-8" *ngIf="inputModel.selectedParentAcc">
-                <span>
-                    Conversion method:
-                    <strong>{{inputModel.selectedMethodIds[inputModel.selectedParentAcc.id]?.name}}</strong>
-                    &mdash; applied automatically, nothing to choose.
-                </span>
+            <div class="col-md-8" *ngIf="inputModel.selectedParentAcc as parent">
+                <ng-container *ngIf="parent.requiresMethodChoice; else autoMethod">
+                    <label for="exchange-method">Exchange method</label>
+                    <select id="exchange-method" class="basic-input form-control" name="exchangeMethod" required
+                        [ngModel]="inputModel.selectedMethodIds[parent.id]"
+                        (ngModelChange)="onMethodSelected($event)">
+                        <option [ngValue]="undefined" disabled>Select a method</option>
+                        <option *ngFor="let method of parent.methodIds" [ngValue]="method">{{method.name}}</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        How amounts are converted between this account and {{parent.name}}.
+                    </small>
+                </ng-container>
+                <ng-template #autoMethod>
+                    <span>
+                        Exchange method:
+                        <strong>{{inputModel.selectedMethodIds[parent.id]?.name}}</strong>
+                        &mdash; applied automatically, nothing to choose.
+                    </span>
+                </ng-template>
+            </div>
+        </div>
+        <div class="row" *ngIf="parentIssue() as issue">
+            <div class="col">
+                <small class="text-danger">{{issue}}</small>
             </div>
         </div>
         <div class="row" *ngIf="inputModel.hasSubAccounts">
@@ -147,7 +171,7 @@
         <div class="row">
             <div class="col">
                 <button type="button" class="btn btn-outline-dark" (click)="onClose()">Close</button>
-                <button [disabled]="f.invalid" type="submit" class="btn btn-outline-dark">Save</button>
+                <button [disabled]="f.invalid || !!parentIssue()" type="submit" class="btn btn-outline-dark">Save</button>
             </div>
         </div>
         <!-- <div class="row">

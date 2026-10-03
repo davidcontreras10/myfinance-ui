@@ -43,11 +43,20 @@ product.md; the UI only renders and edits what the API returns/validates, it doe
   always complete, even for sub-accounts that live in a different account group.
 - `BasicAccountIncluded` (the parent-candidate list, from `getPossibleAccountInclude`/
   `accountIncludeViewModels`) carries `hasParent: boolean`; the UI filters candidates to `!hasParent`
-  since a sub-account can't itself become a main account.
+  since a sub-account can't itself become a main account. The API also applies the new-account rules
+  there (see the API's `docs/architecture.md`): `methodIds` holds only the valid exchange methods (one,
+  already selected, when determined), `requiresMethodChoice` says the user must pick, and
+  `requiredFinancialEntityId` is the entity a sub-account of that main account must have.
 - `NewAccountComponent`/`acc-view-model.ts` use a single `selectedParentAcc?` (not an array) even though
   `accountIncludes` on the request models stays an array of 0 or 1 entries — that's the API's existing
-  contract shape, unchanged. The per-link `currencyConverterMethodId` is still computed and sent (from
-  the candidate's `isSelected`/default method), just without a manual picker in the UI.
+  contract shape, unchanged. The UI sends the selected method's id, but the server picks the method itself
+  whenever the rules determine it; it only honors the client's value when `requiresMethodChoice`.
+- When creating (not editing), choosing a main account sets the financial entity to
+  `requiredFinancialEntityId` and locks the field; clearing it unlocks the field. The exchange-method
+  picker (`#exchange-method`, required) appears only when `requiresMethodChoice`; otherwise the chosen
+  method is shown as automatic. A candidate with no `methodIds` is disabled in the dropdown, and
+  `parentIssue()` blocks saving rather than letting the main account be dropped silently. Edits are not
+  constrained yet (existing accounts may break the entity rule until the planned data fix).
 - The parent-account `<select>` is disabled both when editing an account that already has sub-accounts
   (`inputModel.hasSubAccounts`) and when arriving via "+ Add child" from `AccountsComponent` (carries
   `parentAccountId`/`parentAccountName` as query params into `accounts/new`, applied once candidates load).

@@ -7,6 +7,7 @@ import {
   EditAccountRequestModel,
   EditAccountViewModel,
   NewAccountRequestModel,
+  SelectableItem,
 } from '../services/models';
 import { AccountViewApiService } from '../services/account-view-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,6 +25,9 @@ export class NewAccountComponent implements OnInit {
   inputModel: AccountViewModel = new AccountViewModel();
   pendingParentAccountId?: number;
   addChildParentName?: string;
+  financialEntityLocked = false;
+  financialEntityLockedBy?: string;
+  accountIncludesLoaded = false;
   accountFiedlds: { [fieldId: string]: number } = {
     'accountName': 1,
     'baseBudget': 4,
@@ -91,8 +95,69 @@ export class NewAccountComponent implements OnInit {
       }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
         this.viewModel = res;
+        if (this.pendingParentAccountId) {
+          this.prefillFinancialEntityFromParent(this.pendingParentAccountId);
+        }
       });
     });
+  }
+
+  private prefillFinancialEntityFromParent(parentAccountId: number) {
+    this.apiService.getEditAccountViewModel(parentAccountId).subscribe((parent) => {
+      const entityId = parent?.financialEntityViewModels.find((e) => e.isSelected)?.id;
+      if (
+        entityId &&
+        !this.inputModel.selectedFinancialEntityId &&
+        this.viewModel.financialEntityViewModels.some((e) => e.id === entityId)
+      ) {
+        this.inputModel.selectedFinancialEntityId = entityId;
+        this.financialEntityLocked = true;
+        this.financialEntityLockedBy = this.addChildParentName;
+      }
+    });
+  }
+
+  /**
+   * A new sub-account must have the same financial entity as its main account (when that has one).
+   * Only applies when creating: existing accounts aren't re-checked on edit.
+   */
+  private applyFinancialEntityRule(parent: BasicAccountIncluded | undefined) {
+    if (this.inputModel.editMode) {
+      return;
+    }
+
+    const requiredEntityId = parent?.requiredFinancialEntityId;
+    if (requiredEntityId) {
+      this.inputModel.selectedFinancialEntityId = requiredEntityId;
+      this.financialEntityLocked = true;
+      this.financialEntityLockedBy = parent?.name;
+    } else if (parent || !this.isParentLocked()) {
+      this.financialEntityLocked = false;
+    }
+  }
+
+  /** Why the chosen main account can't be saved, or null when it can. */
+  parentIssue(): string | null {
+    const parent = this.inputModel.selectedParentAcc;
+    if (parent) {
+      // When the user must choose, the required exchange-method select already blocks saving.
+      return this.inputModel.selectedMethodIds[parent.id] || parent.requiresMethodChoice
+        ? null
+        : `There is no exchange method between this account's currency and ${parent.name}'s.`;
+    }
+
+    if (!this.inputModel.editMode && this.isParentLocked() && this.accountIncludesLoaded) {
+      return `${this.addChildParentName} can't be the main account of this account: there is no exchange method between their currencies.`;
+    }
+
+    return null;
+  }
+
+  onMethodSelected(method: SelectableItem | undefined) {
+    const parent = this.inputModel.selectedParentAcc;
+    if (parent) {
+      this.inputModel.selectedMethodIds[parent.id] = method;
+    }
   }
 
   isParentLocked(): boolean {
@@ -104,7 +169,7 @@ export class NewAccountComponent implements OnInit {
       const candidate = this.getAvailableParentAccounts().find(
         (a) => a.id === this.pendingParentAccountId
       );
-      if (candidate) {
+      if (candidate && candidate.methodIds.length > 0) {
         this.onParentAccountChanged(candidate);
       }
     }
@@ -203,7 +268,9 @@ export class NewAccountComponent implements OnInit {
 
       model.periodDefinitionId = Number.parseInt(formValue.periodType);
       model.currencyId = Number.parseInt(formValue.currencyId);
-      model.financialEntityId = Number.parseInt(formValue.financialEntityId);
+      model.financialEntityId = this.financialEntityLocked
+        ? this.inputModel.selectedFinancialEntityId ?? 0
+        : Number.parseInt(formValue.financialEntityId);
       model.accountTypeId = Number.parseInt(formValue.accountTypeId);
       model.spendTypeId = Number.parseInt(formValue.spendTypeId);
       model.defaultCurrencyId = this.toValidId(formValue.defaultCurrencyId);
@@ -248,6 +315,8 @@ export class NewAccountComponent implements OnInit {
     this.inputModel.selectedMethodIds = {};
     this.viewModel.accountIncludeViewModels = [];
     this.inputModel.selectedParentAcc = undefined;
+    this.accountIncludesLoaded = false;
+    this.applyFinancialEntityRule(undefined);
     if (
       this.inputModel.selectedCurrencyId &&
       this.inputModel.selectedCurrencyId > 0
@@ -259,9 +328,10 @@ export class NewAccountComponent implements OnInit {
         )
         .subscribe((res) => {
           this.viewModel.accountIncludeViewModels = res;
+          this.accountIncludesLoaded = true;
           if (previousSelectionId) {
             const acc = res.find(acci => acci.id === previousSelectionId);
-            if (acc) {
+            if (acc && acc.methodIds.length > 0) {
               this.onParentAccountChanged(acc);
             }
           } else {
@@ -344,10 +414,13 @@ export class NewAccountComponent implements OnInit {
     this.inputModel.selectedMethodIds = {};
     this.inputModel.selectedParentAcc = item;
     if (item) {
+      // Already selected by the server when it's determined; left empty when the user has to choose.
       this.inputModel.selectedMethodIds[item.id] = item.methodIds.find(
         (x) => x.isSelected
-      ) ?? item.methodIds[0];
+      );
     }
+
+    this.applyFinancialEntityRule(item);
   }
 
   onParentAccountSelect(accountId: string) {

@@ -25,8 +25,9 @@ amounts shown in the UI have to be trustworthy.
 An account can have at most **one parent** (a "main account"), and hierarchy is capped at **two
 levels** — a sub-account can't have sub-accounts of its own. A sub-account can live in a different
 **account group** than its parent; account groups are purely organizational and independent of the
-hierarchy. Currency conversion between a sub-account and its parent is derived automatically from
-the financial entity + currency pair — there's no manual "conversion method" choice in the UI.
+hierarchy. When creating a sub-account, its financial entity must match its main account's (if that has
+one) and the exchange method is chosen automatically; only when the main account has no entity and the
+currencies differ does the user pick the method. Existing accounts aren't re-checked on edit yet.
 Deleting a main account does not cascade: its sub-accounts silently become top-level accounts (the UI
 warns about this before deleting).
 

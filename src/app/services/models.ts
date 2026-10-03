@@ -192,8 +192,13 @@ export interface ItemModifiedRes {
 }
 
 export interface BasicAccountIncluded extends SelectableItem {
+  /** Valid exchange methods. One, already selected, unless `requiresMethodChoice`; empty means none exists. */
   methodIds: SelectableItem[];
   hasParent: boolean;
+  /** A new sub-account of this account must have this financial entity (null: the account has none). */
+  requiredFinancialEntityId: number | null;
+  /** The user has to pick one of `methodIds`. */
+  requiresMethodChoice: boolean;
 }
 
 export interface TrxAccountIncluded extends BasicAccountIncluded {
