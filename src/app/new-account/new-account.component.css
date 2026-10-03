@@ -13,3 +13,96 @@
 button{
     margin-right: 2vh;
 }
+
+/* A narrower form keeps the two columns together instead of stretching across a wide screen. */
+.form-container {
+    max-width: 880px;
+    padding-bottom: 4vh;
+}
+
+/* Advanced settings: a bordered bar that opens into a panel, in the same style as the other screens. */
+.advanced {
+    margin-top: 3vh;
+    border: 1px solid var(--st-border, #e1e6ea);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.advanced-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.7rem 1rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--st-ink, #202832);
+    text-align: left;
+    cursor: pointer;
+}
+
+.advanced-toggle:hover {
+    background: var(--st-accent-tint, #eaf1f8);
+}
+
+.advanced-toggle:focus-visible {
+    outline: 2px solid var(--st-accent, #3f7cac);
+    outline-offset: -2px;
+}
+
+.advanced-title {
+    font-weight: 600;
+}
+
+.advanced-hint {
+    flex: 1;
+    color: var(--st-ink-muted, #667080);
+    font-size: 0.875rem;
+}
+
+.advanced-chevron {
+    color: var(--st-ink-muted, #667080);
+    transition: transform 0.15s ease;
+}
+
+.advanced-chevron.open {
+    transform: rotate(90deg);
+}
+
+.advanced-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--st-border-soft, #edf0f3);
+}
+
+.form-actions {
+    padding-top: 3vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .advanced-chevron {
+        transition: none;
+    }
+}
+
+/* On narrow screens the two columns stack: keep the same gap between stacked fields as between rows. */
+@media (max-width: 767.98px) {
+    .row > [class*="col-md-"] + [class*="col-md-"] {
+        padding-top: 2vh;
+    }
+}
+
+/* Required fields: a red asterisk after the label, plus a note above the buttons. */
+label.required::after,
+.required-star {
+    color: var(--st-danger, #dc3545);
+}
+
+label.required::after {
+    content: " *";
+}
+
+.required-note {
+    color: var(--st-ink-muted, #667080);
+}

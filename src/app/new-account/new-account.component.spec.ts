@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AccountViewApiService } from '../services/account-view-api.service';
@@ -148,6 +149,113 @@ describe('NewAccountComponent main account rules', () => {
     });
   });
 
+  describe('suggested period type and account type', () => {
+    // Account type ids here are arbitrary; the API decides which type to suggest.
+    const MAIN_TYPE = 3;
+    const SUB_TYPE = 2;
+    const periodTypes = (selectedId?: number): SelectableItem[] =>
+      [1, 2, 3].map((id) => ({ id, name: `p${id}`, isDefault: false, isSelected: id === selectedId }));
+    const accountTypes = (): SelectableItem[] =>
+      [SUB_TYPE, MAIN_TYPE].map((id) => ({ id, name: `t${id}`, isDefault: false, isSelected: false }));
+
+    beforeEach(() => {
+      component.viewModel = {
+        accountIncludeViewModels: [],
+        periodTypeViewModels: periodTypes(2),
+        accountTypeViewModels: accountTypes(),
+        suggestedAccountTypeIdForMainAccount: MAIN_TYPE,
+        suggestedAccountTypeIdForSubAccount: SUB_TYPE,
+      } as any;
+    });
+
+    it('preselects the period type the API marks as default', () => {
+      (component as any).applyPeriodTypeDefault();
+
+      expect(component.inputModel.selectedPeriodTypeId).toBe(2);
+    });
+
+    it('preselects nothing, and opens the advanced section, when no period type is marked', () => {
+      component.viewModel.periodTypeViewModels = periodTypes(undefined);
+
+      (component as any).applyPeriodTypeDefault();
+
+      expect(component.inputModel.selectedPeriodTypeId).toBeUndefined();
+      expect(component.advancedNeedsAttention).toBeTrue();
+      expect(component.showAdvanced).toBeTrue();
+    });
+
+    it('does not overwrite a period type that is already chosen', () => {
+      component.inputModel.selectedPeriodTypeId = 3;
+
+      (component as any).applyPeriodTypeDefault();
+
+      expect(component.inputModel.selectedPeriodTypeId).toBe(3);
+    });
+
+    it('suggests the main account type when there is no main account', () => {
+      (component as any).applyAccountTypeSuggestion();
+
+      expect(component.inputModel.selectedAccountTypeId).toBe(MAIN_TYPE);
+    });
+
+    it('suggests the sub-account type once a main account is chosen, and goes back when it is cleared', () => {
+      component.onParentAccountChanged(candidate());
+      expect(component.inputModel.selectedAccountTypeId).toBe(SUB_TYPE);
+
+      component.onParentAccountChanged(undefined);
+      expect(component.inputModel.selectedAccountTypeId).toBe(MAIN_TYPE);
+    });
+
+    it('suggests the sub-account type when started from "+ Add child"', () => {
+      component.pendingParentAccountId = 10;
+
+      (component as any).applyAccountTypeSuggestion();
+
+      expect(component.inputModel.selectedAccountTypeId).toBe(SUB_TYPE);
+    });
+
+    it('stops suggesting once the user has chosen an account type', () => {
+      (component as any).applyAccountTypeSuggestion();
+      component.inputModel.selectedAccountTypeId = SUB_TYPE;
+      component.onAccountTypeChanged();
+
+      component.onParentAccountChanged(candidate());
+      component.onParentAccountChanged(undefined);
+
+      expect(component.inputModel.selectedAccountTypeId).toBe(SUB_TYPE);
+    });
+
+    it('does not suggest a type that is not in the list or that the API did not suggest', () => {
+      component.viewModel.suggestedAccountTypeIdForMainAccount = 99;
+      (component as any).applyAccountTypeSuggestion();
+      expect(component.inputModel.selectedAccountTypeId).toBeUndefined();
+
+      component.viewModel.suggestedAccountTypeIdForMainAccount = null;
+      (component as any).applyAccountTypeSuggestion();
+      expect(component.inputModel.selectedAccountTypeId).toBeUndefined();
+    });
+
+    it('leaves the account type alone when editing', () => {
+      component.inputModel.editMode = true;
+      component.inputModel.selectedAccountTypeId = SUB_TYPE;
+
+      component.onParentAccountChanged(undefined);
+
+      expect(component.inputModel.selectedAccountTypeId).toBe(SUB_TYPE);
+    });
+
+    it('keeps the advanced section closed while both fields have a value, until it is opened', () => {
+      component.inputModel.selectedPeriodTypeId = 2;
+      component.inputModel.selectedAccountTypeId = MAIN_TYPE;
+
+      expect(component.showAdvanced).toBeFalse();
+
+      component.advancedExpanded = true;
+
+      expect(component.showAdvanced).toBeTrue();
+    });
+  });
+
   describe('loading the main account candidates', () => {
     it('applies the "+ Add child" main account and its entity once candidates arrive', () => {
       api.getPossibleAccountInclude.and.returnValue(of([candidate({ requiredFinancialEntityId: 2 })]));
@@ -218,7 +326,7 @@ describe('NewAccountComponent main account template', () => {
 
     await TestBed.configureTestingModule({
       declarations: [NewAccountComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, NgbModule],
       providers: [
         { provide: AccountViewApiService, useValue: apiSpy },
         { provide: ActivatedRoute, useValue: { snapshot: { url: [{ path: 'accounts' }, { path: 'new' }], params: {} }, queryParams: of({}) } },
@@ -321,5 +429,83 @@ describe('NewAccountComponent main account template', () => {
     await render();
 
     expect(el.textContent).toContain("Bac Colones can't be the main account");
+  });
+
+  describe('advanced settings', () => {
+    const panel = () => el.querySelector('#advanced-settings') as HTMLElement;
+
+    it('is closed by default when both fields already have a value, but the fields stay in the form', async () => {
+      component.inputModel.selectedPeriodTypeId = 2;
+      component.inputModel.selectedAccountTypeId = 3;
+      await render();
+
+      expect(panel().classList.contains('show')).toBeFalse();
+      expect(el.querySelector('#account-period-type')).not.toBeNull();
+      expect(el.querySelector('#account-type')).not.toBeNull();
+    });
+
+    it('opens when the toggle is clicked', async () => {
+      component.inputModel.selectedPeriodTypeId = 2;
+      component.inputModel.selectedAccountTypeId = 3;
+      await render();
+
+      const toggle = el.querySelector('#advanced-toggle') as HTMLButtonElement;
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+      toggle.click();
+      await render();
+
+      // ng-bootstrap adds the "show" class only after its open animation, so check the toggle's state instead.
+      expect(component.showAdvanced).toBeTrue();
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('opens by itself, with a message, when a field has no value', async () => {
+      component.inputModel.selectedPeriodTypeId = undefined;
+      component.inputModel.selectedAccountTypeId = 3;
+      await render();
+
+      expect(panel().classList.contains('show')).toBeTrue();
+      expect(el.textContent).toContain('Choose a period type and an account type to continue');
+    });
+  });
+
+  describe('required fields', () => {
+    it('marks the label of every required control with the required class, and only those', async () => {
+      // Edit mode shows the base budget, and a main account that needs a choice shows the exchange method, so
+      // every required control is on screen.
+      component.inputModel.editMode = true;
+      const methods = [method(1, 'Bac SJ Col-Dol', false), method(1006, 'Scotia Col-Dol', false)];
+      component.viewModel.accountIncludeViewModels = [candidate({ methodIds: methods, requiresMethodChoice: true })];
+      component.onParentAccountChanged(component.viewModel.accountIncludeViewModels[0]);
+      await render();
+
+      const requiredControlIds = Array.from(el.querySelectorAll('input[required], select[required]'))
+        .map((c) => c.id)
+        .filter((id) => !!id)
+        .sort();
+      const markedLabelFors = Array.from(el.querySelectorAll('label.required'))
+        .map((l) => l.getAttribute('for'))
+        .sort();
+
+      expect(requiredControlIds.length).toBeGreaterThan(5);
+      expect(markedLabelFors).toEqual(requiredControlIds);
+    });
+
+    it('explains the asterisk', async () => {
+      await render();
+
+      expect(el.textContent).toContain('Required fields');
+    });
+  });
+
+  describe('transaction defaults', () => {
+    it('keeps the default currency and the pending switch inside the advanced settings', async () => {
+      await render();
+
+      const panel = el.querySelector('#advanced-settings') as HTMLElement;
+      expect(panel.querySelector('#account-default-currency')).not.toBeNull();
+      expect(panel.querySelector('#new-trx-pending')).not.toBeNull();
+    });
   });
 });

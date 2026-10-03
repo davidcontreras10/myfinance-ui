@@ -28,6 +28,8 @@ export class NewAccountComponent implements OnInit {
   financialEntityLocked = false;
   financialEntityLockedBy?: string;
   accountIncludesLoaded = false;
+  advancedExpanded = false;
+  private accountTypeChosenByUser = false;
   accountFiedlds: { [fieldId: string]: number } = {
     'accountName': 1,
     'baseBudget': 4,
@@ -95,6 +97,8 @@ export class NewAccountComponent implements OnInit {
       }
       this.apiService.getAddAccountViewModel().subscribe((res) => {
         this.viewModel = res;
+        this.applyPeriodTypeDefault();
+        this.applyAccountTypeSuggestion();
         if (this.pendingParentAccountId) {
           this.prefillFinancialEntityFromParent(this.pendingParentAccountId);
         }
@@ -115,6 +119,50 @@ export class NewAccountComponent implements OnInit {
         this.financialEntityLockedBy = this.addChildParentName;
       }
     });
+  }
+
+  /** Preselects the period type the API marks as default. It's only a suggestion: nothing is selected if none is marked. */
+  private applyPeriodTypeDefault() {
+    if (!this.inputModel.selectedPeriodTypeId) {
+      this.inputModel.selectedPeriodTypeId = this.viewModel.periodTypeViewModels.find((p) => p.isSelected)?.id;
+    }
+  }
+
+  /**
+   * Suggests an account type (the API decides which): one for a main account, another for a sub-account.
+   * Only when creating, and only until the user picks a type themselves.
+   */
+  private applyAccountTypeSuggestion() {
+    if (this.inputModel.editMode || this.accountTypeChosenByUser || !this.viewModel) {
+      return;
+    }
+
+    const isSubAccount = this.isParentLocked() || !!this.inputModel.selectedParentAcc;
+    const suggestedId = isSubAccount
+      ? this.viewModel.suggestedAccountTypeIdForSubAccount
+      : this.viewModel.suggestedAccountTypeIdForMainAccount;
+    if (suggestedId && this.viewModel.accountTypeViewModels.some((t) => t.id === suggestedId)) {
+      this.inputModel.selectedAccountTypeId = suggestedId;
+    }
+  }
+
+  onAccountTypeChanged() {
+    this.accountTypeChosenByUser = true;
+  }
+
+  /** The advanced fields have no value (e.g. no default is marked), so the section must be visible. */
+  get advancedNeedsAttention(): boolean {
+    return !!this.viewModel && (!this.inputModel.selectedPeriodTypeId || !this.inputModel.selectedAccountTypeId);
+  }
+
+  /** The main account row: shown once a currency is chosen, but when started from "+ Add child" only to pick an exchange method. */
+  get showParentRow(): boolean {
+    return !!this.inputModel.selectedCurrencyId
+      && (!this.isParentLocked() || !!this.inputModel.selectedParentAcc?.requiresMethodChoice);
+  }
+
+  get showAdvanced(): boolean {
+    return this.advancedExpanded || this.advancedNeedsAttention;
   }
 
   /**
@@ -317,6 +365,7 @@ export class NewAccountComponent implements OnInit {
     this.inputModel.selectedParentAcc = undefined;
     this.accountIncludesLoaded = false;
     this.applyFinancialEntityRule(undefined);
+    this.applyAccountTypeSuggestion();
     if (
       this.inputModel.selectedCurrencyId &&
       this.inputModel.selectedCurrencyId > 0
@@ -421,6 +470,7 @@ export class NewAccountComponent implements OnInit {
     }
 
     this.applyFinancialEntityRule(item);
+    this.applyAccountTypeSuggestion();
   }
 
   onParentAccountSelect(accountId: string) {

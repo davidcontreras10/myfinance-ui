@@ -302,6 +302,9 @@ export interface AddNewAccountViewModel {
   accountGroupViewModels: SelectableItem[];
   defaultCurrencyId: number | null;
   isDefaultPending: boolean;
+  /** Add form only: account type to suggest for a new main account / a new sub-account (null: none). */
+  suggestedAccountTypeIdForMainAccount?: number | null;
+  suggestedAccountTypeIdForSubAccount?: number | null;
 }
 
 export interface EditAccountViewModel extends AddNewAccountViewModel {

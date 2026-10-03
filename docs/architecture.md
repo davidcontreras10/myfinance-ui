@@ -57,6 +57,12 @@ product.md; the UI only renders and edits what the API returns/validates, it doe
   method is shown as automatic. A candidate with no `methodIds` is disabled in the dropdown, and
   `parentIssue()` blocks saving rather than letting the main account be dropped silently. Edits are not
   constrained yet (existing accounts may break the entity rule until the planned data fix).
+- **Advanced settings** (`#advanced-settings`, collapsed by default, in the add and edit forms) holds Period Type,
+  Account Type, Default transactions currency and the "pending by default" switch. It uses `[ngbCollapse]`, not `*ngIf`, so the fields stay in the form and are still validated;
+  it opens by itself (`advancedNeedsAttention`) when either has no value, so Save is never blocked by a hidden field.
+  On add, the API's suggestions are applied: the period type marked `isSelected`, and the account type from
+  `suggestedAccountTypeIdForMainAccount` / `suggestedAccountTypeIdForSubAccount`, which follows whether a main
+  account is chosen until the user picks a type (`onAccountTypeChanged`). They're suggestions, not rules.
 - The parent-account `<select>` is disabled both when editing an account that already has sub-accounts
   (`inputModel.hasSubAccounts`) and when arriving via "+ Add child" from `AccountsComponent` (carries
   `parentAccountId`/`parentAccountName` as query params into `accounts/new`, applied once candidates load).
