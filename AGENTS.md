@@ -69,6 +69,8 @@ services it injects.
 - Don't commit secrets or environment-specific URLs other than the two in `src/environments/`.
 - Ask before every `git commit`, push or pull request, even when you were asked to do the work: say what would be
   committed (files, one-line message, branch) and wait for a yes. A yes covers only that one commit.
-- Branching: work on `develop`; `master` deploys to Azure. **Production is the only environment** (no dev or
-  staging): merging to `master` is a production release, and the API's release runs its database migrations
-  first (see the API repo's `docs/architecture.md`, "CI / deployment").
+- Branching: **`develop` is the working branch** — start new work, branches, worktrees and new sessions from it
+  (the git default branch is `master`, so tools often start from `master` by mistake; switch to `develop` first).
+  **`master` is production**, and **production is the only environment** (no dev or staging): merging to `master`
+  is a production release, and the API's release runs its database migrations first (see the API repo's
+  `docs/architecture.md`, "CI / deployment").
