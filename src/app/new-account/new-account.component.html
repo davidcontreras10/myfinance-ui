@@ -63,12 +63,6 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                <label for="base-budget">Base Budget</label>
-                <input [(ngModel)]="inputModel.amount" required name="baseBudget" type="number" id="base-budget"
-                    class="basic-input form-control" placeholder="Amount"
-                    pattern="^(0*[0-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
-            </div>
-            <div class="col-md-4">
                 <label for="header-color">Header Color</label>
                 <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="header-color"
                     name="headerColor" [ngModel]="viewModel.accountStyle?.headerColor"
@@ -82,10 +76,11 @@
             </div>
         </div>
         <div class="row" *ngIf="inputModel.selectedCurrencyId">
-            <div class="col-lg-4">
+            <!-- Hidden when arriving from "+ Add child": the banner at the top already names the main account. -->
+            <div class="col-lg-4" *ngIf="!isParentLocked()">
                 <label for="parent-account">Parent account</label>
                 <select id="parent-account" class="basic-input form-control"
-                    [disabled]="inputModel.hasSubAccounts || isParentLocked()"
+                    [disabled]="inputModel.hasSubAccounts"
                     (change)="onParentAccountSelect($any($event.target).value)">
                     <option value="" [selected]="!inputModel.selectedParentAcc">None</option>
                     <option *ngFor="let item of getAvailableParentAccounts()" [value]="item.id"
@@ -96,15 +91,12 @@
                 <small *ngIf="inputModel.hasSubAccounts" class="form-text text-muted">
                     This account has sub-accounts, so it can't become a sub-account itself.
                 </small>
-                <small *ngIf="!inputModel.hasSubAccounts && isParentLocked()" class="form-text text-muted">
-                    🔒 Locked — you started from {{addChildParentName}} → + Add child
-                </small>
-                <small *ngIf="!inputModel.hasSubAccounts && !isParentLocked()" class="form-text text-muted">
+                <small *ngIf="!inputModel.hasSubAccounts" class="form-text text-muted">
                     Only accounts without a parent of their own are shown here.
                 </small>
             </div>
             <div class="col-md-8" *ngIf="inputModel.selectedParentAcc as parent">
-                <ng-container *ngIf="parent.requiresMethodChoice; else autoMethod">
+                <ng-container *ngIf="parent.requiresMethodChoice">
                     <label for="exchange-method">Exchange method</label>
                     <select id="exchange-method" class="basic-input form-control" name="exchangeMethod" required
                         [ngModel]="inputModel.selectedMethodIds[parent.id]"
@@ -116,13 +108,6 @@
                         How amounts are converted between this account and {{parent.name}}.
                     </small>
                 </ng-container>
-                <ng-template #autoMethod>
-                    <span>
-                        Exchange method:
-                        <strong>{{inputModel.selectedMethodIds[parent.id]?.name}}</strong>
-                        &mdash; applied automatically, nothing to choose.
-                    </span>
-                </ng-template>
             </div>
         </div>
         <div class="row" *ngIf="parentIssue() as issue">

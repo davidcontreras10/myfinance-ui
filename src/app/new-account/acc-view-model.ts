@@ -6,7 +6,6 @@ import {
 } from '../services/models';
 
 export class AccountViewModel {
-  amount: number = 0;
   accountName: string;
   selectedParentAcc?: BasicAccountIncluded;
   selectedCurrencyId: number | undefined;
@@ -22,7 +21,6 @@ export class AccountViewModel {
   subAccounts: SubAccountViewModel[] = [];
 
   public setValues(viewModel: EditAccountViewModel): void {
-    this.amount = viewModel.baseBudget;
     this.selectedCurrencyId = viewModel.currencyViewModels.find(x => x.isSelected)?.id;
     this.selectedFinancialEntityId = viewModel.financialEntityViewModels.find(x => x.isSelected)?.id;
     this.selectedAccountGroupId = viewModel.accountGroupViewModels.find(x => x.isSelected)?.id;

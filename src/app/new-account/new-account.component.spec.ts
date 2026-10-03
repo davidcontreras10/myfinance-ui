@@ -111,6 +111,23 @@ describe('NewAccountComponent main account rules', () => {
     });
   });
 
+  describe('new account request', () => {
+    it('always sends a base budget of 0', () => {
+      const form = {
+        valid: true,
+        value: {
+          accountGroupId: '1', accountName: 'X', headerColor: '#000000', borderColor: '#ffffff',
+          periodType: '2', currencyId: '1', financialEntityId: '2', accountTypeId: '2', spendTypeId: '1',
+          defaultCurrencyId: '0', isDefaultPending: false,
+        },
+      };
+
+      const model = (component as any).readNewSubmitModel(form);
+
+      expect(model.baseBudget).toBe(0);
+    });
+  });
+
   describe('main account without an exchange method', () => {
     it('reports an issue instead of silently dropping the main account', () => {
       component.onParentAccountChanged(candidate({ methodIds: [] }));
@@ -223,14 +240,21 @@ describe('NewAccountComponent main account template', () => {
     return fixture.whenStable().then(() => fixture.detectChanges());
   };
 
-  it('shows the method as automatic, with no picker, when it is determined', async () => {
+  it('hides the exchange method completely when it is determined', async () => {
     component.viewModel.accountIncludeViewModels = [candidate({})];
     component.onParentAccountChanged(component.viewModel.accountIncludeViewModels[0]);
     await render();
 
     expect(el.querySelector('#exchange-method')).toBeNull();
-    expect(el.textContent).toContain('applied automatically');
-    expect(el.textContent).toContain('Colones default');
+    expect(el.textContent).not.toContain('Exchange method');
+    expect(el.textContent).not.toContain('Colones default');
+  });
+
+  it('has no base budget field', async () => {
+    await render();
+
+    expect(el.querySelector('#base-budget')).toBeNull();
+    expect(el.textContent).not.toContain('Base Budget');
   });
 
   it('shows a required method picker when the user must choose', async () => {
@@ -265,6 +289,22 @@ describe('NewAccountComponent main account template', () => {
     const entity = el.querySelector('#account-financial-entity') as HTMLSelectElement;
     expect(entity.disabled).toBeTrue();
     expect(el.textContent).toContain('Same as Bac Colones');
+  });
+
+  it('does not repeat the main account as a field when arriving from "+ Add child"', async () => {
+    component.pendingParentAccountId = 10;
+    component.addChildParentName = 'Bac Colones';
+    await render();
+
+    expect(el.querySelector('#parent-account')).toBeNull();
+    expect(el.textContent).toContain('Adding a child account under');
+    expect(el.textContent).toContain('Bac Colones');
+  });
+
+  it('shows the parent account field in the normal new account form', async () => {
+    await render();
+
+    expect(el.querySelector('#parent-account')).not.toBeNull();
   });
 
   it('shows the blocking message when the main account from "+ Add child" cannot be used', async () => {
