@@ -13,3 +13,155 @@
 button{
     margin-right: 2vh;
 }
+
+/* A narrower form keeps the two columns together instead of stretching across a wide screen. */
+.form-container {
+    max-width: 880px;
+    padding-bottom: 4vh;
+}
+
+/* Collapsible sections (Style, Advanced settings): a bordered bar that opens into a panel, in the same style as the other screens. */
+.fold {
+    margin-top: 3vh;
+    border: 1px solid var(--st-border, #e1e6ea);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.fold-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.7rem 1rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--st-ink, #202832);
+    text-align: left;
+    cursor: pointer;
+}
+
+.fold-toggle:hover {
+    background: var(--st-accent-tint, #eaf1f8);
+}
+
+.fold-toggle:focus-visible {
+    outline: 2px solid var(--st-accent, #3f7cac);
+    outline-offset: -2px;
+}
+
+.fold-title {
+    font-weight: 600;
+}
+
+.fold-hint {
+    flex: 1;
+    color: var(--st-ink-muted, #667080);
+    font-size: 0.875rem;
+}
+
+.fold-chevron {
+    color: var(--st-ink-muted, #667080);
+    transition: transform 0.15s ease;
+}
+
+.fold-chevron.open {
+    transform: rotate(90deg);
+}
+
+.fold-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--st-border-soft, #edf0f3);
+}
+
+.form-actions {
+    padding-top: 3vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fold-chevron {
+        transition: none;
+    }
+}
+
+/* On narrow screens the two columns stack: keep the same gap between stacked fields as between rows. */
+@media (max-width: 767.98px) {
+    .row > [class*="col-md-"] + [class*="col-md-"] {
+        padding-top: 2vh;
+    }
+}
+
+/* Required fields: a red asterisk after the label, plus a note above the buttons. */
+label.required::after,
+.required-star {
+    color: var(--st-danger, #dc3545);
+}
+
+label.required::after {
+    content: " *";
+}
+
+.required-note {
+    color: var(--st-ink-muted, #667080);
+}
+
+.fold + .fold {
+    margin-top: 1.5vh;
+}
+
+.swatch {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-right: 0.15rem;
+    border: 1px solid var(--st-border, #e1e6ea);
+    border-radius: 50%;
+    vertical-align: -0.1rem;
+}
+
+.style-preview-label {
+    margin-bottom: 0.35rem;
+    color: var(--st-ink-muted, #667080);
+    font-size: 0.8rem;
+}
+
+/* Mirrors the account card on the finance screen: a 5px frame, the header color only behind the title row. */
+.style-preview {
+    overflow: hidden;
+}
+
+.style-preview-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0.75rem;
+}
+
+.style-preview-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 0.75rem;
+    border: 1px solid var(--st-border, #e1e6ea);
+    border-radius: 6px;
+}
+
+.style-preview-tile {
+    padding: 0.4rem 0.6rem;
+    color: var(--st-ink-muted, #667080);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.style-preview-tile + .style-preview-tile {
+    border-left: 1px solid var(--st-border-soft, #edf0f3);
+}
+
+@media (max-width: 575.98px) {
+    .style-preview-tiles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

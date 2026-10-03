@@ -2,12 +2,12 @@ import {
   BasicAccountIncluded,
   EditAccountViewModel,
   SelectableItem,
+  SubAccountViewModel,
 } from '../services/models';
 
 export class AccountViewModel {
-  amount: number = 0;
   accountName: string;
-  selectedParentAccs: BasicAccountIncluded[] = [];
+  selectedParentAcc?: BasicAccountIncluded;
   selectedCurrencyId: number | undefined;
   selectedFinancialEntityId: number | undefined;
   selectedAccountGroupId: number | undefined;
@@ -18,9 +18,12 @@ export class AccountViewModel {
   selectedMethodIds: { [accountId: string]: SelectableItem | undefined } = {};
   defaultCurrencyId: number | null;
   isDefaultPending: boolean;
+  amount: number = 0;
+  headerColor?: string;
+  borderColor?: string;
+  subAccounts: SubAccountViewModel[] = [];
 
   public setValues(viewModel: EditAccountViewModel): void {
-    this.amount = viewModel.baseBudget;
     this.selectedCurrencyId = viewModel.currencyViewModels.find(x => x.isSelected)?.id;
     this.selectedFinancialEntityId = viewModel.financialEntityViewModels.find(x => x.isSelected)?.id;
     this.selectedAccountGroupId = viewModel.accountGroupViewModels.find(x => x.isSelected)?.id;
@@ -29,17 +32,26 @@ export class AccountViewModel {
     this.selectedAccountTypeId = viewModel.accountTypeViewModels.find(x => x.isSelected)?.id;
     this.editMode = true;
     this.accountName = viewModel.accountName;
-    this.setAccountIncludes(viewModel);
+    this.headerColor = viewModel.accountStyle?.headerColor;
+    this.borderColor = viewModel.accountStyle?.borderColor;
+    this.amount = viewModel.baseBudget;
+    this.subAccounts = viewModel.subAccounts ?? [];
+    this.setAccountInclude(viewModel);
     this.defaultCurrencyId = viewModel.defaultCurrencyId;
     this.isDefaultPending = viewModel.isDefaultPending;
   }
 
-  private setAccountIncludes(viewModel: EditAccountViewModel): void {
-    viewModel.accountIncludeViewModels.filter(x => x.isSelected).forEach((basicAccountIncluded: BasicAccountIncluded) => {
-      this.selectedParentAccs.push(basicAccountIncluded);
-      this.selectedMethodIds[basicAccountIncluded.id.toString()] = basicAccountIncluded.methodIds.find(
+  public get hasSubAccounts(): boolean {
+    return this.subAccounts.length > 0;
+  }
+
+  private setAccountInclude(viewModel: EditAccountViewModel): void {
+    const selected = viewModel.accountIncludeViewModels.find(x => x.isSelected);
+    if (selected) {
+      this.selectedParentAcc = selected;
+      this.selectedMethodIds[selected.id.toString()] = selected.methodIds.find(
         (x) => x.isSelected
       );
-    })
+    }
   }
 }

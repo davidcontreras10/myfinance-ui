@@ -3,8 +3,10 @@
     margin: 0 25px 25px 0;
     display: inline-block;
     vertical-align: top;
+    width: 100%;
+    box-sizing: border-box;
   }
-  
+
   .example-list {
     border: solid 1px #ccc;
     min-height: 60px;
@@ -14,23 +16,20 @@
     display: block;
     float: left;
     min-width: 120px;
+    width: 100%;
+    box-sizing: border-box;
   }
-  
+
   .example-box {
-    padding: 20px 10px;
+    padding: 15px 20px;
     border-bottom: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
     box-sizing: border-box;
     cursor: move;
     background: white;
     font-size: 14px;
-    min-width: 20vw;
-    min-height: 15vh;
-    text-align: center;
+    text-align: left;
+    width: 100%;
   }
   
   .cdk-drag-preview {
@@ -63,8 +62,8 @@
   }
 
   .box-content{
-    max-width: 140px;
+    width: 100%;
     overflow-x: hidden;
-    text-align: center;
-    display: inline-block;
+    text-align: left;
+    display: block;
   }

@@ -192,7 +192,13 @@ export interface ItemModifiedRes {
 }
 
 export interface BasicAccountIncluded extends SelectableItem {
+  /** Valid exchange methods. One, already selected, unless `requiresMethodChoice`; empty means none exists. */
   methodIds: SelectableItem[];
+  hasParent: boolean;
+  /** A new sub-account of this account must have this financial entity (null: the account has none). */
+  requiredFinancialEntityId: number | null;
+  /** The user has to pick one of `methodIds`. */
+  requiresMethodChoice: boolean;
 }
 
 export interface TrxAccountIncluded extends BasicAccountIncluded {
@@ -246,12 +252,21 @@ export interface AccountBasicInfo {
   accountName: string;
 }
 
+export interface SubAccountViewModel {
+  accountId: number;
+  accountName: string;
+  accountGroupId: number;
+}
+
 export interface AccountViewModel extends AccountBasicInfo {
   accountPosition: number;
   currencyId: number;
   currencyName: string;
   frontStyle: AccountStyle;
   type: number;
+  parentAccountId: number | null;
+  parentAccountName: string | null;
+  subAccounts: SubAccountViewModel[];
 }
 
 export interface AccGroupViewModel {
@@ -287,12 +302,18 @@ export interface AddNewAccountViewModel {
   accountGroupViewModels: SelectableItem[];
   defaultCurrencyId: number | null;
   isDefaultPending: boolean;
+  /** Add form only: account type to suggest for a new main account / a new sub-account (null: none). */
+  suggestedAccountTypeIdForMainAccount?: number | null;
+  suggestedAccountTypeIdForSubAccount?: number | null;
 }
 
 export interface EditAccountViewModel extends AddNewAccountViewModel {
   accountGroupId: number;
   accountId: number;
   accountPosition: number;
+  parentAccountId: number | null;
+  parentAccountName: string | null;
+  subAccounts: SubAccountViewModel[];
 }
 
 export interface AccountInclude {
