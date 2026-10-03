@@ -67,6 +67,8 @@ services it injects.
 - Words users see say "transaction" where the code says `spend` (e.g. the "Default Transaction Type" field is
   `spendTypeId`). Change the label, not the code names.
 - Don't commit secrets or environment-specific URLs other than the two in `src/environments/`.
+- Ask before every `git commit`, push or pull request, even when you were asked to do the work: say what would be
+  committed (files, one-line message, branch) and wait for a yes. A yes covers only that one commit.
 - Branching: work on `develop`; `master` deploys to Azure. **Production is the only environment** (no dev or
   staging): merging to `master` is a production release, and the API's release runs its database migrations
   first (see the API repo's `docs/architecture.md`, "CI / deployment").
