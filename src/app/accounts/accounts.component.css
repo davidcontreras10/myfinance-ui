@@ -85,3 +85,32 @@
 .min-w-0 {
   min-width: 0;
 }
+
+/* Small pill that opens the AI hint modal. Quiet when there is no hint, accented when there is one. */
+.ai-chip {
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--st-border, #e1e6ea);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--st-ink-muted, #667080);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.ai-chip:hover {
+  border-color: var(--st-accent, #3f7cac);
+  color: var(--st-accent-ink, #2c5b80);
+}
+
+.ai-chip:focus-visible {
+  outline: 2px solid var(--st-accent, #3f7cac);
+  outline-offset: 1px;
+}
+
+.ai-chip.set {
+  border-color: var(--st-accent, #3f7cac);
+  background: var(--st-accent-tint, #eaf1f8);
+  color: var(--st-accent-ink, #2c5b80);
+}

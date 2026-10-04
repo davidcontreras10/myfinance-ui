@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  AccountAiClassificationHint,
   AccGroupViewModel,
   AccountGroupRequest,
   AccountViewApiModel,
@@ -135,5 +136,19 @@ export class AccountViewApiService {
 
     const url = `${environment.baseApi}/api/Accounts/${accountGroupId}`;
     return this.httpClient.get<AccountViewApiModel>(url);
+  }
+
+  public getAiClassificationHint(accountId: number): Observable<AccountAiClassificationHint> {
+    const url = `${environment.baseApi}/api/Accounts/${accountId}/ai-classification-hint`;
+    return this.httpClient.get<AccountAiClassificationHint>(url);
+  }
+
+  /** Sets the hint, or clears it with null. The API requires the field to be present, so null is sent explicitly. */
+  public updateAiClassificationHint(
+    accountId: number,
+    aiClassificationHint: string | null
+  ): Observable<AccountAiClassificationHint> {
+    const url = `${environment.baseApi}/api/Accounts/${accountId}/ai-classification-hint`;
+    return this.httpClient.put<AccountAiClassificationHint>(url, { aiClassificationHint });
   }
 }

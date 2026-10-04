@@ -42,6 +42,7 @@ import { EditScheduledTaskComponent } from './automatic-tasks/edit-scheduled-tas
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 import { AccountsGroupsComponent } from './accounts/accounts-groups/accounts-groups.component';
+import { AccountAiHintModalComponent } from './accounts/account-ai-hint-modal/account-ai-hint-modal.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
@@ -100,6 +101,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     EditScheduledTaskComponent,
     DraggableGridComponent,
     AccountsGroupsComponent,
+    AccountAiHintModalComponent,
     NewAccountComponent,
     TransactionTypesComponent,
     TransactionTypesTableComponent,

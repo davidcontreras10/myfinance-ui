@@ -5,6 +5,10 @@ import { AccountViewModel, SubAccountViewModel } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccountsGroupsComponent } from './accounts-groups/accounts-groups.component';
 import {
+  AccountAiHintModalComponent,
+  AccountAiHintResult,
+} from './account-ai-hint-modal/account-ai-hint-modal.component';
+import {
   NavBarMenusIds,
   NavBarServiceService,
 } from '../services/main-nav-bar/nav-bar-service.service';
@@ -126,6 +130,24 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   onEditClick(accountId: number) {
     this.router.navigate([`accounts/edit/${accountId}`]);
+  }
+
+  /** Opens the AI hint modal for an account, and updates its "has a hint" flag when the modal saves or clears it. */
+  openAiHint(accountId: number, accountName: string, account: { hasAiClassificationHint: boolean }) {
+    const modalRef = this.modalService.open(AccountAiHintModalComponent, {
+      backdrop: 'static',
+      size: 'lg',
+    });
+    modalRef.componentInstance.accountId = accountId;
+    modalRef.componentInstance.accountName = accountName;
+    modalRef.result.then(
+      (result: AccountAiHintResult) => {
+        account.hasAiClassificationHint = result.hasHint;
+      },
+      () => {
+        // Dismissed: nothing changed.
+      }
+    );
   }
 
   onAddChildClick(parent: AccountViewModel) {
