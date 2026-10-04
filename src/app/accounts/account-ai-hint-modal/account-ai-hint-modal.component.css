@@ -1,0 +1,23 @@
+.account-name {
+    font-size: 0.9rem;
+}
+
+.example {
+    font-size: 0.875rem;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.hint-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.4rem;
+}
+
+.counter {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}

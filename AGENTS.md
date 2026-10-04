@@ -66,6 +66,9 @@ services it injects.
   shared `.fold` pattern in `new-account.component.css` for collapsible sections, instead of one-off colors.
 - Words users see say "transaction" where the code says `spend` (e.g. the "Default Transaction Type" field is
   `spendTypeId`). Change the label, not the code names.
+- `src/app/services/models.ts` is stored in git with CRLF line endings, unlike most files (LF). Keep them when
+  editing: rewriting it as LF (for example with `sed -i`) makes git show every line as changed. Check with
+  `git ls-files --eol <file>` and `git diff --stat` after editing.
 - Don't commit secrets or environment-specific URLs other than the two in `src/environments/`.
 - Ask before every `git commit`, push or pull request, even when you were asked to do the work: say what would be
   committed (files, one-line message, branch) and wait for a yes. A yes covers only that one commit.

@@ -83,6 +83,24 @@ product.md; the UI only renders and edits what the API returns/validates, it doe
 - Deleting an account with sub-accounts doesn't cascade server-side — they silently become top-level — so
   the delete confirmation is UI-side (`onDeleteClick` reads `account.subAccounts.length`).
 
+## AI classification hints (accounts screen)
+
+Bank transactions are classified with AI on the backend, and an account is only offered to the AI if it has a
+**hint**: free text saying what belongs in it. The UI lets the user set or clear it:
+
+- Each account on the accounts screen (cards and the nested sub-account rows) has a small chip: `+ AI hint`
+  when there is none, `AI hint ✓` (accented) when there is. It opens `AccountAiHintModalComponent`, a modal
+  separate from the account form, which reads and writes the hint through
+  `GET`/`PUT /api/Accounts/{accountId}/ai-classification-hint` (`AccountViewApiService.getAiClassificationHint`
+  / `updateAiClassificationHint`). The API's `docs/account-ai-hints.md` describes the contract.
+- The chip's state comes from `hasAiClassificationHint` on the account list items and on each `subAccounts`
+  entry; the hint text itself is only returned by the GET. The modal closes with `{ accountId, hasHint }` and
+  `AccountsComponent.openAiHint` updates that flag in place, without reloading the list.
+- API rules the UI follows: the field must be present, so clearing sends `null` (never `undefined`, which the
+  JSON would drop and the API would reject); the API trims the text; the limit is 4000 characters
+  (`AI_CLASSIFICATION_HINT_MAX_LENGTH`); an account that isn't the user's returns 404. Changes apply to new
+  classifications only: earlier results are cached and aren't redone.
+
 ## Configuration
 
 `src/environments/environment.ts` (dev) and `environment.prod.ts` (swapped in by `ng build`) define

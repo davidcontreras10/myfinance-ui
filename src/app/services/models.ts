@@ -256,6 +256,7 @@ export interface SubAccountViewModel {
   accountId: number;
   accountName: string;
   accountGroupId: number;
+  hasAiClassificationHint: boolean;
 }
 
 export interface AccountViewModel extends AccountBasicInfo {
@@ -267,6 +268,7 @@ export interface AccountViewModel extends AccountBasicInfo {
   parentAccountId: number | null;
   parentAccountName: string | null;
   subAccounts: SubAccountViewModel[];
+  hasAiClassificationHint: boolean;
 }
 
 export interface AccGroupViewModel {
@@ -577,3 +579,11 @@ export interface DebtRequestAppTrx {
   description: string;
   trxTypeId: number;
 }
+/** The AI classification hint of an account: free text used when bank transactions are classified with AI. */
+export interface AccountAiClassificationHint {
+  accountId: number;
+  accountName: string;
+  aiClassificationHint: string | null;
+}
+
+export const AI_CLASSIFICATION_HINT_MAX_LENGTH = 4000;

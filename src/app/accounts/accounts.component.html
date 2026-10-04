@@ -39,6 +39,13 @@
                                                     in other groups)</span></span></ng-container>
                                         <ng-container *ngIf="item.account.parentAccountId">sub-account of
                                             {{item.account.parentAccountName}}</ng-container>
+                                        <button type="button" class="ai-chip"
+                                            [class.set]="item.account.hasAiClassificationHint"
+                                            (click)="openAiHint(item.account.accountId, item.account.accountName, item.account)"
+                                            [attr.aria-label]="'AI hint for ' + item.name"
+                                            title="Tells the AI what belongs in this account when it classifies bank transactions">
+                                            {{item.account.hasAiClassificationHint ? 'AI hint ✓' : '+ AI hint'}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +64,14 @@
                         <div *ngIf="item.otherGroupSubAccounts.length && isExpanded(item.id)" class="children-list">
                             <div *ngFor="let sub of item.otherGroupSubAccounts"
                                 class="child-row d-flex flex-wrap align-items-center justify-content-between gap-2">
-                                <span class="child-name text-truncate">{{sub.accountName}}</span>
+                                <span class="child-name text-truncate">{{sub.accountName}}
+                                    <button type="button" class="ai-chip" [class.set]="sub.hasAiClassificationHint"
+                                        (click)="openAiHint(sub.accountId, sub.accountName, sub)"
+                                        [attr.aria-label]="'AI hint for ' + sub.accountName"
+                                        title="Tells the AI what belongs in this account when it classifies bank transactions">
+                                        {{sub.hasAiClassificationHint ? 'AI hint ✓' : '+ AI hint'}}
+                                    </button>
+                                </span>
                                 <div class="d-flex align-items-center gap-2 flex-shrink-0">
                                     <span class="badge rounded-pill other-group-badge">in
                                         {{getGroupName(sub.accountGroupId)}}</span>

@@ -42,7 +42,7 @@ Routes are defined in `src/app/app-routing.module.ts`; all except `login` requir
 | `/` | Menu page — entry point to the other screens. |
 | `/finance` | **Main view.** Accounts grouped in an accordion, per-account transactions, add transaction, transfers between accounts, account notes, bank-balance summary, and view preferences (including a compact view). |
 | `/bank-trx` | **Bank transactions.** Import bank statement files, review the imported transactions, link them to app transactions, and see spend summaries by bank. |
-| `/accounts`, `/accounts/new`, `/accounts/edit/:accountId` | Create, edit and organize accounts and account groups (drag-and-drop ordering). |
+| `/accounts`, `/accounts/new`, `/accounts/edit/:accountId` | Create, edit and organize accounts and account groups (drag-and-drop ordering), and set each account's **AI hint**, the text that tells the AI what belongs in the account when bank transactions are classified. |
 | `/transaction-types` | Manage the user's transaction types (categories). |
 | `/debt-manager` | Debt requests between users: submitted and received requests, and the transactions behind them. |
 | `/scheduled-tasks`, `/scheduled-tasks/new` | View, search, create and edit scheduled/automatic tasks and see their executed runs. Execution happens in a separate Azure Functions project, not in the API or the UI. |
