@@ -15,6 +15,7 @@ import { AccountViewModel } from './acc-view-model';
 import { NavigationService } from '../services/navigation.service';
 
 @Component({
+  standalone: false,
   selector: 'app-new-account',
   templateUrl: './new-account.component.html',
   styleUrls: ['./new-account.component.css'],

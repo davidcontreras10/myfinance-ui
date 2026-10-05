@@ -6,6 +6,7 @@ import { NavBarMenusIds } from '../services/main-nav-bar/nav-bar-service.service
 import { PERIOD_DATE_QUERY_PARAM } from '../main-view/main-view.constants';
 
 @Component({
+  standalone: false,
   selector: 'app-main-nav-bar',
   templateUrl: './main-nav-bar.component.html',
   styleUrls: ['./main-nav-bar.component.css']

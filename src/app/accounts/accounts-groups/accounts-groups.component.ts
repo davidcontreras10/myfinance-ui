@@ -6,6 +6,7 @@ import { AccountViewModelService } from 'src/app/services/account-view-model.ser
 import { AccGroupViewModel, AccountGroupRequest } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-accounts-groups',
   templateUrl: './accounts-groups.component.html',
   styleUrls: ['./accounts-groups.component.css']

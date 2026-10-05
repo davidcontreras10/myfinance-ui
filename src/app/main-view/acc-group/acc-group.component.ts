@@ -4,6 +4,7 @@ import { AccRow, AccountGroup, AccountGroupAccount } from '../models';
 const ACCOUNTS_PER_ROW = 2;
 
 @Component({
+  standalone: false,
   selector: 'app-acc-group',
   templateUrl: './acc-group.component.html',
   styleUrls: ['./acc-group.component.css']

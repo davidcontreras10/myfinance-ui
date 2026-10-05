@@ -3,6 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserError } from './models'
 
 @Component({
+  standalone: false,
   selector: 'app-error-modal',
   templateUrl: './error-modal.component.html',
   styleUrls: ['./error-modal.component.css']

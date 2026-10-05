@@ -16,6 +16,7 @@ export interface AccountAiHintResult {
  * It is separate from the account form: the hint has its own endpoints.
  */
 @Component({
+  standalone: false,
   selector: 'app-account-ai-hint-modal',
   templateUrl: './account-ai-hint-modal.component.html',
   styleUrls: ['./account-ai-hint-modal.component.css'],

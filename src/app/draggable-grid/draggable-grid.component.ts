@@ -22,6 +22,7 @@ import {
 } from '@angular/cdk/drag-drop';
 
 @Component({
+  standalone: false,
   selector: 'app-draggable-grid',
   templateUrl: './draggable-grid.component.html',
   styleUrls: ['./draggable-grid.component.css'],

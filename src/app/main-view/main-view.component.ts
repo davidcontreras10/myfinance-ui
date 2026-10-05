@@ -19,6 +19,7 @@ import { DebtManagerModalComponent } from '../debt-manager/debt-manager-modal/de
 import { PERIOD_DATE_QUERY_PARAM } from './main-view.constants';
 
 @Component({
+  standalone: false,
   selector: 'app-main-view',
   templateUrl: './main-view.component.html',
   styleUrls: ['./main-view.component.css'],

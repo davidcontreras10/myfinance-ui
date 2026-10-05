@@ -3,6 +3,7 @@ import { AfterViewInit, Directive, ElementRef, EventEmitter, Inject, OnDestroy, 
 import { Subscription, filter, fromEvent } from "rxjs";
 
 @Directive({
+    standalone: false,
     selector: '[clickOutside]',
 })
 export class ClickOutsideDirective implements AfterViewInit, OnDestroy {

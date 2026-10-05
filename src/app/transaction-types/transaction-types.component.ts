@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NewTransactionTypeComponent } from './new-transaction-type/new-transaction-type.component';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-types',
   templateUrl: './transaction-types.component.html',
   styleUrls: ['./transaction-types.component.css']

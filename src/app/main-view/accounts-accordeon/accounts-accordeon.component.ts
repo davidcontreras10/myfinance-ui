@@ -3,6 +3,7 @@ import { AccountGroup } from '../models';
 import { MainViewModel } from '../main-view-model';
 
 @Component({
+  standalone: false,
   selector: 'app-accounts-accordeon',
   templateUrl: './accounts-accordeon.component.html',
   styleUrls: ['./accounts-accordeon.component.css']

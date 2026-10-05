@@ -14,6 +14,7 @@ import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service
 const MIN_TRX_FOR_SUMMARY = 2;
 
 @Component({
+  standalone: false,
   selector: 'app-bank-transactions',
   templateUrl: './bank-transactions.component.html',
   styleUrls: ['./bank-transactions.component.css']
