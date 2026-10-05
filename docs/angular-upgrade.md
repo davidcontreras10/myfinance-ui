@@ -19,10 +19,18 @@ Angular 18 that is 33 failing / 199 passing. Compare the list of failing names, 
 
 ## Node
 
-Each Angular major supports a specific Node range, and the CLI's own check is strict. Use the range from the
-update guide (nvm is fine; on Windows prepend the version's folder to `PATH` for one shell instead of
-`nvm use`). `ng update` may also download a temporary newer CLI to run itself, which can demand a newer Node
-than the project does.
+Each Angular major supports a specific Node range, and the CLI's own check is strict. Read it from the
+published packages (`npm view @angular/core@N engines.node`) or the update guide. On Windows with nvm,
+prepend the version's folder to `PATH` for one shell instead of `nvm use`.
+
+| Angular | Node accepted |
+|---|---|
+| 20, 21 | `^20.19.0 \|\| ^22.12.0 \|\| >=24.0.0` |
+| 22 | `^22.22.3 \|\| ^24.15.0 \|\| >=26.0.0` |
+
+(Not looked up for older majors; in practice 17 ran on Node 18.19.0, and 18, 19 and 20 on Node 22.13.0.) Also pin the CLI version in
+every `ng update` (`@angular/core@N @angular/cli@N`): without a version, `ng update` downloads a temporary
+*latest* CLI to run itself, which can demand a newer Node than the project does.
 
 ## Gotchas
 
