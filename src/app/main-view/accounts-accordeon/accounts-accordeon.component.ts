@@ -17,6 +17,10 @@ export class AccountsAccordeonComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public isActive(groupId: number): boolean {
+    return this.mainViewModel.activeIds.includes(MainViewModel.getAccountGroupIdPattern(groupId));
+  }
+
   public getAccountGroupIdPattern(value: number) {
     return MainViewModel.getAccountGroupIdPattern(value);
   }
