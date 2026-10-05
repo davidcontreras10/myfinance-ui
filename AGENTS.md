@@ -14,7 +14,7 @@ stale. Put product/domain facts in `docs/product.md` and structure/technical fac
 
 ## What this is
 
-myfinance-ui — the Angular 16 frontend of a personal finance app (accounts and sub-accounts reconciled
+myfinance-ui — the Angular 18 frontend of a personal finance app (accounts and sub-accounts reconciled
 against one real bank account, transactions, bank statement import, transfers, debt requests, scheduled
 tasks). Solo, non-commercial project. Deployed as an Azure Static Web App.
 

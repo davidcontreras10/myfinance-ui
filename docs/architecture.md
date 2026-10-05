@@ -4,7 +4,7 @@ How the frontend is organized. For what the app is for, see [product.md](product
 
 ## Stack
 
-Angular 16 (NgModule-based), TypeScript 5, RxJS, Bootstrap 5, ng-bootstrap, Angular CDK (drag-and-drop).
+Angular 18 (NgModule-based; upgrade notes in [angular-upgrade.md](angular-upgrade.md)), TypeScript 5, RxJS, Bootstrap 5, ng-bootstrap, Angular CDK (drag-and-drop).
 Tests: Karma + Jasmine. Built and hosted as an Azure Static Web App.
 
 ## Structure (`src/app`)
