@@ -71,7 +71,7 @@ export class BankTransactionsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private trxTypeService: TrxTypeServiceService
   ) {
-    const navigation = this.router.getCurrentNavigation();
+    const navigation = this.router.currentNavigation();
     if (navigation?.extras?.state?.['uploadedFile'] && navigation?.extras?.state?.['financialEntityFile']) {
       this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
       this.respFinancialEntityFile = navigation?.extras?.state?.['financialEntityFile'];
