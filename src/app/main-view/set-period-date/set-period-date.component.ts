@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
+  standalone: false,
   selector: 'app-set-period-date',
   templateUrl: './set-period-date.component.html',
   styleUrls: ['./set-period-date.component.css']

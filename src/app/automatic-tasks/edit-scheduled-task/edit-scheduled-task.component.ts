@@ -31,6 +31,7 @@ const MIN_MONTH_DAY = 1;
 const MAX_MONTH_DAY = 27;
 
 @Component({
+  standalone: false,
   selector: 'app-edit-scheduled-task',
   templateUrl: './edit-scheduled-task.component.html',
   styleUrls: ['./edit-scheduled-task.component.css']

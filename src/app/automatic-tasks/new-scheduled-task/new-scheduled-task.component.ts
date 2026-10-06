@@ -5,6 +5,7 @@ import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-new-scheduled-task',
   templateUrl: './new-scheduled-task.component.html',
   styleUrls: ['./new-scheduled-task.component.css']

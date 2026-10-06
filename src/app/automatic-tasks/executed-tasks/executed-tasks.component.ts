@@ -4,6 +4,7 @@ import { AutoTasksMessageBus } from '../auto-tasks-message-bus';
 import { ExecutedTask, IAutomaticTask } from '../automatic-tasks.model';
 
 @Component({
+  standalone: false,
   selector: 'app-executed-tasks',
   templateUrl: './executed-tasks.component.html',
   styleUrls: ['./executed-tasks.component.css']

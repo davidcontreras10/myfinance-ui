@@ -7,7 +7,7 @@ import { NgbDropdownModule, NgbModule, NgbNavModule, NgbToastModule, NgbTooltipM
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
 import { NavBarMenuComponent } from './main-nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { AccountsComponent } from './accounts/accounts.component';
@@ -130,7 +130,6 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     AppRoutingModule,
     NgbModule,
     FormsModule,
-    HttpClientModule,
     NgbDropdownModule,
     NgbNavModule,
     BrowserAnimationsModule,
@@ -146,6 +145,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpNotifyInterceptor, multi: true },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]
 })

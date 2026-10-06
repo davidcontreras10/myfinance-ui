@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
+  standalone: false,
   selector: 'app-debt-manager-modal',
   templateUrl: './debt-manager-modal.component.html',
   styleUrls: ['./debt-manager-modal.component.css']

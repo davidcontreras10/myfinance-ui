@@ -7,6 +7,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
 @Component({
+  standalone: false,
   selector: 'app-debt-request-trxs',
   templateUrl: './debt-request-trxs.component.html',
   styleUrls: ['./debt-request-trxs.component.css']

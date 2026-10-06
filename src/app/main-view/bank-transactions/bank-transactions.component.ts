@@ -14,6 +14,7 @@ import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service
 const MIN_TRX_FOR_SUMMARY = 2;
 
 @Component({
+  standalone: false,
   selector: 'app-bank-transactions',
   templateUrl: './bank-transactions.component.html',
   styleUrls: ['./bank-transactions.component.css']
@@ -70,7 +71,7 @@ export class BankTransactionsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private trxTypeService: TrxTypeServiceService
   ) {
-    const navigation = this.router.getCurrentNavigation();
+    const navigation = this.router.currentNavigation();
     if (navigation?.extras?.state?.['uploadedFile'] && navigation?.extras?.state?.['financialEntityFile']) {
       this.selectedFile = navigation?.extras?.state?.['uploadedFile'];
       this.respFinancialEntityFile = navigation?.extras?.state?.['financialEntityFile'];

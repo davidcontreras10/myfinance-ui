@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MainSpinnerService } from '../services/main-spinner.service';
 
 @Component({
+  standalone: false,
   selector: 'app-main-spinner',
   templateUrl: './main-spinner.component.html',
   styleUrls: ['./main-spinner.component.css'],

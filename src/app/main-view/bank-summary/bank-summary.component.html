@@ -1,7 +1,7 @@
 <div class="external-margin" [ngClass]="{
     'on-data-loading': bankSummaryloading
 }">
-    <div *ngFor="let bank of mainViewModel?.bankGroups" class="row bank-group-limit">
+    <div *ngFor="let bank of mainViewModel.bankGroups" class="row bank-group-limit">
         <div class="col-md-auto">
             <span>{{bank.financialEntityName}}</span>
         </div>

@@ -7,6 +7,7 @@ import { EditScheduledTaskComponent } from '../edit-scheduled-task/edit-schedule
 import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
+  standalone: false,
   selector: 'app-task-detail',
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.css']

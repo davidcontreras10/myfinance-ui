@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MainViewModel } from '../main-view-model';
 
 @Component({
+  standalone: false,
   selector: 'app-bank-summary',
   templateUrl: './bank-summary.component.html',
   styleUrls: ['./bank-summary.component.css']
