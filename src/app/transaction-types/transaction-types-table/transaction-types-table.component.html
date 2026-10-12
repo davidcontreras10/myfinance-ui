@@ -1,21 +1,32 @@
-<table class="table table-bordered table-low-margin">
-    <thead>
-        <tr>
-            <th data-field="Name">Name</th>
-            <th data-field="Description">Description</th>
-            <th data-field="Action">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of transactionTypes">
-            <td [contentEditable]="true" (blur)="onTextChanged($event, item, true)">{{item.name}}</td>
-            <td [contentEditable]="true" (blur)="onTextChanged($event, item, false)">{{item.description}}</td>
-            <td>
-                <button *ngIf="!myTable" class="btn btn-outline-danger cell-button"
-                    (click)="onDeleteClicked(item)">X</button>
-                <button *ngIf="!myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">→</button>
-                <button *ngIf="myTable" class="btn btn-light cell-button" (click)="onArrowClicked(item)">←</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div *ngIf="loading" class="text-center text-muted py-4">
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Loading…
+</div>
+
+<div *ngIf="!loading && transactionTypes.length === 0" class="text-center text-muted py-4">
+    {{emptyMessage}}
+</div>
+
+<ul class="list-group list-group-flush type-list">
+    <li *ngFor="let item of transactionTypes" class="list-group-item type-row" [attr.data-trx-id]="item.id"
+        [class.just-moved]="item.id === highlightedId">
+        <div class="type-text">
+            <div class="type-name" contenteditable="true" spellcheck="false" data-placeholder="Name"
+                (keydown.enter)="onEnter($event)" (blur)="onTextChanged($event, item, true)">{{item.name}}</div>
+            <div class="type-desc" contenteditable="true" spellcheck="false" data-placeholder="Add a description"
+                (keydown.enter)="onEnter($event)" (blur)="onTextChanged($event, item, false)">{{item.description}}</div>
+        </div>
+        <div class="type-actions">
+            <button *ngIf="!myTable" type="button" class="btn btn-sm btn-outline-danger delete-btn" ngbTooltip="Delete"
+                container="body" aria-label="Delete transaction type" (click)="onDeleteClicked(item)">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-sm" [class.btn-primary]="!myTable"
+                [class.btn-outline-secondary]="myTable" [disabled]="busyIds.has(item.id)"
+                [ngbTooltip]="myTable ? 'Remove from my list' : 'Add to my list'" container="body"
+                [attr.aria-label]="myTable ? 'Remove from my list' : 'Add to my list'"
+                (click)="onArrowClicked(item)">
+                <i class="bi" [class.bi-dash-lg]="myTable" [class.bi-plus-lg]="!myTable" aria-hidden="true"></i>
+            </button>
+        </div>
+    </li>
+</ul>

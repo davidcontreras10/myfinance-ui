@@ -1,3 +1,109 @@
-.cell-button {
-    margin: 0 0.2em;
+.type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background-color: transparent;
+}
+
+.type-row:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.type-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.type-name,
+.type-desc {
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.type-name {
+    font-weight: 500;
+}
+
+.type-desc {
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+}
+
+.type-name:hover,
+.type-desc:hover {
+    background-color: var(--bs-secondary-bg);
+}
+
+.type-name:focus,
+.type-desc:focus {
+    background-color: var(--bs-body-bg);
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.35);
+}
+
+/* Fixed row height with centered content; an empty description takes no space
+   until the row is hovered or focused, so it can still be clicked to edit */
+.type-row {
+    min-height: 3.9rem;
+}
+
+.type-desc:empty {
+    min-height: 0;
+}
+
+.type-row:hover .type-desc:empty,
+.type-row:focus-within .type-desc:empty {
+    min-height: 1.3125rem;
+}
+
+/* The empty-cell hint only shows while the row is hovered or focused */
+.type-row:hover .type-name:empty::before,
+.type-row:hover .type-desc:empty::before,
+.type-row:focus-within .type-name:empty::before,
+.type-row:focus-within .type-desc:empty::before {
+    content: attr(data-placeholder);
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.type-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.35rem;
+}
+
+/* Delete is destructive: only reveal it when the row is hovered or focused */
+.delete-btn {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.type-row:hover .delete-btn,
+.type-row:focus-within .delete-btn,
+.delete-btn:focus-visible {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .delete-btn {
+        opacity: 1;
+    }
+}
+
+/* Briefly highlight a row that just moved from the other list */
+.just-moved {
+    animation: just-moved-flash 2s ease-out;
+}
+
+@keyframes just-moved-flash {
+    0%,
+    40% {
+        background-color: var(--bs-primary-bg-subtle);
+    }
+
+    100% {
+        background-color: transparent;
+    }
 }
