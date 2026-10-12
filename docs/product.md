@@ -55,6 +55,10 @@ Routes are defined in `src/app/app-routing.module.ts`; all except `login` requir
 - **Transaction type** — what users see for the backend's `SpendType` (e.g. the account form's "Default
   Transaction Type" is `spendTypeId`).
 - **Reconciliation** — matching the sum of sub-accounts against the real bank balance.
+- **Account group** — a user-defined bucket for organizing accounts (order on the Accounts and Finance pages).
+  A group can be *expanded on the Finance page* (the backend's `displayDefault`, `isSelected` on the Finance
+  list): that group's accordion opens when you land there. Any number of groups can be, so it is not a
+  single "default group".
 - **Financial entity** — a bank/institution.
 - **App transaction vs. bank transaction** — app transactions are what the user records in the app;
   bank transactions come from the bank statement. Linked bank transactions are shown with a consistent

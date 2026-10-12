@@ -83,6 +83,22 @@ product.md; the UI only renders and edits what the API returns/validates, it doe
 - Deleting an account with sub-accounts doesn't cascade server-side — they silently become top-level — so
   the delete confirmation is UI-side (`onDeleteClick` reads `account.subAccounts.length`).
 
+## Account groups modal (accounts screen)
+
+`AccountsGroupsComponent` is a two-pane modal: a drag-to-reorder list (CDK `cdkDropList`, with arrow
+buttons as the keyboard fallback) and an editor. There is no Position field. A move is one
+`PATCH /api/AccountsGroups/{id}` with the final 1-based index (the API renumbers the others), then the list is
+reloaded with `getAccountGroups()` and shared through `AccountViewModelService.accountGroups`. A new group is
+created at the end (`position = count + 1`) and dragged afterwards.
+
+- In the Accounts response's `accountGroupViewModels`, `isSelected` means "the group being viewed". The
+  Finance-page flag is `displayDefault`, and `accountCount` drives Delete (disabled while the group has
+  accounts, with the reason shown). Don't read `isSelected` as "default".
+- The modal closes with `true` when anything changed. `AccountsComponent` then reloads only if the group it
+  shows was deleted.
+- `cdkDragPreviewContainer="parent"` keeps the drag preview above the Bootstrap modal (the default global
+  container sits behind it).
+
 ## AI classification hints (accounts screen)
 
 Bank transactions are classified with AI on the backend, and an account is only offered to the AI if it has a

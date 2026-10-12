@@ -275,8 +275,12 @@ export interface AccGroupViewModel {
   accountGroupId: number;
   accountGroupName: string;
   accountGroupPosition: number;
-  accountGroupDisplayValue: number;
+  accountGroupDisplayValue: string;
+  /** In this list: the group being viewed. Not "default" — see `displayDefault`. */
   isSelected: boolean;
+  /** The Finance page opens this group expanded. Several groups can have it. */
+  displayDefault: boolean;
+  accountCount: number;
 }
 
 export interface AccountViewApiModel {

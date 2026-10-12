@@ -8,28 +8,6 @@ export class AccountViewModelService {
 
   constructor() { }
 
+  /** The user's groups in position order. Loaded by the Accounts page; the groups modal refreshes it. */
   accountGroups: AccGroupViewModel[];
-
-  public upsertAccountGroup(model: AccGroupViewModel) {
-    if (this.accountGroups) {
-      let removeIndex = -1;
-      for (let i = 0; i < this.accountGroups.length; i++) {
-        if (this.accountGroups[i].accountGroupId === model.accountGroupId) {
-          removeIndex = i;
-          break;
-        }
-      }
-
-      if (removeIndex >= 0) {
-        this.accountGroups.splice(removeIndex, 1, model);
-        return;
-      }
-    }
-    else {
-      this.accountGroups = [];
-    }
-
-    this.accountGroups.push(model);
-    this.accountGroups = this.accountGroups.sort((a, b) => a.accountGroupPosition - b.accountGroupPosition);
-  }
 }

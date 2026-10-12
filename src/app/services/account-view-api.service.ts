@@ -110,11 +110,20 @@ export class AccountViewApiService {
     return this.httpClient.put(url, model);
   }
 
-  public getAccountGroupById(
-    accountGroupId: number
-  ): Observable<AccGroupViewModel> {
-    const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
-    return this.httpClient.get<AccGroupViewModel>(url);
+  /** Every group of the user in position order, with its default flag and account count. */
+  public getAccountGroups(): Observable<AccGroupViewModel[]> {
+    return this.getMainViewModel(null).pipe(
+      map((res) => res.accountGroupViewModels ?? [])
+    );
+  }
+
+  /** Fails with a 400 message while the group still has accounts. */
+  public deleteAccountGroup(accountGroupId: number): Observable<void> {
+    const params = new HttpParams().set('accountGroupId', accountGroupId);
+    return this.httpClient.delete<void>(
+      `${environment.baseApi}/api/AccountsGroups`,
+      { params }
+    );
   }
 
   public getAccountsByAccountGroup(

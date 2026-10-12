@@ -1,14 +1,189 @@
-.row {
-    padding-top: 1vh;
+.groups-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) 1fr;
+    gap: 1.5rem;
 }
 
-.horizontal-line {
-    border-top: 1px solid black;
-    width: 100%;
-    /* Takes up the full width of the parent container */
-    padding-top: 2vh;
+@media (max-width: 767.98px) {
+    .groups-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
-.form-control.ng-invalid.ng-touched {
-    border: 2px solid red;
+.pane-head,
+.editor-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.editor-title h5 {
+    margin: 0;
+}
+
+.pane-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--st-ink-muted, #667080);
+}
+
+.groups-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 55vh;
+    overflow-y: auto;
+    border: 1px solid var(--st-border, #e1e6ea);
+    border-radius: 8px;
+}
+
+.group-row {
+    display: grid;
+    grid-template-columns: auto 1.5rem 1fr auto;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1rem 0.4rem;
+    background: #fff;
+    border-bottom: 1px solid var(--st-border-soft, #edf0f3);
+}
+
+.group-row:last-child {
+    border-bottom: none;
+}
+
+.group-row.selected {
+    background: var(--st-accent-tint, #eaf1f8);
+}
+
+.drag-handle {
+    padding: 0.4rem 0.2rem;
+    color: var(--st-ink-faint, #97a1ac);
+    cursor: grab;
+    user-select: none;
+}
+
+.position {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8rem;
+    text-align: right;
+    color: var(--st-ink-muted, #667080);
+}
+
+.group-pick {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.5rem 0.25rem;
+    border: none;
+    background: none;
+    text-align: left;
+    color: var(--st-ink, #202832);
+}
+
+.group-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty-note {
+    flex: none;
+    font-size: 0.75rem;
+    color: var(--st-ink-muted, #667080);
+}
+
+.open-badge {
+    flex: none;
+    background: var(--st-accent-tint, #eaf1f8);
+    color: var(--st-accent-ink, #2c5b80);
+    border: 1px solid var(--st-accent, #3f7cac);
+    font-weight: 600;
+}
+
+.nudge {
+    display: flex;
+    gap: 0.1rem;
+}
+
+.nudge button {
+    padding: 0.25rem 0.4rem;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--st-ink-muted, #667080);
+}
+
+.nudge button:hover:not(:disabled) {
+    background: var(--st-border-soft, #edf0f3);
+    color: var(--st-ink, #202832);
+}
+
+.nudge button:disabled {
+    opacity: 0.3;
+}
+
+.list-hint {
+    margin: 0.6rem 0 0;
+    font-size: 0.8rem;
+}
+
+.default-check {
+    margin-top: 1rem;
+}
+
+.editor-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.delete-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.delete-hint {
+    font-size: 0.8rem;
+}
+
+.modal-footer .status {
+    margin-right: auto;
+    font-size: 0.85rem;
+}
+
+/* Drag and drop: the preview is rendered inside the list (cdkDragPreviewContainer="parent") so it stays
+   above the modal. */
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+    opacity: 0.35;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.groups-list.cdk-drop-list-dragging .group-row:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cdk-drag-animating,
+    .groups-list.cdk-drop-list-dragging .group-row:not(.cdk-drag-placeholder) {
+        transition: none;
+    }
 }

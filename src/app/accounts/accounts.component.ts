@@ -81,9 +81,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(AccountsGroupsComponent, {
       backdrop: 'static',
       keyboard: false,
-      size: 'md',
+      size: 'lg',
     });
-    modalRef.componentInstance.accountGroups = this.viewModel.accountGroups;
+    modalRef.result.then((changed: boolean) => {
+      if (changed) {
+        this.onAccountGroupsChanged();
+      }
+    }, () => { });
+  }
+
+  /** The modal already refreshed the shared group list. Only the page needs a reload if its group is gone. */
+  private onAccountGroupsChanged() {
+    const stillThere = this.viewModel.accountGroups.some((group) => group.accountGroupId === this.accountGroupId);
+    if (!stillThere) {
+      this.accountGroupId = this.viewModel.accountGroups[0]?.accountGroupId ?? null;
+      this.onAccountGroupChanged(null);
+    }
   }
 
   onSavePositions() {
