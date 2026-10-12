@@ -99,6 +99,11 @@
 
 .open-badge {
     flex: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
     background: var(--st-accent-tint, #eaf1f8);
     color: var(--st-accent-ink, #2c5b80);
     border: 1px solid var(--st-accent, #3f7cac);
@@ -138,16 +143,21 @@
 
 .editor-actions {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 0.75rem;
     margin-top: 1.5rem;
 }
 
+.editor-actions .btn {
+    white-space: nowrap;
+}
+
 .delete-area {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
     min-width: 0;
 }
 
