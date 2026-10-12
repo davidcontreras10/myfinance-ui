@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { TrxTypeViewModel } from 'src/app/services/models';
-import { TextChangedArgs, TrxEventArgs } from '../models';
+import { EditedArgs, TrxEventArgs } from '../models';
 
 @Component({
   standalone: false,
@@ -30,13 +30,17 @@ export class TransactionTypesTableComponent implements OnInit, OnChanges {
   highlightedId?: number;
 
   @Output()
-  textChanged = new EventEmitter<TextChangedArgs>();
+  edited = new EventEmitter<EditedArgs>();
 
   @Output()
   deletedTrx = new EventEmitter<TrxEventArgs>();
 
   @Output()
   arrowClicked = new EventEmitter<TrxEventArgs>();
+
+  editingId?: number;
+  draftName = '';
+  draftDescription = '';
 
   constructor(private host: ElementRef<HTMLElement>) { }
 
@@ -54,6 +58,10 @@ export class TransactionTypesTableComponent implements OnInit, OnChanges {
     }
   }
 
+  get nameIsBlank(): boolean {
+    return this.draftName.trim().length === 0;
+  }
+
   onArrowClicked(trxTypeElement: TrxTypeViewModel) {
     this.arrowClicked.emit({
       trxType: trxTypeElement
@@ -66,23 +74,31 @@ export class TransactionTypesTableComponent implements OnInit, OnChanges {
     });
   }
 
-  onEnter($event: Event) {
-    // Enter commits the edit (via blur) instead of inserting a line break
-    $event.preventDefault();
-    ($event.target as HTMLElement).blur();
+  startEdit(trxType: TrxTypeViewModel, focusField: 'name' | 'description' = 'name') {
+    this.editingId = trxType.id;
+    this.draftName = trxType.name ?? '';
+    this.draftDescription = trxType.description ?? '';
+    setTimeout(() => {
+      this.host.nativeElement
+        .querySelector<HTMLInputElement>(`[data-trx-id="${trxType.id}"] input[data-field="${focusField}"]`)
+        ?.focus();
+    });
   }
 
-  onTextChanged($event: FocusEvent, trxTypeElement: TrxTypeViewModel, isNameField: boolean) {
-    const element = $event.target as HTMLElement;
-    if (element) {
-      const fieldValue = (isNameField ? trxTypeElement.name : trxTypeElement.description) ?? '';
-      if (fieldValue !== element.innerText) {
-        this.textChanged.emit({
-          isNameField: isNameField,
-          newValue: element.innerText,
-          trxType: trxTypeElement
-        })
-      }
+  cancelEdit() {
+    this.editingId = undefined;
+  }
+
+  saveEdit(trxType: TrxTypeViewModel) {
+    if (this.nameIsBlank) {
+      return;
+    }
+
+    const name = this.draftName.trim();
+    const description = this.draftDescription.trim();
+    this.editingId = undefined;
+    if (name !== (trxType.name ?? '') || description !== (trxType.description ?? '')) {
+      this.edited.emit({ trxType, name, description });
     }
   }
 

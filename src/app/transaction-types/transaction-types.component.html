@@ -13,8 +13,19 @@
         </div>
     </div>
 
+    <ul class="nav nav-pills nav-fill d-lg-none mb-3">
+        <li class="nav-item">
+            <button type="button" class="nav-link" [class.active]="activePanel === 'mine'"
+                (click)="activePanel = 'mine'">My list <span class="badge text-bg-light">{{userItems().length}}</span></button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="nav-link" [class.active]="activePanel === 'available'"
+                (click)="activePanel = 'available'">Available <span class="badge text-bg-light">{{allItems().length}}</span></button>
+        </li>
+    </ul>
+
     <div class="row g-3">
-        <div class="col-lg-6">
+        <div class="col-lg-6 d-lg-block" [class.d-none]="activePanel !== 'mine'">
             <div class="card panel">
                 <div class="card-header panel-header">
                     <span class="fw-semibold">My list</span>
@@ -22,11 +33,11 @@
                 </div>
                 <app-transaction-types-table [transactionTypes]="userItems()" [myTable]="true" [loading]="loading"
                     class="panel-body" [highlightedId]="highlightedId" [busyIds]="busyIds" [emptyMessage]="filter ? 'No matches in your list.' : 'Nothing here yet. Add types from Available types.'"
-                    (textChanged)="onTextChanged($event)" (arrowClicked)="onArrowChanged($event)"
+                    (edited)="onEdited($event)" (arrowClicked)="onArrowChanged($event)"
                     (deletedTrx)="onDeleted($event, deleteModal)"></app-transaction-types-table>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 d-lg-block" [class.d-none]="activePanel !== 'available'">
             <div class="card panel">
                 <div class="card-header panel-header">
                     <span class="fw-semibold">Available types</span>
@@ -34,7 +45,7 @@
                 </div>
                 <app-transaction-types-table [transactionTypes]="allItems()" [myTable]="false" [loading]="loading"
                     class="panel-body" [highlightedId]="highlightedId" [busyIds]="busyIds" [emptyMessage]="filter ? 'No matches in available types.' : 'Every type is already in your list.'"
-                    (textChanged)="onTextChanged($event)" (arrowClicked)="onArrowChanged($event)"
+                    (edited)="onEdited($event)" (arrowClicked)="onArrowChanged($event)"
                     (deletedTrx)="onDeleted($event, deleteModal)"></app-transaction-types-table>
             </div>
         </div>

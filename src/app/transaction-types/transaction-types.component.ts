@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TrxTypeServiceService } from '../services/trx-type-service.service';
 import { TrxTypeViewModel } from '../services/models';
-import { NewTrxTypeDialogResult, TextChangedArgs, TrxEventArgs } from './models';
+import { EditedArgs, NewTrxTypeDialogResult, TrxEventArgs } from './models';
 import { NavBarMenusIds, NavBarServiceService } from '../services/main-nav-bar/nav-bar-service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NewTransactionTypeComponent } from './new-transaction-type/new-transaction-type.component';
@@ -25,6 +25,8 @@ export class TransactionTypesComponent implements OnInit, OnDestroy {
 
   loading = true;
   filter = '';
+  /** Which list is shown below the lg breakpoint, where only one fits */
+  activePanel: 'mine' | 'available' = 'mine';
   toasts: PageToast[] = [];
   deleteTarget?: TrxTypeViewModel;
   highlightedId?: number;
@@ -101,20 +103,14 @@ export class TransactionTypesComponent implements OnInit, OnDestroy {
     }, () => { /* dialog dismissed */ });
   }
 
-  onTextChanged($event: TextChangedArgs) {
+  onEdited($event: EditedArgs) {
     const requestModel = {
       isSelected: $event.trxType.isSelected,
-      spendTypeDescription: $event.trxType.description,
+      spendTypeDescription: $event.description,
       spendTypeId: $event.trxType.id,
-      spendTypeName: $event.trxType.name
+      spendTypeName: $event.name
     };
 
-    if ($event.isNameField) {
-      requestModel.spendTypeName = $event.newValue;
-    }
-    else {
-      requestModel.spendTypeDescription = $event.newValue;
-    }
     this.apiService.editTrxType(requestModel).subscribe({
       next: res => {
         this.updateReloadedTrxType(res);

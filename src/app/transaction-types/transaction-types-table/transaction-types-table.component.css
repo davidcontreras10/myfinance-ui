@@ -32,15 +32,24 @@
     color: var(--bs-secondary-color);
 }
 
+/* Clicking the text starts editing the row */
+.type-name,
+.type-desc {
+    cursor: text;
+}
+
 .type-name:hover,
 .type-desc:hover {
     background-color: var(--bs-secondary-bg);
 }
 
-.type-name:focus,
-.type-desc:focus {
-    background-color: var(--bs-body-bg);
-    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.35);
+.type-row.editing,
+.type-row.editing:hover {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+.type-edit {
+    padding: 0.25rem 0;
 }
 
 /* Fixed row height with centered content; an empty description takes no space
@@ -74,21 +83,32 @@
     gap: 0.35rem;
 }
 
-/* Delete is destructive: only reveal it when the row is hovered or focused */
-.delete-btn {
+/* Edit and delete only appear when the row is hovered or focused */
+.hover-action {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
 }
 
-.type-row:hover .delete-btn,
-.type-row:focus-within .delete-btn,
-.delete-btn:focus-visible {
+.type-row:hover .hover-action,
+.type-row:focus-within .hover-action,
+.hover-action:focus-visible {
     opacity: 1;
 }
 
 @media (hover: none) {
-    .delete-btn {
+    .hover-action {
         opacity: 1;
+    }
+}
+
+/* Add and Remove share a width so the rows line up across both lists */
+.move-btn {
+    min-width: 2.25rem;
+}
+
+@media (min-width: 576px) {
+    .move-btn {
+        min-width: 5.5rem;
     }
 }
 

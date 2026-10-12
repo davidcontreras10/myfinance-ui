@@ -4,9 +4,9 @@ export interface TrxEventArgs {
     trxType: TrxTypeViewModel;
 }
 
-export interface TextChangedArgs extends TrxEventArgs {
-    newValue: string;
-    isNameField: boolean;
+export interface EditedArgs extends TrxEventArgs {
+    name: string;
+    description: string;
 }
 
 

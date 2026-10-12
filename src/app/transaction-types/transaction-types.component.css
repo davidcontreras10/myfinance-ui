@@ -1,5 +1,5 @@
 .page {
-    padding-top: 1rem;
+    padding: 1rem 1.5rem 0;
 }
 
 .page-header {
@@ -13,6 +13,8 @@
 
 .page-title {
     margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
 }
 
 .page-tools {

@@ -8,25 +8,54 @@
 
 <ul class="list-group list-group-flush type-list">
     <li *ngFor="let item of transactionTypes" class="list-group-item type-row" [attr.data-trx-id]="item.id"
-        [class.just-moved]="item.id === highlightedId">
-        <div class="type-text">
-            <div class="type-name" contenteditable="true" spellcheck="false" data-placeholder="Name"
-                (keydown.enter)="onEnter($event)" (blur)="onTextChanged($event, item, true)">{{item.name}}</div>
-            <div class="type-desc" contenteditable="true" spellcheck="false" data-placeholder="Add a description"
-                (keydown.enter)="onEnter($event)" (blur)="onTextChanged($event, item, false)">{{item.description}}</div>
-        </div>
-        <div class="type-actions">
-            <button *ngIf="!myTable" type="button" class="btn btn-sm btn-outline-danger delete-btn" ngbTooltip="Delete"
-                container="body" aria-label="Delete transaction type" (click)="onDeleteClicked(item)">
-                <i class="bi bi-trash" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn btn-sm" [class.btn-primary]="!myTable"
-                [class.btn-outline-secondary]="myTable" [disabled]="busyIds.has(item.id)"
-                [ngbTooltip]="myTable ? 'Remove from my list' : 'Add to my list'" container="body"
-                [attr.aria-label]="myTable ? 'Remove from my list' : 'Add to my list'"
-                (click)="onArrowClicked(item)">
-                <i class="bi" [class.bi-dash-lg]="myTable" [class.bi-plus-lg]="!myTable" aria-hidden="true"></i>
-            </button>
-        </div>
+        [class.just-moved]="item.id === highlightedId" [class.editing]="item.id === editingId">
+
+        <ng-container *ngIf="item.id !== editingId; else editRow">
+            <div class="type-text">
+                <div class="type-name" data-placeholder="Name" (click)="startEdit(item, 'name')">{{item.name}}</div>
+                <div class="type-desc" data-placeholder="Add a description" (click)="startEdit(item, 'description')">{{item.description}}</div>
+            </div>
+            <div class="type-actions">
+                <button type="button" class="btn btn-sm btn-outline-secondary hover-action" ngbTooltip="Edit"
+                    container="body" aria-label="Edit transaction type" (click)="startEdit(item)">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                </button>
+                <button *ngIf="!myTable" type="button" class="btn btn-sm btn-outline-danger hover-action"
+                    ngbTooltip="Delete" container="body" aria-label="Delete transaction type"
+                    (click)="onDeleteClicked(item)">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-sm move-btn" [class.btn-primary]="!myTable"
+                    [class.btn-outline-secondary]="myTable" [disabled]="busyIds.has(item.id)"
+                    [ngbTooltip]="myTable ? 'Remove from my list (keeps the type)' : 'Add to my list'" container="body"
+                    [attr.aria-label]="myTable ? 'Remove from my list' : 'Add to my list'"
+                    (click)="onArrowClicked(item)">
+                    <i class="bi" [class.bi-box-arrow-left]="myTable" [class.bi-plus-lg]="!myTable" aria-hidden="true"></i>
+                    <span class="d-none d-sm-inline"> {{myTable ? 'Remove' : 'Add'}}</span>
+                </button>
+            </div>
+        </ng-container>
+
+        <ng-template #editRow>
+            <div class="type-text type-edit" (keydown.escape)="cancelEdit()">
+                <input type="text" class="form-control form-control-sm mb-1" data-field="name" placeholder="Name"
+                    aria-label="Name" [(ngModel)]="draftName" [class.is-invalid]="nameIsBlank"
+                    (keydown.enter)="saveEdit(item)" />
+                <input type="text" class="form-control form-control-sm" data-field="description"
+                    placeholder="Description (optional)" aria-label="Description" [(ngModel)]="draftDescription"
+                    (keydown.enter)="saveEdit(item)" />
+                <div *ngIf="nameIsBlank" class="text-danger small mt-1">A name is required.</div>
+            </div>
+            <div class="type-actions">
+                <button type="button" class="btn btn-sm btn-success" ngbTooltip="Save (Enter)" container="body"
+                    aria-label="Save changes" [disabled]="nameIsBlank" (click)="saveEdit(item)">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" ngbTooltip="Cancel (Esc)"
+                    container="body" aria-label="Cancel editing" (click)="cancelEdit()">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+        </ng-template>
     </li>
 </ul>
