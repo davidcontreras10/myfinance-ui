@@ -1,16 +1,14 @@
 <div class="container-fluid page">
+    <h1 class="visually-hidden">Transaction types</h1>
     <div class="page-header">
-        <h2 class="page-title">Transaction types</h2>
-        <div class="page-tools">
-            <div class="input-group search-box">
-                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
-                <input type="search" class="form-control" placeholder="Search name or description"
-                    aria-label="Search transaction types" [(ngModel)]="filter" />
-            </div>
-            <button type="button" class="btn btn-primary" (click)="openNewTypeDialog()">
-                <i class="bi bi-plus-lg" aria-hidden="true"></i> New type
-            </button>
+        <div class="input-group search-box">
+            <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+            <input type="search" class="form-control" placeholder="Search name or description"
+                aria-label="Search transaction types" [(ngModel)]="filter" />
         </div>
+        <button type="button" class="btn btn-primary" (click)="openNewTypeDialog()">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> New type
+        </button>
     </div>
 
     <ul class="nav nav-pills nav-fill d-lg-none mb-3">
