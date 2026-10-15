@@ -1,61 +1,91 @@
-<form #f="ngForm" (ngSubmit)="submit(f)">
-    <div class="modal-header">
-        <h4 class="modal-title">Account Groups Admin</h4>
-        <button type="button" class="btn-close" aria-label="Close"
-            (click)="activeModal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-md-6" *ngIf="viewModel.accountGroups">
-                <label>Account groups:</label>
-                <select class="form-select" [(ngModel)]="selected" name="accountGroupId">
-                    <option [ngValue]="null" selected="selected">New...</option>
-                    <option *ngFor="let group of viewModel.accountGroups" [ngValue]="group">
-                        {{group?.accountGroupName}}</option>
-                </select>
+<div class="modal-header">
+    <h4 class="modal-title">Account groups</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+</div>
+
+<div class="modal-body">
+    <div class="groups-layout">
+        <section class="list-pane" aria-label="Order of the groups">
+            <div class="pane-head">
+                <span class="pane-label">Order</span>
+                <button type="button" id="new-group" class="btn btn-outline-dark btn-sm" (click)="startNew()"
+                    [disabled]="saving">+ New group</button>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="horizontal-line"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label>Name</label>
-                <input ngModel type="text" class="form-control" name="name" [ngModel]="selected?.accountGroupName"
-                    required [minlength]="3" />
-            </div>
-            <div class="col-md-6">
-                <label>Display Name</label>
-                <input ngModel type="text" id="display-value" class="basic-input form-control" name="displayValue"
-                    required [minlength]="3" [ngModel]="selected?.accountGroupDisplayValue" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label>Position</label>
-                <input ngModel type="number" class="basic-input form-control" *ngIf="viewModel.accountGroups"
-                    name="position" [ngModel]="selected?.accountGroupPosition" [min]="minPosition"
-                    [max]="viewModel.accountGroups.length + 1" [placeholder]="getPlaceholder()" required />
-            </div>
-            <div class="col-md-6">
-                <br />
-                <div class="basic-input form-control">
-                    <div class="form-check">
-                        <input mdbCheckbox ngModel name="showDefault" class="form-check-input" type="checkbox"
-                            #showDefault="ngModel" id="show-default" [checked]="selected?.isSelected" />
-                        <label class="form-check-label" for="show-default">
-                            Show by default
-                        </label>
+
+            <ul class="groups-list" cdkDropList [cdkDropListDisabled]="saving" (cdkDropListDropped)="drop($event)">
+                <li *ngFor="let group of groups; let i = index" class="group-row" cdkDrag cdkDragLockAxis="y"
+                    cdkDragPreviewContainer="parent" [class.selected]="group.accountGroupId === selectedId">
+                    <span class="drag-handle" cdkDragHandle aria-hidden="true" title="Drag to reorder">⠿</span>
+                    <span class="position">{{i + 1}}</span>
+                    <button type="button" class="group-pick" (click)="select(group)">
+                        <span class="group-name">{{group.accountGroupName}}</span>
+                        <span *ngIf="group.displayDefault" class="badge rounded-pill open-badge"
+                            title="Opens expanded on the Finance page">open</span>
+                        <span *ngIf="group.accountCount === 0" class="empty-note">0 accounts</span>
+                    </button>
+                    <span class="nudge">
+                        <button type="button" class="move-up" [attr.aria-label]="'Move ' + group.accountGroupName + ' up'"
+                            [disabled]="saving || i === 0" (click)="move(i, i - 1)">↑</button>
+                        <button type="button" class="move-down"
+                            [attr.aria-label]="'Move ' + group.accountGroupName + ' down'"
+                            [disabled]="saving || i === groups.length - 1" (click)="move(i, i + 1)">↓</button>
+                    </span>
+                </li>
+            </ul>
+            <p class="list-hint text-muted">Drag <span aria-hidden="true">⠿</span> to reorder, or use the arrows.
+                This is the order on the Accounts and Finance pages.</p>
+        </section>
+
+        <section class="editor-pane" aria-label="Group details">
+            <form #f="ngForm" (ngSubmit)="save()" novalidate>
+                <div class="editor-title">
+                    <h5>{{isNew ? 'New group' : selected?.accountGroupName}}</h5>
+                    <span *ngIf="!isNew" class="pane-label">Position {{selectedPosition}} of {{groups.length}}</span>
+                    <span *ngIf="isNew" class="pane-label">Added at the end. Drag it afterwards.</span>
+                </div>
+
+                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{errorMessage}}</div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="group-name" class="form-label">Name</label>
+                        <input id="group-name" name="name" type="text" class="form-control" autocomplete="off"
+                            [(ngModel)]="name" (ngModelChange)="onNameChange($event)" #nameCtl="ngModel"
+                            [class.is-invalid]="nameCtl.touched && !nameValid" />
+                        <div class="invalid-feedback">Use at least {{minNameLength}} characters.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="group-display" class="form-label">Display name</label>
+                        <input id="group-display" name="displayValue" type="text" class="form-control"
+                            autocomplete="off" [(ngModel)]="displayValue" (ngModelChange)="onDisplayValueChange()"
+                            #displayCtl="ngModel" [class.is-invalid]="displayCtl.touched && !displayValueValid" />
+                        <div class="invalid-feedback">Use at least {{minNameLength}} characters.</div>
+                        <div class="form-text">A short label for the Finance page.</div>
                     </div>
                 </div>
-            </div>
-        </div>
+
+                <div class="form-check default-check">
+                    <input id="group-default" name="displayDefault" type="checkbox" class="form-check-input"
+                        [(ngModel)]="displayDefault" />
+                    <label for="group-default" class="form-check-label">Expanded on the Finance page</label>
+                    <div class="form-text">Opens expanded when you land on Finance. Any number of groups can be.</div>
+                </div>
+
+                <div class="editor-actions">
+                    <div class="delete-area">
+                        <button *ngIf="!isNew" type="button" id="delete-group" class="btn btn-outline-danger"
+                            [disabled]="!canDelete" (click)="remove()">Delete group</button>
+                        <small *ngIf="deleteHint" class="delete-hint text-muted">{{deleteHint}}</small>
+                    </div>
+                    <button type="submit" id="save-group" class="btn btn-outline-dark"
+                        [disabled]="!canSave">{{saving ? 'Saving…' : (isNew ? 'Create group' : 'Save changes')}}</button>
+                </div>
+            </form>
+        </section>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-        <button type="submit" class="btn btn-outline-dark" [disabled]="f.invalid">{{selected ? 'Update' :
-            'Create'}}</button>
-    </div>
-</form>
+</div>
+
+<div class="modal-footer">
+    <span class="status text-muted" role="status" aria-live="polite">{{status}}</span>
+    <button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+</div>

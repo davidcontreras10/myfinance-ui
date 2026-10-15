@@ -16,6 +16,7 @@ const TABS = {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-debt-manager',
   templateUrl: './debt-manager.component.html',
   styleUrls: ['./debt-manager.component.css']

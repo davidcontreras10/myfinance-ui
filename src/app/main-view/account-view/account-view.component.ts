@@ -15,6 +15,7 @@ import { filter, map } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-account-view',
   templateUrl: './account-view.component.html',
   styleUrls: ['./account-view.component.css']

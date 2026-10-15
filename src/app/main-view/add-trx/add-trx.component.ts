@@ -6,6 +6,7 @@ import { MainViewModel } from '../main-view-model';
 import { Utils } from 'src/app/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-add-trx',
   templateUrl: './add-trx.component.html',
   styleUrls: ['./add-trx.component.css']

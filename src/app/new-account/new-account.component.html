@@ -1,15 +1,19 @@
 <form #f="ngForm" (ngSubmit)="submit(f)">
-    <div class="container">
+    <div class="container form-container">
+        <div class="alert alert-info" *ngIf="addChildParentName">
+            Adding a child account under <strong>{{addChildParentName}}</strong>
+        </div>
+
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
-                    <label for="new-account-name">Name:</label>
+                    <label for="new-account-name" class="required">Name</label>
                     <input [(ngModel)]="inputModel.accountName" required [minlength]="3" [maxlength]="100"
                         class="form-control" name="accountName" id="new-account-name" type="text" />
                 </div>
             </div>
-            <div class="col-md-4">
-                <label for="account-currency">Currency</label>
+            <div class="col-md-6">
+                <label for="account-currency" class="required">Currency</label>
                 <select id="account-currency" class="basic-input form-control" ngModel name="currencyId"
                     [(ngModel)]="inputModel.selectedCurrencyId" (change)="onCurrencyChanged()"
                     [disabled]="inputModel.editMode" required>
@@ -17,35 +21,83 @@
                         {{currency.name}}</option>
                 </select>
             </div>
-            <div class="col-md-4">
-                <label for="account-period-type">Period Type</label>
-                <select id="account-period-type" class="basic-input form-control"
-                    [(ngModel)]="inputModel.selectedPeriodTypeId" name="periodType" [disabled]="inputModel.editMode"
-                    required>
-                    <option *ngFor="let item of viewModel?.periodTypeViewModels" [value]="item.id">
-                        {{item.name}}</option>
+        </div>
+
+        <!-- Main account. Hidden when arriving from "+ Add child" (the banner above already names it),
+             except for the exchange method when the user has to choose one. -->
+        <div class="row" *ngIf="showParentRow">
+            <div class="col-md-6" *ngIf="!isParentLocked()">
+                <label for="parent-account">Parent account</label>
+                <select id="parent-account" class="basic-input form-control"
+                    [disabled]="inputModel.hasSubAccounts"
+                    (change)="onParentAccountSelect($any($event.target).value)">
+                    <option value="" [selected]="!inputModel.selectedParentAcc">None</option>
+                    <option *ngFor="let item of getAvailableParentAccounts()" [value]="item.id"
+                        [selected]="inputModel.selectedParentAcc?.id === item.id"
+                        [disabled]="!item.methodIds.length">
+                        {{item.name}}{{item.methodIds.length ? '' : ' — no exchange method for this currency'}}</option>
                 </select>
+                <small *ngIf="inputModel.hasSubAccounts" class="form-text text-muted">
+                    This account has sub-accounts, so it can't become a sub-account itself.
+                </small>
+                <small *ngIf="!inputModel.hasSubAccounts" class="form-text text-muted">
+                    Only accounts without a parent of their own are shown here.
+                </small>
+            </div>
+            <div class="col-md-6" *ngIf="inputModel.selectedParentAcc as parent">
+                <ng-container *ngIf="parent.requiresMethodChoice">
+                    <label for="exchange-method" class="required">Exchange method</label>
+                    <select id="exchange-method" class="basic-input form-control" name="exchangeMethod" required
+                        [ngModel]="inputModel.selectedMethodIds[parent.id]"
+                        (ngModelChange)="onMethodSelected($event)">
+                        <option [ngValue]="undefined" disabled>Select a method</option>
+                        <option *ngFor="let method of parent.methodIds" [ngValue]="method">{{method.name}}</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        How amounts are converted between this account and {{parent.name}}.
+                    </small>
+                </ng-container>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label for="account-type">Account Type</label>
-                <select id="account-type" class="basic-input form-control"
-                    [(ngModel)]="inputModel.selectedAccountTypeId" name="accountTypeId" required>
-                    <option *ngFor="let item of viewModel?.accountTypeViewModels" [value]="item.id">
-                        {{item.name}}</option>
-                </select>
+        <div class="row" *ngIf="parentIssue() as issue">
+            <div class="col">
+                <small class="text-danger">{{issue}}</small>
             </div>
-            <div class="col-md-4">
+        </div>
+        <div class="row" *ngIf="inputModel.hasSubAccounts">
+            <div class="col">
+                <small class="form-text text-muted">
+                    Sub-accounts ({{inputModel.subAccounts.length}}): {{getSubAccountNamesPreview()}}
+                </small>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
                 <label for="account-financial-entity">Financial Entity</label>
                 <select id="account-financial-entity" class="basic-input form-control" ngModel name="financialEntityId"
-                    [(ngModel)]="inputModel.selectedFinancialEntityId" (change)="onFianancialEntityChanged()">
+                    [(ngModel)]="inputModel.selectedFinancialEntityId" (change)="onFianancialEntityChanged()"
+                    [disabled]="financialEntityLocked">
                     <option *ngFor="let item of viewModel?.financialEntityViewModels" [value]="item.id">
                         {{item.name}}</option>
                 </select>
+                <small *ngIf="financialEntityLocked" class="form-text text-muted">
+                    🔒 Same as {{financialEntityLockedBy}} (main account)
+                </small>
             </div>
-            <div class="col-md-4">
-                <label for="account-spend-type">Default Spend Type</label>
+            <div class="col-md-6">
+                <label for="account-group" class="required">Account Group</label>
+                <select id="account-group" class="basic-input form-control"
+                    [(ngModel)]="inputModel.selectedAccountGroupId" name="accountGroupId" required>
+                    <option *ngFor="let accountGroup of viewModel?.accountGroupViewModels" [value]="accountGroup.id">
+                        {{accountGroup.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="account-spend-type" class="required">Default Transaction Type</label>
                 <select id="account-spend-type" class="basic-input form-control"
                     [(ngModel)]="inputModel.selectedSpendTypeId" name="spendTypeId" required>
                     <option *ngFor="let item of viewModel?.spendTypeViewModels" [value]="item.id"
@@ -53,123 +105,141 @@
                         {{item.name}}</option>
                 </select>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label for="base-budget">Base Budget</label>
+            <!-- Only when editing: new accounts get a base budget of 0 and don't ask for one. -->
+            <div class="col-md-6" *ngIf="inputModel.editMode">
+                <label for="base-budget" class="required">Base Budget</label>
                 <input [(ngModel)]="inputModel.amount" required name="baseBudget" type="number" id="base-budget"
                     class="basic-input form-control" placeholder="Amount"
                     pattern="^(0*[0-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$" />
             </div>
-            <div class="col-md-4">
-                <label for="header-color">Header Color</label>
-                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="header-color"
-                    name="headerColor" [ngModel]="viewModel.accountStyle?.headerColor"
-                    class="basic-input form-control form-control-color" />
-            </div>
-            <div class="col-md-4">
-                <label for="border-color">Border Color</label>
-                <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" ngModel id="border-color"
-                    name="borderColor" [ngModel]="viewModel.accountStyle?.borderColor"
-                    class="basic-input form-control form-control-color" />
-            </div>
         </div>
-        <div class="row" *ngIf="inputModel.selectedCurrencyId">
-            <div class="col-lg-4">
-                <label for="parent-accounts">Parent accounts...</label>
-                <select id="parent-accounts" class="basic-input form-control" multiple>
-                    <option *ngFor="let item of getIncludedAccounts()" [ngValue]="item.id"
-                        (click)="accountIncludeClick(item)">
-                        {{item.name}}</option>
-                </select>
-            </div>
-            <div class="col-md-8">
-                <!-- <ul>
-                    <li *ngFor="let item of selectedParentAccs">{{item.name}}<span (click)="removeAccountInclude(item)">
-                            X</span></li>
-                </ul> -->
-                <table class="table table-bordered table-low-margin">
-                    <thead>
-                        <tr>
-                            <th data-field="Budget">Parent Account</th>
-                            <th data-field="Spent">Exchange</th>
-                            <th data-field="Balance">Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let parAccount of inputModel.selectedParentAccs">
-                            <td>{{parAccount.name}}</td>
-                            <td>
-                                <select class="basic-input form-control" [name]="'acci-' + parAccount.id"
-                                    [(ngModel)]="inputModel.selectedMethodIds[parAccount.id]" required>
-                                    <option *ngFor="let method of parAccount.methodIds" [ngValue]="method">
-                                        {{method.name}}
-                                    </option>
-                                </select>
-                            </td>
-                            <td>
-                                <app-bs-icon (click)="removeAccountInclude(parAccount)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path
-                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                                        <path
-                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                                    </svg>
-                                </app-bs-icon>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label for="account-group">Account Group</label>
-                <select id="account-group" class="basic-input form-control"
-                    [(ngModel)]="inputModel.selectedAccountGroupId" name="accountGroupId" required>
-                    <option *ngFor="let accountGroup of viewModel?.accountGroupViewModels" [value]="accountGroup.id">
-                        {{accountGroup.name}}</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="account-default-currency">Default transactions currency</label>
-                <select id="account-default-currency" class="basic-input form-control" ngModel name="defaultCurrencyId"
-                    [(ngModel)]="inputModel.defaultCurrencyId">
-                    <option value="0"></option>
-                    <option *ngFor="let currency of viewModel?.currencyViewModels" [value]="currency.id">
-                        {{currency.name}}</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <br />
-                <div class="form-control">
-                    <div class="form-check">
-                        <input mdbCheckbox [(ngModel)]="inputModel.isDefaultPending" name="isDefaultPending"
-                            class="form-check-input" type="checkbox" id="new-trx-pending" />
-                        <label class="form-check-label" for="new-trx-pending">
-                            Transactions pending by default
-                        </label>
+
+        <!-- Colors are cosmetic and have defaults, so they live in a collapsed bar. The swatches in the bar and the
+             preview inside show how the account will look on the finance screen. -->
+        <div class="fold">
+            <button type="button" id="style-toggle" class="fold-toggle" (click)="styleExpanded = !styleExpanded"
+                [attr.aria-expanded]="styleExpanded" aria-controls="style-settings">
+                <span class="fold-title">Style</span>
+                <span class="fold-hint">
+                    <span class="swatch" [style.background]="inputModel.headerColor || '#ffffff'"></span>
+                    <span class="swatch" [style.background]="inputModel.borderColor || '#ffffff'"></span>
+                    Header and border colors
+                </span>
+                <span class="fold-chevron" [class.open]="styleExpanded" aria-hidden="true">▸</span>
+            </button>
+            <div id="style-settings" [ngbCollapse]="!styleExpanded">
+                <div class="fold-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="header-color">Header Color</label>
+                            <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" id="header-color"
+                                name="headerColor" [(ngModel)]="inputModel.headerColor"
+                                class="basic-input form-control form-control-color" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="border-color">Border Color</label>
+                            <input *ngIf="viewModel?.accountStyle?.borderColor" type="color" id="border-color"
+                                name="borderColor" [(ngModel)]="inputModel.borderColor"
+                                class="basic-input form-control form-control-color" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="style-preview-label">Preview on the finance screen</div>
+                            <!-- Same as the finance screen: a 5px frame in the border color, and the header color
+                                 only behind the title row. -->
+                            <div id="style-preview" class="style-preview"
+                                [style.border]="'solid ' + (inputModel.borderColor || '#cccccc') + ' 5px'">
+                                <div class="style-preview-header"
+                                    [style.background]="inputModel.headerColor || 'transparent'">
+                                    <strong>{{inputModel.accountName || 'Account name'}}</strong>
+                                    <strong>Period: {{previewPeriod}}</strong>
+                                </div>
+                                <div class="style-preview-tiles">
+                                    <div class="style-preview-tile" *ngFor="let tile of previewTiles">{{tile}}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-outline-dark" (click)="onClose()">Close</button>
-                <button [disabled]="f.invalid" type="submit" class="btn btn-outline-dark">Save</button>
-            </div>
-        </div>
-        <!-- <div class="row">
-            <div *ngIf="f.form.invalid">
-                <span>Form is invalid: {{ f.invalid }}</span>
 
-                <div *ngFor="let controlName of f.form.controls | keyvalue">
-                    <span>Control Name: {{ controlName.key }}</span>
-                    <span>Is Valid: {{ controlName.value.valid }}</span>
-                    <span>Errors: {{ controlName.value.errors | json }}</span>
+        <!-- Period type and account type are suggested automatically, so they are only shown on request. They are
+             kept in the DOM (collapsed, not removed) so the form still validates them; the section opens by
+             itself when one of them is empty. -->
+        <div class="fold">
+            <button type="button" id="advanced-toggle" class="fold-toggle"
+                (click)="advancedExpanded = !advancedExpanded" [attr.aria-expanded]="showAdvanced"
+                aria-controls="advanced-settings">
+                <span class="fold-title">Advanced settings</span>
+                <span class="fold-hint">Period, account type and transaction defaults</span>
+                <span class="fold-chevron" [class.open]="showAdvanced" aria-hidden="true">▸</span>
+            </button>
+            <div id="advanced-settings" [ngbCollapse]="!showAdvanced">
+                <div class="fold-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="account-period-type" class="required">Period Type</label>
+                            <select id="account-period-type" class="basic-input form-control"
+                                [(ngModel)]="inputModel.selectedPeriodTypeId" name="periodType"
+                                [disabled]="inputModel.editMode" required>
+                                <option *ngFor="let item of viewModel?.periodTypeViewModels" [value]="item.id">
+                                    {{item.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="account-type" class="required">Account Type</label>
+                            <select id="account-type" class="basic-input form-control"
+                                [(ngModel)]="inputModel.selectedAccountTypeId" name="accountTypeId"
+                                (change)="onAccountTypeChanged()" required>
+                                <option *ngFor="let item of viewModel?.accountTypeViewModels" [value]="item.id">
+                                    {{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="account-default-currency">Default transactions currency</label>
+                            <select id="account-default-currency" class="basic-input form-control" ngModel
+                                name="defaultCurrencyId" [(ngModel)]="inputModel.defaultCurrencyId">
+                                <option value="0"></option>
+                                <option *ngFor="let currency of viewModel?.currencyViewModels" [value]="currency.id">
+                                    {{currency.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input [(ngModel)]="inputModel.isDefaultPending" name="isDefaultPending"
+                                    class="form-check-input" type="checkbox" role="switch" id="new-trx-pending" />
+                                <label class="form-check-label" for="new-trx-pending">
+                                    Transactions pending by default
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="advancedNeedsAttention">
+                        <div class="col">
+                            <small class="text-danger">Choose a period type and an account type to continue.</small>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div> -->
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <small class="required-note"><span class="required-star">*</span> Required fields</small>
+            </div>
+        </div>
+
+        <div class="row form-actions">
+            <div class="col">
+                <button type="button" class="btn btn-outline-dark" (click)="onClose()">Close</button>
+                <button [disabled]="f.invalid || !!parentIssue()" type="submit" class="btn btn-outline-dark">Save</button>
+            </div>
+        </div>
     </div>
 </form>

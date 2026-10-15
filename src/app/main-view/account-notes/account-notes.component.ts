@@ -5,6 +5,7 @@ import { MainViewApiService } from 'src/app/services/main-view-api.service';
 import { AccountGroupAccount } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-account-notes',
   templateUrl: './account-notes.component.html',
   styleUrls: ['./account-notes.component.css']

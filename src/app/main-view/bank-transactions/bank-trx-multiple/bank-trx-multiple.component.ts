@@ -3,6 +3,7 @@ import { BankTrxReqRespPair } from '../../models';
 import { BankTransactionStatus, BankTrxSpendViewModel, SelectableItem } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-bank-trx-multiple',
   templateUrl: './bank-trx-multiple.component.html',
   styleUrls: ['./bank-trx-multiple.component.css']

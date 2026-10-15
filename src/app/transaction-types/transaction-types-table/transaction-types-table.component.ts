@@ -3,6 +3,7 @@ import { TrxTypeViewModel } from 'src/app/services/models';
 import { TextChangedArgs, TrxEventArgs } from '../models';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-types-table',
   templateUrl: './transaction-types-table.component.html',
   styleUrls: ['./transaction-types-table.component.css']

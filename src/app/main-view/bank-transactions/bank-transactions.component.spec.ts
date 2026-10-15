@@ -32,7 +32,7 @@ describe('BankTransactionsComponent', () => {
 describe('BankTransactionsComponent - spend summary auto-refresh', () => {
   let component: BankTransactionsComponent;
   let mainViewApiServiceSpy: { getBankTrxSpendSummary: jasmine.Spy; getBankTrxRawAmountSummary: jasmine.Spy };
-  let routerSpy: { getCurrentNavigation: jasmine.Spy; navigate: jasmine.Spy };
+  let routerSpy: { currentNavigation: jasmine.Spy; navigate: jasmine.Spy };
   let activatedRouteStub: { queryParams: any };
   let trxTypeServiceSpy: { getUserTransactionTypes: jasmine.Spy };
 
@@ -53,7 +53,7 @@ describe('BankTransactionsComponent - spend summary auto-refresh', () => {
       getBankTrxRawAmountSummary: jasmine.createSpy('getBankTrxRawAmountSummary').and.returnValue(of(emptyRawSummary))
     };
     routerSpy = {
-      getCurrentNavigation: jasmine.createSpy('getCurrentNavigation').and.returnValue(null),
+      currentNavigation: jasmine.createSpy('currentNavigation').and.returnValue(null),
       navigate: jasmine.createSpy('navigate')
     };
     activatedRouteStub = { queryParams: of({}) };

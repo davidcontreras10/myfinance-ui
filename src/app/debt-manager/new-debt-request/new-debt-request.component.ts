@@ -3,6 +3,7 @@ import { DebtManagerApiService } from 'src/app/services/debt-manager-api.service
 import { AppUser, Currency, DebtRequestVm, NewDebtRequest } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-new-debt-request',
   templateUrl: './new-debt-request.component.html',
   styleUrls: ['./new-debt-request.component.css']

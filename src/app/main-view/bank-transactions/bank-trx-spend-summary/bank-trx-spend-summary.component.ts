@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { BankTrxSpendSummaryAccount, BankTrxSpendSummaryResponse } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-bank-trx-spend-summary',
   templateUrl: './bank-trx-spend-summary.component.html',
   styleUrls: ['./bank-trx-spend-summary.component.css']

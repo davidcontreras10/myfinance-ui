@@ -3,6 +3,7 @@ import { NavMenuItem } from '../models';
 import { NavBarServiceService } from 'src/app/services/main-nav-bar/nav-bar-service.service';
 
 @Component({
+  standalone: false,
   selector: 'app-nav-bar-menu',
   templateUrl: './nav-bar-menu.component.html',
   styleUrls: ['./nav-bar-menu.component.css']

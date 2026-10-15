@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
+  standalone: false,
   name: 'currencyAmount'
 })
 export class CurrencyAmountPipe implements PipeTransform {

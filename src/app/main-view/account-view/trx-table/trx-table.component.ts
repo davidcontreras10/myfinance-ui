@@ -8,6 +8,7 @@ import { MainViewModel } from '../../main-view-model';
 const COMPACT_VIEW_MIN_TRX_COUNT = 4;
 
 @Component({
+  standalone: false,
   selector: 'app-trx-table',
   templateUrl: './trx-table.component.html',
   styleUrls: ['./trx-table.component.css']

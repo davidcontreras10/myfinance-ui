@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { BankTrxRawAmountSummaryBank, BankTrxRawAmountSummaryResponse } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-bank-trx-raw-amount-summary',
   templateUrl: './bank-trx-raw-amount-summary.component.html',
   styleUrls: ['./bank-trx-raw-amount-summary.component.css']

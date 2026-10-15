@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-core-spinner',
   templateUrl: './core-spinner.component.html',
   styleUrls: ['./core-spinner.component.css']

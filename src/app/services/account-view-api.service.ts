@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  AccountAiClassificationHint,
   AccGroupViewModel,
   AccountGroupRequest,
   AccountViewApiModel,
@@ -109,11 +110,20 @@ export class AccountViewApiService {
     return this.httpClient.put(url, model);
   }
 
-  public getAccountGroupById(
-    accountGroupId: number
-  ): Observable<AccGroupViewModel> {
-    const url = `${environment.baseApi}/api/AccountsGroups/${accountGroupId}`;
-    return this.httpClient.get<AccGroupViewModel>(url);
+  /** Every group of the user in position order, with its default flag and account count. */
+  public getAccountGroups(): Observable<AccGroupViewModel[]> {
+    return this.getMainViewModel(null).pipe(
+      map((res) => res.accountGroupViewModels ?? [])
+    );
+  }
+
+  /** Fails with a 400 message while the group still has accounts. */
+  public deleteAccountGroup(accountGroupId: number): Observable<void> {
+    const params = new HttpParams().set('accountGroupId', accountGroupId);
+    return this.httpClient.delete<void>(
+      `${environment.baseApi}/api/AccountsGroups`,
+      { params }
+    );
   }
 
   public getAccountsByAccountGroup(
@@ -135,5 +145,19 @@ export class AccountViewApiService {
 
     const url = `${environment.baseApi}/api/Accounts/${accountGroupId}`;
     return this.httpClient.get<AccountViewApiModel>(url);
+  }
+
+  public getAiClassificationHint(accountId: number): Observable<AccountAiClassificationHint> {
+    const url = `${environment.baseApi}/api/Accounts/${accountId}/ai-classification-hint`;
+    return this.httpClient.get<AccountAiClassificationHint>(url);
+  }
+
+  /** Sets the hint, or clears it with null. The API requires the field to be present, so null is sent explicitly. */
+  public updateAiClassificationHint(
+    accountId: number,
+    aiClassificationHint: string | null
+  ): Observable<AccountAiClassificationHint> {
+    const url = `${environment.baseApi}/api/Accounts/${accountId}/ai-classification-hint`;
+    return this.httpClient.put<AccountAiClassificationHint>(url, { aiClassificationHint });
   }
 }

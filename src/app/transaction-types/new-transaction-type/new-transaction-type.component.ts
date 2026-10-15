@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TrxTypeServiceService } from 'src/app/services/trx-type-service.service';
 
 @Component({
+  standalone: false,
   selector: 'app-new-transaction-type',
   templateUrl: './new-transaction-type.component.html',
   styleUrls: ['./new-transaction-type.component.css']

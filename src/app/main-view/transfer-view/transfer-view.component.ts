@@ -7,6 +7,7 @@ import { AddTransferResponse, SelectableItem } from 'src/app/services/models';
 import { Utils } from 'src/app/utils';
 
 @Component({
+  standalone: false,
   selector: 'app-transfer-view',
   templateUrl: './transfer-view.component.html',
   styleUrls: ['./transfer-view.component.css']

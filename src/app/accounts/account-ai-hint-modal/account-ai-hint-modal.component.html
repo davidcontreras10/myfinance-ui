@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <div>
+        <h4 class="modal-title">AI hint</h4>
+        <div class="account-name text-muted">{{accountName}}</div>
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+
+<div class="modal-body">
+    <p>
+        When bank transactions are classified with AI, an account is only offered to the AI if it has a hint.
+        Describe what belongs in this account: merchants, services and related taxes.
+    </p>
+    <p class="example text-muted">Example: <em>{{example}}</em></p>
+
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+        {{errorMessage}}
+        <button *ngIf="loadFailed" type="button" class="btn btn-link p-0 ms-2 align-baseline" (click)="load()">
+            Try again
+        </button>
+    </div>
+
+    <label for="ai-hint-text" class="visually-hidden">AI hint</label>
+    <textarea id="ai-hint-text" class="form-control" rows="7" [maxlength]="maxLength" [(ngModel)]="text"
+        [disabled]="busy || loadFailed"
+        [placeholder]="loading ? 'Loading…' : 'What kind of transactions belong in this account?'"></textarea>
+    <div class="hint-footer">
+        <small class="text-muted">
+            Changes apply to new classifications. Transactions already classified aren't redone.
+        </small>
+        <small class="counter text-muted" [class.text-danger]="text.length >= maxLength">
+            {{text.length}} / {{maxLength}}
+        </small>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button *ngIf="hasSavedHint" type="button" id="clear-hint" class="btn btn-outline-danger me-auto"
+        (click)="clear()" [disabled]="busy">Clear hint</button>
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('Cancel')">Cancel</button>
+    <button type="button" id="save-hint" class="btn btn-outline-dark" (click)="save()"
+        [disabled]="!canSave">{{saving ? 'Saving…' : 'Save'}}</button>
+</div>

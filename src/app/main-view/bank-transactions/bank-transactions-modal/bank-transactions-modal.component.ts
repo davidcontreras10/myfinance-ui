@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BankTrxReqRespPair } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'app-bank-transactions-modal',
   templateUrl: './bank-transactions-modal.component.html',
   styleUrls: ['./bank-transactions-modal.component.css']

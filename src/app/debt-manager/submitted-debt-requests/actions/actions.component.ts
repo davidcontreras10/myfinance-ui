@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CreditorRequestStatus, DebtorRequestStatus, DebtRequestVm } from 'src/app/services/models';
 
 @Component({
+  standalone: false,
   selector: 'app-creditor-actions',
   templateUrl: './actions.component.html',
   styleUrls: ['./actions.component.css']

@@ -7,7 +7,7 @@ import { NgbDropdownModule, NgbModule, NgbNavModule, NgbToastModule, NgbTooltipM
 import { LoginComponent } from './login/login.component';
 import { MainViewComponent } from './main-view/main-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MainNavBarComponent } from './main-nav-bar/main-nav-bar.component';
 import { NavBarMenuComponent } from './main-nav-bar/nav-bar-menu/nav-bar-menu.component';
 import { AccountsComponent } from './accounts/accounts.component';
@@ -42,6 +42,7 @@ import { EditScheduledTaskComponent } from './automatic-tasks/edit-scheduled-tas
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { DraggableGridComponent } from './draggable-grid/draggable-grid.component';
 import { AccountsGroupsComponent } from './accounts/accounts-groups/accounts-groups.component';
+import { AccountAiHintModalComponent } from './accounts/account-ai-hint-modal/account-ai-hint-modal.component';
 import { NewAccountComponent } from './new-account/new-account.component';
 import { TransactionTypesComponent } from './transaction-types/transaction-types.component';
 import { TransactionTypesTableComponent } from './transaction-types/transaction-types-table/transaction-types-table.component';
@@ -100,6 +101,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     EditScheduledTaskComponent,
     DraggableGridComponent,
     AccountsGroupsComponent,
+    AccountAiHintModalComponent,
     NewAccountComponent,
     TransactionTypesComponent,
     TransactionTypesTableComponent,
@@ -128,7 +130,6 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     AppRoutingModule,
     NgbModule,
     FormsModule,
-    HttpClientModule,
     NgbDropdownModule,
     NgbNavModule,
     BrowserAnimationsModule,
@@ -144,6 +145,7 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     { provide: HTTP_INTERCEPTORS, useClass: HttpSpinnerInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpTokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpNotifyInterceptor, multi: true },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]
 })

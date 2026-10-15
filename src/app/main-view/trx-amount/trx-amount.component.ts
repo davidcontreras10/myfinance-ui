@@ -6,6 +6,7 @@ import { Utils } from '../../utils';
 const COPIED_FEEDBACK_MS = 1500;
 
 @Component({
+  standalone: false,
   selector: 'app-trx-amount',
   templateUrl: './trx-amount.component.html',
   styleUrls: ['./trx-amount.component.css']

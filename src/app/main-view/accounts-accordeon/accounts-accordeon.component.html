@@ -1,7 +1,14 @@
-<ngb-accordion #acc="ngbAccordion" [activeIds]="mainViewModel.activeIds" id="main-view-acc">
-    <ngb-panel *ngFor="let acc of groups" [title]="acc.name" [id]="getAccountGroupIdPattern(acc.id)">
-        <ng-template ngbPanelContent>
-            <app-acc-group [accountGroup]="acc"></app-acc-group>
-        </ng-template>
-    </ngb-panel>
-</ngb-accordion>
+<div ngbAccordion [closeOthers]="false" id="main-view-acc">
+    <div ngbAccordionItem *ngFor="let acc of groups" [collapsed]="!isActive(acc.id)" [id]="getAccountGroupIdPattern(acc.id)">
+        <h2 ngbAccordionHeader>
+            <button ngbAccordionButton>{{acc.name}}</button>
+        </h2>
+        <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+                <ng-template>
+                    <app-acc-group [accountGroup]="acc"></app-acc-group>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

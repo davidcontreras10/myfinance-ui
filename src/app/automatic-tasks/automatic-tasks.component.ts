@@ -4,6 +4,7 @@ import { AutoTasksApiService } from '../services/auto-tasks-api.service';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-automatic-tasks',
   templateUrl: './automatic-tasks.component.html',
   styleUrls: ['./automatic-tasks.component.css']

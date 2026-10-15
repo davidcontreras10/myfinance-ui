@@ -25,6 +25,7 @@ const PATCH_MAPS = [
 ]
 
 @Component({
+  standalone: false,
   selector: 'app-view-trx',
   templateUrl: './view-trx.component.html',
   styleUrls: ['./view-trx.component.css']

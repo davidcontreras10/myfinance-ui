@@ -13,6 +13,7 @@ export interface TrxFiltersDialogResult extends DialogResultModel<TrxFilters> {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-trx-filter-modal',
   templateUrl: './trx-filter-modal.component.html',
   styleUrls: ['./trx-filter-modal.component.css']

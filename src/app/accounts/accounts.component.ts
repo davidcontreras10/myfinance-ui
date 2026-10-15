@@ -1,9 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DragGridItem, DragGridPosition } from '../draggable-grid/model';
 import { AccountViewApiService } from '../services/account-view-api.service';
-import { AccountViewModel } from '../services/models';
+import { AccountViewModel, SubAccountViewModel } from '../services/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccountsGroupsComponent } from './accounts-groups/accounts-groups.component';
+import {
+  AccountAiHintModalComponent,
+  AccountAiHintResult,
+} from './account-ai-hint-modal/account-ai-hint-modal.component';
 import {
   NavBarMenusIds,
   NavBarServiceService,
@@ -12,14 +16,21 @@ import { AccountViewModelService } from '../services/account-view-model.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+interface AccountTreeItem extends DragGridItem {
+  account: AccountViewModel;
+  otherGroupSubAccounts: SubAccountViewModel[];
+}
+
 @Component({
+  standalone: false,
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css'],
 })
 export class AccountsComponent implements OnInit, OnDestroy {
   accountGroupId: number | null = null;
-  dragGridItems: DragGridItem[] | null = null;
+  dragGridItems: AccountTreeItem[] | null = null;
+  private expandedIds: Set<number> = new Set();
   originalPositions: DragGridPosition[] | null = null;
   currentPositions: DragGridPosition[] | null = null;
   canSavePositions: boolean = false;
@@ -70,9 +81,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(AccountsGroupsComponent, {
       backdrop: 'static',
       keyboard: false,
-      size: 'md',
+      size: 'lg',
     });
-    modalRef.componentInstance.accountGroups = this.viewModel.accountGroups;
+    modalRef.result.then((changed: boolean) => {
+      if (changed) {
+        this.onAccountGroupsChanged();
+      }
+    }, () => { });
+  }
+
+  /** The modal already refreshed the shared group list. Only the page needs a reload if its group is gone. */
+  private onAccountGroupsChanged() {
+    const stillThere = this.viewModel.accountGroups.some((group) => group.accountGroupId === this.accountGroupId);
+    if (!stillThere) {
+      this.accountGroupId = this.viewModel.accountGroups[0]?.accountGroupId ?? null;
+      this.onAccountGroupChanged(null);
+    }
   }
 
   onSavePositions() {
@@ -106,9 +130,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     console.log('Item Clicked', item);
   }
 
-  onDeleteClick(accountId: number) {
-    if (confirm('Are you sure you want to delete this item?')) {
-      this.apiService.deleteAccount(accountId).subscribe((res) => {
+  onDeleteClick(account: AccountViewModel) {
+    const subAccountsCount = account.subAccounts?.length ?? 0;
+    const message = subAccountsCount > 0
+      ? `This account has ${subAccountsCount} sub-account(s) — they will become top-level accounts. Are you sure you want to delete it?`
+      : 'Are you sure you want to delete this item?';
+    if (confirm(message)) {
+      this.apiService.deleteAccount(account.accountId).subscribe((res) => {
         this.loadMainData(this.accountGroupId);
       });
     }
@@ -116,6 +144,53 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   onEditClick(accountId: number) {
     this.router.navigate([`accounts/edit/${accountId}`]);
+  }
+
+  /** Opens the AI hint modal for an account, and updates its "has a hint" flag when the modal saves or clears it. */
+  openAiHint(accountId: number, accountName: string, account: { hasAiClassificationHint: boolean }) {
+    const modalRef = this.modalService.open(AccountAiHintModalComponent, {
+      backdrop: 'static',
+      size: 'lg',
+    });
+    modalRef.componentInstance.accountId = accountId;
+    modalRef.componentInstance.accountName = accountName;
+    modalRef.result.then(
+      (result: AccountAiHintResult) => {
+        account.hasAiClassificationHint = result.hasHint;
+      },
+      () => {
+        // Dismissed: nothing changed.
+      }
+    );
+  }
+
+  onAddChildClick(parent: AccountViewModel) {
+    this.router.navigate(['accounts/new'], {
+      queryParams: {
+        accountGroupId: this.accountGroupId,
+        parentAccountId: parent.accountId,
+        parentAccountName: parent.accountName,
+      },
+    });
+  }
+
+  toggleExpanded(accountId: number) {
+    if (this.expandedIds.has(accountId)) {
+      this.expandedIds.delete(accountId);
+    } else {
+      this.expandedIds.add(accountId);
+    }
+  }
+
+  isExpanded(accountId: number): boolean {
+    return this.expandedIds.has(accountId);
+  }
+
+  getGroupName(accountGroupId: number): string {
+    return (
+      this.viewModel.accountGroups.find((g) => g.accountGroupId === accountGroupId)
+        ?.accountGroupName ?? 'another group'
+    );
   }
 
   private updateSavePositionsStatus() {
@@ -163,14 +238,23 @@ export class AccountsComponent implements OnInit, OnDestroy {
   private setDraggableGridAccounts(items: AccountViewModel[]) {
     if (items) {
       this.fixEmptyPositions(items);
+      // Every account in the response belongs to the selected group, so each
+      // gets its own (reorderable) card. A root's nested list only needs the
+      // sub-accounts that live in *other* groups; same-group ones already
+      // have their own card here.
       this.dragGridItems = items
         .sort((a, b) => a.accountPosition - b.accountPosition)
-        .map((i) => {
+        .map((a) => {
           return {
-            id: i.accountId,
-            name: i.accountName,
+            id: a.accountId,
+            name: a.accountName,
+            account: a,
+            otherGroupSubAccounts: (a.subAccounts ?? []).filter(
+              (s) => s.accountGroupId !== this.accountGroupId
+            ),
           };
         });
+      this.expandedIds = new Set();
     } else {
       this.dragGridItems = null;
     }
