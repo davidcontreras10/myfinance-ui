@@ -117,6 +117,32 @@ Bank transactions are classified with AI on the backend, and an account is only 
   (`AI_CLASSIFICATION_HINT_MAX_LENGTH`); an account that isn't the user's returns 404. Changes apply to new
   classifications only: earlier results are cached and aren't redone.
 
+## Scheduling Timezone
+
+The Scheduled Tasks screen has an explicit, collapsible timezone editor. It uses
+`SchedulingPreferencesApiService` and authenticated `GET`/`PUT
+`/api/Users/@current/scheduling-preferences`; only `{ timeZoneId }` is sent on PUT.
+The server resolves the current user and authorizes View/Edit. The saved IANA ID,
+not the device timezone, initializes the picker. Device detection is only an
+unsaved suggestion. Changes require confirmation; overdue occurrences retain
+their original timezone. Browser timezone options retain the saved ID and include
+Costa Rica and UTC even when the browser's canonical list omits them.
+
+Preferences load only when opened. A 404/503 leaves the editor unavailable without
+inventing a persisted default or affecting the task list. This does not enable
+history/v2 or change the existing execution route; execution confirmation and
+dispatcher adoption remain later checkpoints. Both the timezone and retirement
+API migrations must be applied before running the matching API build.
+
+Focused timezone tests (set `CHROME_BIN` first):
+
+```powershell
+node node_modules/@angular/cli/bin/ng.js test --watch=false --browsers=ChromeHeadless --include='src/app/automatic-tasks/scheduling-preferences/*.spec.ts' --include='src/app/services/scheduling-preferences-api.service.spec.ts'
+```
+
+Use the local CLI directly for these flags in PowerShell: `npm.ps1` can consume
+forwarded options, accidentally starting the whole suite in watch mode.
+
 ## Configuration
 
 `src/environments/environment.ts` (dev) and `environment.prod.ts` (swapped in by `ng build`) define
