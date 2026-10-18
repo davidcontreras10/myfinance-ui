@@ -68,6 +68,22 @@ export class AutoTasksApiService {
     return this.http.post<ExecutedTaskResult>(url, model);
   }
 
+  getExecutionContext(taskId: string): Observable<ScheduledTaskExecutionContext> {
+    const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}/execution-context`;
+    return this.http.get<ScheduledTaskExecutionContext>(url);
+  }
+
+  executeTaskV2(taskId: string, input: ScheduledExecutionInput): Observable<ScheduledExecutionResult> {
+    const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}/execution-v2`;
+    return this.http.post<ScheduledExecutionResult>(url, input);
+  }
+
+  getExecutionAttempts(taskId: string, skip = 0, limit = 50): Observable<ScheduledExecutionAttemptHistoryPage> {
+    const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}/execution-attempts`;
+    const params = new HttpParams().set('skip', skip).set('limit', limit);
+    return this.http.get<ScheduledExecutionAttemptHistoryPage>(url, { params });
+  }
+
   getExecutedTasks(taskId: string): Observable<ExecutedTask[]> {
     const url = `${environment.baseApi}/api/executedTasks`;
     const params = new HttpParams().set('taskId', taskId);
@@ -88,4 +104,58 @@ export class AutoTasksApiService {
     const url = `${environment.baseApi}/api/ScheduledTasks/${taskId}`;
     return this.http.patch<void>(url, model);
   }
+}
+
+export interface ScheduledOccurrenceSummary {
+  id: string;
+  scheduledLocalDate: string;
+  status: number;
+}
+
+export interface ScheduledTaskExecutionContext {
+  taskId: string;
+  timeZoneId: string;
+  localDate: string;
+  scheduleActivated: boolean;
+  discoveryIncomplete: boolean;
+  executionEnabled: boolean;
+  retiredAtUtc: string | null;
+  today: ScheduledOccurrenceSummary | null;
+  earliestPending: ScheduledOccurrenceSummary | null;
+  defaultAction: number | null;
+  warnExtraExecution: boolean;
+  canceledOccurrenceCount: number;
+}
+
+export interface ScheduledExecutionInput {
+  occurrenceId?: string;
+  manualRequestId?: string;
+  postingDate?: string;
+}
+
+export interface ScheduledExecutionResult {
+  executionId: string;
+  alreadyCompleted: boolean;
+}
+
+export interface ScheduledExecutionAttemptHistoryEntry {
+  id: string;
+  actorId: string;
+  occurrenceId: string | null;
+  manualRequestId: string | null;
+  attemptNumber: number;
+  postingDate: string;
+  startedAtUtc: string;
+  endedAtUtc: string | null;
+  status: number;
+  failureStage: string | null;
+  failureType: string | null;
+  failureMessage: string | null;
+}
+
+export interface ScheduledExecutionAttemptHistoryPage {
+  items: ScheduledExecutionAttemptHistoryEntry[];
+  skip: number;
+  limit: number;
+  hasMore: boolean;
 }

@@ -18,9 +18,9 @@
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 2a1 1 0 0 0-1 1v1H2.5a.75.75 0 0 0 0 1.5h.55l.72 8.65A1.5 1.5 0 0 0 5.26 15.5h5.48a1.5 1.5 0 0 0 1.49-1.35l.72-8.65h.55a.75.75 0 0 0 0-1.5H11V3a1 1 0 0 0-1-1H6Zm1 1.5h2V4H7v-.5ZM5.55 5.5h4.9l-.68 8.15a.25.25 0 0 1-.25.23H6.48a.25.25 0 0 1-.25-.23L5.55 5.5Z"/></svg>
             Delete
         </button>
-        <button type="button" class="btn btn-outline-success" (click)="onExecuteTask()">
+        <button type="button" class="btn btn-outline-success" (click)="onExecuteTask()" [disabled]="executionBusy">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 3a.75.75 0 0 1 1.15-.63l7.5 5a.75.75 0 0 1 0 1.26l-7.5 5A.75.75 0 0 1 4.5 13V3Z"/></svg>
-            Run now
+            {{executionBusy ? 'Preparing run…' : 'Run now'}}
         </button>
         <button type="button" class="btn btn-toggle" [class.is-open]="showRecords" (click)="onViewRecordsClicked()">
             View execution history

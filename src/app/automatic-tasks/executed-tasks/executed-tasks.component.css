@@ -70,3 +70,15 @@ table.history td.msg {
     color: var(--st-ink-muted);
     font-size: 13px;
 }
+
+.attempt-history {
+    margin-top: 20px;
+}
+
+.history-error {
+    color: var(--st-danger, #b42318);
+}
+
+.attempt-more {
+    margin-top: 10px;
+}
