@@ -242,7 +242,7 @@ export class TaskDetailComponent implements OnInit, OnChanges {
       return `every ${day}${this._getMonthDayPrefix(day)} of the month`;
     }
 
-    if (task.frequencyType === FrequencyType.Weekly && day && day >= 0 && day < 7) {
+    if (task.frequencyType === FrequencyType.Weekly && day !== null && day >= 0 && day < this.weekDays.length) {
       return `every ${this.weekDays[day]}`
     }
     return 'Frequency not set';
