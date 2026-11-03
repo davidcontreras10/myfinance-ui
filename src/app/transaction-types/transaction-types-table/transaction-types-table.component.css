@@ -1,3 +1,129 @@
-.cell-button {
-    margin: 0 0.2em;
+.type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background-color: transparent;
+}
+
+.type-row:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.type-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.type-name,
+.type-desc {
+    border-radius: 0.25rem;
+    padding: 0 0.25rem;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.type-name {
+    font-weight: 500;
+}
+
+.type-desc {
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+}
+
+/* Clicking the text starts editing the row */
+.type-name,
+.type-desc {
+    cursor: text;
+}
+
+.type-name:hover,
+.type-desc:hover {
+    background-color: var(--bs-secondary-bg);
+}
+
+.type-row.editing,
+.type-row.editing:hover {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+.type-edit {
+    padding: 0.25rem 0;
+}
+
+/* Fixed row height with centered content; an empty description takes no space
+   until the row is hovered or focused, so it can still be clicked to edit */
+.type-row {
+    min-height: 3.9rem;
+}
+
+.type-desc:empty {
+    min-height: 0;
+}
+
+.type-row:hover .type-desc:empty,
+.type-row:focus-within .type-desc:empty {
+    min-height: 1.3125rem;
+}
+
+/* The empty-cell hint only shows while the row is hovered or focused */
+.type-row:hover .type-name:empty::before,
+.type-row:hover .type-desc:empty::before,
+.type-row:focus-within .type-name:empty::before,
+.type-row:focus-within .type-desc:empty::before {
+    content: attr(data-placeholder);
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.type-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.35rem;
+}
+
+/* Edit and delete only appear when the row is hovered or focused */
+.hover-action {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.type-row:hover .hover-action,
+.type-row:focus-within .hover-action,
+.hover-action:focus-visible {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .hover-action {
+        opacity: 1;
+    }
+}
+
+/* Add and Remove share a width so the rows line up across both lists */
+.move-btn {
+    min-width: 2.25rem;
+}
+
+@media (min-width: 576px) {
+    .move-btn {
+        min-width: 5.5rem;
+    }
+}
+
+/* Briefly highlight a row that just moved from the other list */
+.just-moved {
+    animation: just-moved-flash 2s ease-out;
+}
+
+@keyframes just-moved-flash {
+    0%,
+    40% {
+        background-color: var(--bs-primary-bg-subtle);
+    }
+
+    100% {
+        background-color: transparent;
+    }
 }

@@ -1,0 +1,40 @@
+<section class="fold" aria-label="Scheduling timezone">
+  <button type="button" class="fold-toggle" (click)="toggle()" aria-label="Scheduling timezone"
+    [disabled]="saving" [attr.aria-expanded]="expanded" aria-controls="scheduling-timezone-panel">
+    <span class="fold-title">Scheduling timezone</span>
+    <span class="fold-hint saved-zone">{{ loaded ? savedTimeZone : '' }}</span>
+    <span class="fold-chevron" [class.open]="expanded" aria-hidden="true">&gt;</span>
+  </button>
+  <div [hidden]="!expanded" id="scheduling-timezone-panel" class="fold-body timezone-panel" [attr.aria-busy]="loading || saving">
+    <p *ngIf="loading" role="status">Loading timezone...</p>
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+      <button *ngIf="!loaded" type="button" class="btn btn-link btn-sm" (click)="load()" [disabled]="loading">Retry</button>
+    </div>
+    <ng-container *ngIf="loaded">
+      <div class="timezone-field">
+        <label for="scheduling-timezone">Timezone</label>
+        <select id="scheduling-timezone" class="form-select" [(ngModel)]="selectedTimeZone"
+          (ngModelChange)="selectionChanged()" [disabled]="saving">
+          <option *ngFor="let zone of timeZones" [value]="zone">{{ zone }}</option>
+        </select>
+      </div>
+      <button *ngIf="canSuggestDevice" type="button" class="btn btn-link btn-sm px-0 device-zone" (click)="chooseDevice()">
+        Use device timezone: {{ deviceTimeZone }}
+      </button>
+      <div *ngIf="confirming" class="confirmation" role="group" aria-label="Confirm timezone change">
+        <p>Change future scheduled runs to <strong>{{ selectedTimeZone }}</strong>?
+          Overdue occurrences keep their original timezone.</p>
+        <div class="timezone-actions">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="confirming = false" [disabled]="saving">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="confirmSave()" [disabled]="!canSave">
+            {{ saving ? 'Saving...' : 'Confirm change' }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!confirming" class="timezone-actions">
+        <button type="button" class="btn btn-primary btn-sm" (click)="requestSave()" [disabled]="!canSave">Save timezone</button>
+      </div>
+    </ng-container>
+  </div>
+</section>

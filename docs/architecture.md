@@ -117,6 +117,57 @@ Bank transactions are classified with AI on the backend, and an account is only 
   (`AI_CLASSIFICATION_HINT_MAX_LENGTH`); an account that isn't the user's returns 404. Changes apply to new
   classifications only: earlier results are cached and aren't redone.
 
+## Scheduling Timezone
+
+The Scheduled Tasks screen has an explicit, collapsible timezone editor. It uses
+`SchedulingPreferencesApiService` and authenticated `GET`/`PUT
+`/api/Users/@current/scheduling-preferences`; only `{ timeZoneId }` is sent on PUT.
+The server resolves the owner from the authenticated identity and authorizes access
+to that user's own preference; admin/target-user routes keep their View/Edit policy. The saved IANA ID,
+not the device timezone, initializes the picker. Device detection is only an
+unsaved suggestion. Changes require confirmation; overdue occurrences retain
+their original timezone. Browser timezone options retain the saved ID and include
+Costa Rica and UTC even when the browser's canonical list omits them.
+
+Preferences load only when opened. A 404/503 leaves the editor unavailable without
+inventing a persisted default or affecting the task list. The history gate also
+keeps timezone preference reads/writes unavailable until schedule-history
+maintenance is activated.
+
+## Scheduled Task Execution
+
+The Run now action first requests `GET /api/ScheduledTasks/{taskId}/execution-context`.
+When today's automatic occurrence is pending, the dialog defaults to running that
+occurrence and allows an explicit independent extra run. If an extra run could
+leave automatic work pending, the dialog explains that consequence. Manual-only
+and not-due tasks offer an independent run.
+
+Confirmed v2 requests use `POST /api/ScheduledTasks/{taskId}/execution-v2`. Before
+sending, the client stores the selected occurrence identity or manual request ID
+and posting date in local storage. Failed requests retain the same identity for
+retry; success clears it. This prevents a refresh or lost response from silently
+becoming a new extra execution.
+
+For rollout compatibility, a missing context route or the explicit
+`Schedule history is not enabled.` response uses the existing legacy confirmation
+and execution route. Other context failures do not fall back. Once history is
+enabled, legacy execution is blocked by the API; if context reports v2 disabled,
+the UI does not attempt a legacy run. Both API and client feature flags remain
+off until the dispatcher and financial workflow safeguards are ready. The
+existing execution-history view still reads the legacy history endpoint.
+
+The timezone and retirement API migrations must be applied before running the
+matching API build.
+
+Focused timezone tests (set `CHROME_BIN` first):
+
+```powershell
+node node_modules/@angular/cli/bin/ng.js test --watch=false --browsers=ChromeHeadless --include='src/app/automatic-tasks/scheduling-preferences/*.spec.ts' --include='src/app/services/scheduling-preferences-api.service.spec.ts'
+```
+
+Use the local CLI directly for these flags in PowerShell: `npm.ps1` can consume
+forwarded options, accidentally starting the whole suite in watch mode.
+
 ## Configuration
 
 `src/environments/environment.ts` (dev) and `environment.prod.ts` (swapped in by `ng build`) define

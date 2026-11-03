@@ -1,0 +1,21 @@
+:host { display: block; margin-bottom: 20px; }
+.fold { border-bottom: 1px solid var(--st-border); padding-bottom: 4px; }
+.fold-toggle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; width: 100%; padding: 12px 0; border: 0; background: transparent; color: var(--st-ink); text-align: left; cursor: pointer; }
+.fold-toggle:hover { background: var(--st-accent-tint); }
+.fold-toggle:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+.fold-title { font-size: 14px; font-weight: 600; }
+.fold-hint { flex: 1; min-width: 0; }
+.fold-chevron { color: var(--st-ink-muted); transition: transform 0.15s ease; }
+.fold-chevron.open { transform: rotate(90deg); }
+.fold-body { padding-bottom: 16px; }
+.timezone-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.saved-zone { color: var(--st-ink-muted); font-size: 13px; overflow-wrap: anywhere; }
+.timezone-panel { max-width: 560px; padding-top: 16px; }
+.timezone-field { display: grid; gap: 6px; }
+label { color: var(--st-ink); font-size: 13px; font-weight: 600; }
+.form-select { width: 100%; min-width: 0; font-size: 14px; }
+.timezone-actions { margin-top: 12px; }
+.confirmation { border-left: 3px solid var(--st-accent); margin-top: 16px; padding-left: 12px; }
+.confirmation p { margin: 0; font-size: 14px; color: var(--st-ink); overflow-wrap: anywhere; }
+.device-zone { text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.btn { letter-spacing: 0; }

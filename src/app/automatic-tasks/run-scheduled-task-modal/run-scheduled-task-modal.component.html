@@ -1,0 +1,64 @@
+<div class="modal-header">
+    <div>
+        <h4 class="modal-title">{{pendingIntent ? 'Retry run' : 'Run scheduled task'}}</h4>
+        <div class="text-muted">{{task.description}}</div>
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cancel')"></button>
+</div>
+
+<div class="modal-body">
+    <ng-container *ngIf="pendingIntent; else newRun">
+        <p>The previous request did not return a confirmed result. Retry the same run with the same request identity?</p>
+        <p class="run-date">Posting date: {{displayDate}}</p>
+        <div *ngIf="pendingIntent.action === 'extra'" class="alert alert-warning" role="alert">
+            Retrying uses the same request identity, so it cannot create a second transaction for that run.
+        </div>
+    </ng-container>
+
+    <ng-template #newRun>
+        <p *ngIf="context?.timeZoneId" class="run-date">{{displayDate}} · {{context?.timeZoneId}}</p>
+
+        <fieldset *ngIf="canChooseOccurrence" class="run-options">
+            <legend>Choose how to run this task</legend>
+            <label class="form-check run-option">
+                <input class="form-check-input" type="radio" name="runAction" value="occurrence"
+                    [(ngModel)]="action">
+                <span>
+                    <strong>Run today's scheduled occurrence</strong>
+                    <small>Completes the pending automatic run. The scheduled task will not create another transaction today.</small>
+                </span>
+            </label>
+            <label class="form-check run-option">
+                <input class="form-check-input" type="radio" name="runAction" value="extra"
+                    [(ngModel)]="action">
+                <span>
+                    <strong>Run an extra execution</strong>
+                    <small>Creates an independent transaction and leaves today's automatic run pending.</small>
+                </span>
+            </label>
+        </fieldset>
+
+        <p *ngIf="!pendingIntent && !canChooseOccurrence && !context?.warnExtraExecution &&
+            !context?.retiredAtUtc && context?.executionEnabled">
+            This task will run once now. Manual runs remain independent from future automatic runs.
+        </p>
+
+        <div *ngIf="showExtraWarning" class="alert alert-warning" role="alert">
+            {{extraWarning}}
+        </div>
+
+        <div *ngIf="context?.retiredAtUtc" class="alert alert-danger" role="alert">
+            This task is retired and cannot be run.
+        </div>
+        <div *ngIf="context && !context.executionEnabled && !context.retiredAtUtc" class="alert alert-info" role="status">
+            The new scheduled execution path is not enabled yet.
+        </div>
+    </ng-template>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('Cancel')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="confirm()" [disabled]="!canRun">
+        {{pendingIntent ? 'Retry same run' : action === 'occurrence' ? "Run today's occurrence" : 'Run extra execution'}}
+    </button>
+</div>

@@ -1,20 +1,72 @@
-<div class="container-fluid text-center">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="text-center">
-                <h2>Others</h2>
-            </div>
-            <app-transaction-types-table [transactionTypes]="allItems()" (textChanged)="onTextChanged($event)"
-                (arrowClicked)="onArrowChanged($event)" [myTable]="false"
-                (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
+<div class="container-fluid page">
+    <h1 class="visually-hidden">Transaction types</h1>
+    <div class="page-header">
+        <div class="input-group search-box">
+            <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+            <input type="search" class="form-control" placeholder="Search name or description"
+                aria-label="Search transaction types" [(ngModel)]="filter" />
         </div>
-        <div class="col-md-6">
-            <div class="text-center">
-                <h2>My list</h2>
+        <button type="button" class="btn btn-primary" (click)="openNewTypeDialog()">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> New type
+        </button>
+    </div>
+
+    <ul class="nav nav-pills nav-fill d-lg-none mb-3">
+        <li class="nav-item">
+            <button type="button" class="nav-link" [class.active]="activePanel === 'mine'"
+                (click)="activePanel = 'mine'">My list <span class="badge text-bg-light">{{userItems().length}}</span></button>
+        </li>
+        <li class="nav-item">
+            <button type="button" class="nav-link" [class.active]="activePanel === 'available'"
+                (click)="activePanel = 'available'">Available <span class="badge text-bg-light">{{allItems().length}}</span></button>
+        </li>
+    </ul>
+
+    <div class="row g-3">
+        <div class="col-lg-6 d-lg-block" [class.d-none]="activePanel !== 'mine'">
+            <div class="card panel">
+                <div class="card-header panel-header">
+                    <span class="fw-semibold">My list</span>
+                    <span class="badge text-bg-primary">{{userItems().length}}</span>
+                </div>
+                <app-transaction-types-table [transactionTypes]="userItems()" [myTable]="true" [loading]="loading"
+                    class="panel-body" [highlightedId]="highlightedId" [busyIds]="busyIds" [emptyMessage]="filter ? 'No matches in your list.' : 'Nothing here yet. Add types from Available types.'"
+                    (edited)="onEdited($event)" (arrowClicked)="onArrowChanged($event)"
+                    (deletedTrx)="onDeleted($event, deleteModal)"></app-transaction-types-table>
             </div>
-            <app-transaction-types-table [transactionTypes]="userItems()" [myTable]="true"
-                (textChanged)="onTextChanged($event)" (arrowClicked)="onArrowChanged($event)"
-                (deletedTrx)="onDeleted($event)"></app-transaction-types-table>
+        </div>
+        <div class="col-lg-6 d-lg-block" [class.d-none]="activePanel !== 'available'">
+            <div class="card panel">
+                <div class="card-header panel-header">
+                    <span class="fw-semibold">Available types</span>
+                    <span class="badge text-bg-secondary">{{allItems().length}}</span>
+                </div>
+                <app-transaction-types-table [transactionTypes]="allItems()" [myTable]="false" [loading]="loading"
+                    class="panel-body" [highlightedId]="highlightedId" [busyIds]="busyIds" [emptyMessage]="filter ? 'No matches in available types.' : 'Every type is already in your list.'"
+                    (edited)="onEdited($event)" (arrowClicked)="onArrowChanged($event)"
+                    (deletedTrx)="onDeleted($event, deleteModal)"></app-transaction-types-table>
+            </div>
         </div>
     </div>
+</div>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Delete transaction type</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        Delete <strong>{{deleteTarget?.name}}</strong>? This cannot be undone.
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close()">Delete</button>
+    </div>
+</ng-template>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <ngb-toast *ngFor="let toast of toasts" [autohide]="true" [delay]="toast.isError ? 5000 : 2500"
+        [class]="toast.isError ? 'text-bg-danger' : 'text-bg-dark'" (hidden)="removeToast(toast)">
+        {{toast.message}}
+    </ngb-toast>
 </div>

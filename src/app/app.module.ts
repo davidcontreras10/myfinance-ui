@@ -33,6 +33,8 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
 import { AccountNotesComponent } from './main-view/account-notes/account-notes.component';
 import { MainViewPrefsComponent } from './main-view/main-view-prefs/main-view-prefs.component';
 import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
+import { SchedulingPreferencesComponent } from './automatic-tasks/scheduling-preferences/scheduling-preferences.component';
+import { RunScheduledTaskModalComponent } from './automatic-tasks/run-scheduled-task-modal/run-scheduled-task-modal.component';
 import { TasksListComponent } from './automatic-tasks/tasks-list/tasks-list.component';
 import { TaskDetailComponent } from './automatic-tasks/task-detail/task-detail.component';
 import { TaskStatusComponent } from './automatic-tasks/task-status/task-status.component';
@@ -93,6 +95,8 @@ import { DebtRequestTrxsComponent } from './debt-manager/debt-request-trxs/debt-
     AccountNotesComponent,
     MainViewPrefsComponent,
     AutomaticTasksComponent,
+    SchedulingPreferencesComponent,
+    RunScheduledTaskModalComponent,
     TasksListComponent,
     TaskDetailComponent,
     TaskStatusComponent,

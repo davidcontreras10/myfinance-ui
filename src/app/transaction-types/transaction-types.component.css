@@ -1,0 +1,31 @@
+.page {
+    padding: 1rem 1.5rem 0;
+}
+
+/* Toolbar: search on the left, primary action on the right */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.search-box {
+    flex: 1 1 auto;
+    max-width: 24rem;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Each list scrolls on its own so the header and search stay in view */
+.panel-body {
+    display: block;
+    overflow-y: auto;
+    max-height: calc(100vh - 12rem);
+    min-height: 12rem;
+}

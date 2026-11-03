@@ -1,0 +1,43 @@
+.run-date {
+    color: var(--st-ink-muted, #626b73);
+    font-variant-numeric: tabular-nums;
+}
+
+.run-options {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.run-options legend {
+    float: none;
+    width: auto;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.run-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--st-border, #dee2e6);
+}
+
+.run-option .form-check-input {
+    flex: 0 0 auto;
+    margin-left: 0;
+}
+
+.run-option span {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.run-option small {
+    color: var(--st-ink-muted, #626b73);
+    line-height: 1.45;
+}

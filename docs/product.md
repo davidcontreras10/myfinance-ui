@@ -48,6 +48,13 @@ Routes are defined in `src/app/app-routing.module.ts`; all except `login` requir
 | `/scheduled-tasks`, `/scheduled-tasks/new` | View, search, create and edit scheduled/automatic tasks and see their executed runs. Execution happens in a separate Azure Functions project, not in the API or the UI. |
 | `/login` | Sign in (JWT). |
 
+### Scheduling Timezone
+
+Users explicitly select and confirm a profile timezone from Scheduled Tasks.
+Existing users default to Costa Rica (`America/Costa_Rica`) on the server. The
+device timezone can be chosen as a suggestion, but traveling never silently
+changes the saved preference. Changes affect future runs, not overdue work.
+
 ## Glossary
 
 - **Spend** — a historical backend name. It means *any* transaction that affects an account balance,

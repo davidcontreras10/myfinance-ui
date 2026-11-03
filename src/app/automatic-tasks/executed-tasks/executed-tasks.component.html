@@ -26,3 +26,47 @@
 <div *ngIf="dataSource && dataSource.length === 0" class="history-empty">
     No execution records yet.
 </div>
+
+<section class="attempt-history" aria-labelledby="attempt-history-title">
+    <div class="history-head">
+        <h4 id="attempt-history-title">Run attempts</h4>
+    </div>
+    <div *ngIf="attemptsUnavailable" class="history-empty">
+        Attempt history is not available in this environment yet.
+    </div>
+    <div *ngIf="attemptsFailed" class="history-empty history-error" role="alert">
+        Attempt history could not be loaded.
+    </div>
+    <div *ngIf="attemptsLoading && (!attemptDataSource || attemptDataSource.length === 0)" class="history-empty" role="status">
+        Loading attempts…
+    </div>
+    <div *ngIf="attemptDataSource && attemptDataSource.length > 0" class="history-table-wrap">
+        <table class="history">
+            <thead>
+                <tr>
+                    <th scope="col">Started</th>
+                    <th scope="col">Attempt</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Failure</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let attempt of attemptDataSource">
+                    <td class="date">{{attempt.startedAtUtc | date: 'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{attempt.attemptNumber}}</td>
+                    <td>{{attemptStatusName(attempt.status)}}</td>
+                    <td class="msg">
+                        <span *ngIf="attempt.failureStage">{{attempt.failureStage}}<span *ngIf="attempt.failureMessage">: </span></span>{{attempt.failureMessage}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="attemptDataSource && attemptDataSource.length === 0 && !attemptsLoading && !attemptsUnavailable" class="history-empty">
+        No run attempts yet.
+    </div>
+    <button *ngIf="attemptsHasMore" type="button" class="btn btn-outline-accent attempt-more"
+        (click)="loadMoreAttempts()" [disabled]="attemptsLoading">
+        {{attemptsLoading ? 'Loading…' : 'Load more attempts'}}
+    </button>
+</section>
